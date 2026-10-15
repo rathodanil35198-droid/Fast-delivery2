@@ -331,21 +331,69 @@
             `).join('');
         }
 
-        // ಆರ್ಡರ್ ಮೇಲೆ ಕ್ಲಿಕ್ ಮಾಡಿದಾಗ ಸಂಪೂರ್ಣ ಟ್ರ್ಯಾಕಿಂಗ್ ಹಾಗೂ ಡೆಲಿವರಿ ಸ್ಟೇಟಸ್ ತೋರಿಸುವುದು
+        // ಫ್ಲಿಪ್‌ಕಾರ್ಟ್ ಶೈಲಿಯ 3 ಹಂತಗಳ ಟ್ರ್ಯಾಕಿಂಗ್ ಪ್ರೊಗ್ರೆಸ್ ಬಾರ್ (ಚುಕ್ಕೆಗಳು)
         function showOrderDetails(id) {
             let savedOrders = JSON.parse(localStorage.getItem('market_orders')) || [];
             let o = savedOrders.find(x => x.id === id);
             if (!o) return;
 
-            let statusColor = o.delivered ? 'text-green-600' : 'text-indigo-600';
-            let deliveryMsg = o.delivered ? '✨ ಡೆಲಿವರಿ ಯಶಸ್ವಿಯಾಗಿದೆ! ನಿಮ್ಮ ವಸ್ತು ತಲುಪಿಸಲಾಗಿದೆ.' : '🚚 2-3 ಗಂಟೆಯಲ್ಲಿ ನಿಮ್ಮ ಮನೆಗೆ ಡೆಲಿವರಿ ಆಗುತ್ತದೆ.';
+            // ಹಂತಗಳನ್ನು ನಿರ್ಧರಿಸುವುದು
+            let step1Active = true;
+            let step2Active = o.packingReady || o.delivered;
+            let step3Active = o.delivered;
+
+            let dot1Class = "w-6 h-6 rounded-full flex items-center justify-center text-white text-xs font-bold " + (step1Active ? "bg-green-600" : "bg-gray-300");
+            let dot2Class = "w-6 h-6 rounded-full flex items-center justify-center text-white text-xs font-bold " + (step2Active ? "bg-green-600" : "bg-gray-300");
+            let dot3Class = "w-6 h-6 rounded-full flex items-center justify-center text-white text-xs font-bold " + (step3Active ? "bg-green-600" : "bg-gray-300");
+
+            let statusMsg = "";
+            if (o.delivered) {
+                statusMsg = "✨ ಡೆಲಿವರಿ ಯಶಸ್ವಿಯಾಗಿದೆ! ನಿಮ್ಮ ವಸ್ತು ತಲುಪಿಸಲಾಗಿದೆ.";
+            } else if (o.packingReady) {
+                statusMsg = "📦 ಪ್ಯಾಕಿಂಗ್ ಆಗಿ ಡೆಲಿವರಿಗೆ ಕಳುಹಿಸಲಾಗಿದೆ. ನಾಳೆ ನಿಮಗೆ ಡೆಲಿವರಿ ಆಗುತ್ತದೆ (2 ರಿಂದ 3 ಗಂಟೆಯೊಳಗೆ).";
+            } else {
+                statusMsg = "⏳ ಆರ್ಡರ್ ದೃಢೀಕರಿಸಲಾಗಿದೆ. ಎರಡು ದಿನದೊಳಗೆ ನಿಮಗೆ ಡೆಲಿವರಿಾಗುತ್ತದೆ.";
+            }
 
             let html = `
-                <div class="text-left space-y-2 text-xs">
-                    <div class="bg-indigo-50 p-2 rounded border">
+                <div class="text-left space-y-3 text-xs">
+                    <div class="bg-indigo-50 p-2 rounded border space-y-1">
                         <p class="font-bold text-indigo-700">ಆರ್ಡರ್ ID: ${o.id}</p>
-                        <p class="font-semibold ${statusColor} pt-1">ಸ್ಥಿತಿ: ${o.status}</p>
-                        <p class="text-[11px] text-gray-600 pt-1">${deliveryMsg}</p>
+                        <p class="font-semibold text-gray-800 pt-1">${statusMsg}</p>
+                    </div>
+
+                    <!-- ಫ್ಲಿಪ್‌ಕಾರ್ಟ್ ಶೈಲಿಯ ಟ್ರ್ಯಾಕಿಂಗ್ ಚುಕ್ಕೆಗಳು ಮತ್ತು ಗೆರೆಗಳು -->
+                    <div class="p-3 bg-white rounded border space-y-2">
+                        <p class="font-bold text-gray-700 mb-2">ಆರ್ಡರ್ ಸ್ಟೇಟಸ್ ಹಂತಗಳು:</p>
+                        
+                        <!-- ಹಂತ 1 -->
+                        <div class="flex items-center gap-3">
+                            <div class="${dot1Class}">✓</div>
+                            <div>
+                                <p class="font-bold text-gray-800">ಆರ್ಡರ್ ಅನ್ನು ದೃಢೀಕರಿಸಲಾಗಿದೆ</p>
+                                <p class="text-[10px] text-gray-500">ಎರಡು ದಿನದೊಳಗೆ ನಿಮಗೆ ಡೆಲಿವರಿ ಆಗುತ್ತದೆ</p>
+                            </div>
+                        </div>
+                        <div class="ml-3 w-0.5 h-4 bg-gray-300"></div>
+
+                        <!-- ಹಂತ 2 -->
+                        <div class="flex items-center gap-3">
+                            <div class="${dot2Class}">${step2Active ? '✓' : '2'}</div>
+                            <div>
+                                <p class="font-bold text-gray-800">ಪ್ಯಾಕ್ ಮಾಡಲಾಗಿದೆ & ಡೆಲಿವರಿಗೆ ಕಳುಹಿಸಲಾಗಿದೆ</p>
+                                <p class="text-[10px] text-gray-500">ನಾಳೆ ಅಥವಾ ಶೀಘ್ರದಲ್ಲೇ ಡೆಲಿವರಿ ಆಗುತ್ತದೆ</p>
+                            </div>
+                        </div>
+                        <div class="ml-3 w-0.5 h-4 bg-gray-300"></div>
+
+                        <!-- ಹಂತ 3 -->
+                        <div class="flex items-center gap-3">
+                            <div class="${dot3Class}">${step3Active ? '✓' : '3'}</div>
+                            <div>
+                                <p class="font-bold text-gray-800">ಡೆಲಿವರಿ ಯಶಸ್ವಿ</p>
+                                <p class="text-[10px] text-gray-500">2 ರಿಂದ 3 ಗಂಟೆಯೊಳಗೆ ತಲುಪುತ್ತದೆ / ತಲುಪಿದೆ</p>
+                            </div>
+                        </div>
                     </div>
 
                     <div class="border-t pt-2">
