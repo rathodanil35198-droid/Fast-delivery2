@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="kn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ಶಹಾಪುರ ಮಾರ್ಕೆಟ್ - ಗ್ರಾಹಕರ ಆಪ್</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 font-sans">
+
+    <!-- ಫೋಟೋ ಜೂಮ್ ಪಾಪ್‌ಅಪ್ -->
+    <div id="image-modal" class="fixed inset-0 bg-black bg-opacity-80 z-50 hidden flex items-center justify-center p-4">
+        <div class="relative bg-white p-2 rounded-2xl max-w-sm w-full text-center">
+            <button onclick="closeImageModal()" class="absolute top-2 right-2 bg-red-500 text-white w-8 h-8 rounded-full font-bold">✕</button>
+            <img id="zoomed-img" src="" class="w-full h-96 object-contain rounded-xl">
+        </div>
+    </div>
+
+    <!-- ಸಕ್ಸಸ್ ಪಾಪ್‌ಅಪ್ -->
+    <div id="custom-modal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white p-6 rounded-2xl shadow-2xl max-w-sm w-full text-center space-y-3">
+            <div id="modal-icon" class="text-4xl">🎉</div>
+            <h3 id="modal-title" class="text-lg font-bold text-gray-800">ಯಶಸ್ವಿ!</h3>
+            <p id="modal-message" class="text-xs text-gray-600"></p>
+            <button onclick="closeModal()" class="w-full bg-indigo-600 text-white py-2 rounded-xl font-bold text-xs">ಸರಿ (OK)</button>
+        </div>
+    </div>
+
+    <!-- ಹೆಡರ್ -->
+    <header class="bg-indigo-700 text-white p-4 shadow-md flex justify-between items-center sticky top-0 z-40">
+        <h1 class="text-sm font-bold">🛒 ಶಹಾಪುರ ಮಾರ್ಕೆಟ್ (ಗ್ರಾಹಕರು)</h1>
+        <div id="user-info" class="text-xs hidden items-center gap-2">
+            <span id="logged-user-name" class="font-semibold"></span>
+            <button onclick="logout()" class="bg-red-500 px-2 py-1 rounded">ಲಾಗ್‌ಔಟ್</button>
+        </div>
+    </header>
+
+    <main class="container mx-auto p-4 max-w-md">
+
+        <!-- ೧. ಗ್ರಾಹಕರ ನೋಂದಣಿ ಪೇಜ್ -->
+        <div id="auth-screen" class="bg-white p-6 rounded-2xl shadow-lg space-y-4 page-section">
+            <h2 class="text-xl font-bold text-gray-800 border-b pb-2">ಗ್ರಾಹಕರ ನೋಂದಣಿ</h2>
+            
+            <div class="space-y-3">
+                <div>
+                    <label class="block text-xs font-medium text-gray-700">ನಿಮ್ಮ ಹೆಸರು</label>
+                    <input type="text" id="reg-name" placeholder="ನಿಮ್ಮ ಹೆಸರು ನಮೂದಿಸಿ" class="w-full p-2 border rounded-lg text-sm mt-1">
+                </div>
+                <div>
+                    <label class="block text-xs font-medium text-gray-700">ಮೊಬೈಲ್ ನಂಬರ್</label>
+                    <input type="tel" id="reg-phone" placeholder="10 ಅಂಕಿಯ ಮೊಬೈಲ್ ನಂಬರ್" maxlength="10" class="w-full p-2 border rounded-lg text-sm mt-1">
+                </div>
+                <div class="grid grid-cols-2 gap-2">
+                    <input type="text" id="reg-district" placeholder="ಜಿಲ್ಲೆ" class="p-2 border rounded-lg text-sm" value="ಯಾದಗಿರಿ">
+                    <input type="text" id="reg-taluk" placeholder="ತಾಲೂಕು" class="p-2 border rounded-lg text-sm" value="ಶಹಾಪುರ">
+                </div>
+                <div class="grid grid-cols-2 gap-2">
+                    <input type="text" id="reg-city" placeholder="ಊರು / ಗ್ರಾಮ" class="p-2 border rounded-lg text-sm" value="ಶಹಾಪುರ">
+                    <input type="text" id="reg-pincode" placeholder="ಪಿನ್ ಕೋಡ್" maxlength="6" class="p-2 border rounded-lg text-sm" value="585223">
+                </div>
+
+                <button onclick="registerCustomer()" class="w-full bg-indigo-600 text-white py-2.5 rounded-xl font-bold text-sm shadow">ಖಾತೆ ಸೃಷ್ಟಿಸಿ & ಶಾಪಿಂಗ್ ಮಾಡಿ</button>
+            </div>
+        </div>
+
+        <!-- ೨. ಗ್ರಾಹಕರ ಡ್ಯಾಶ್‌ಬೋರ್ಡ್ -->
+        <div id="dashboard-customer" class="space-y-4 hidden page-section">
+            
+            <!-- ಟ್ಯಾಬ್ ಬಟನ್‌ಗಳು -->
+            <div class="flex gap-2 mb-2">
+                <button onclick="switchCustomerTab('browse')" id="tab-browse" class="flex-1 bg-indigo-600 text-white py-2 rounded-xl text-xs font-bold">🛍️ ವಸ್ತುಗಳು (Browse)</button>
+                <button onclick="switchCustomerTab('cart')" id="tab-cart" class="flex-1 bg-gray-200 text-gray-700 py-2 rounded-xl text-xs font-bold">🛒 ಕಾರ್ಟ್ & ಆರ್ಡರ್</button>
+            </div>
+
+            <!-- ವಸ್ತುವನ್ನು ಬ್ರೌಸ್ ಮಾಡುವ ಸೆಕ್ಷನ್ -->
+            <div id="cust-browse-section" class="space-y-3">
+                <div class="bg-white p-4 rounded-xl shadow space-y-3">
+                    <h3 class="font-bold text-base text-gray-800">🛍️ ಲಭ್ಯವಿರುವ ವಸ್ತುಗಳು</h3>
+                    <input type="text" id="search-box" oninput="searchProducts()" placeholder="ವಸ್ತು ಅಥವಾ ಅಂಗಡಿ ಹೆಸರು ಹುಡುಕಿ..." class="w-full p-2 border rounded-lg text-sm">
+                    <div id="customer-product-list" class="space-y-4 max-h-[500px] overflow-y-auto"></div>
+                </div>
+            </div>
+
+            <!-- ಕಾರ್ಟ್ ಮತ್ತು ಆರ್ಡರ್ ಟ್ರ್ಯಾಕಿಂಗ್ ಸೆಕ್ಷನ್ -->
+            <div id="cust-cart-section" class="space-y-3 hidden">
+                <div class="bg-white p-4 rounded-xl shadow space-y-2">
+                    <h3 class="font-bold text-sm text-gray-800 border-b pb-1">🛒 ನಿಮ್ಮ ಕಾರ್ಟ್ (Cart)</h3>
+                    <div id="customer-cart" class="text-xs text-gray-600">ಕಾರ್ಟ್ ಖಾಲಿಯಿದೆ.</div>
+                    
+                    <div class="pt-2 border-t">
+                        <label class="block text-xs font-semibold text-gray-700 mb-1">ಪಾವತಿ ವಿಧಾನ (Payment Mode):</label>
+                        <select id="payment-mode" class="w-full p-2 border rounded-lg text-xs mb-2">
+                            <option value="UPI">UPI (Google Pay / PhonePe / Paytm)</option>
+                            <option value="COD">ಕ್ಯಾಶ್ ಆನ್ ಡೆಲಿವರಿ (Cash on Delivery)</option>
+                        </select>
+                        <button onclick="placeOrder()" class="w-full bg-yellow-400 text-black py-2.5 rounded-xl font-bold text-xs shadow hover:bg-yellow-500">ಆರ್ಡರ್ ಖಚಿತಪಡಿಸಿ (Place Order)</button>
+                    </div>
+                </div>
+
+                <div class="bg-white p-4 rounded-xl shadow space-y-2">
+                    <h3 class="font-bold text-sm text-gray-800 border-b pb-1">📦 ನನ್ನ ಆರ್ಡರ್‌ಗಳು & ಟ್ರ್ಯಾಕಿಂಗ್</h3>
+                    <div id="customer-orders-list" class="text-xs text-gray-600">ಯಾವುದೇ ಆರ್ಡರ್‌ಗಳಿಲ್ಲ.</div>
+                </div>
+            </div>
+
+        </div>
+
+    </main>
+
+    <script>
+        let currentCustomer = JSON.parse(localStorage.getItem('currentCustomer')) || null;
+        let products = JSON.parse(localStorage.getItem('market_products')) || [];
+        let cart = [];
+
+        function showModal(title, message, icon = '🎉') {
+            document.getElementById('modal-title').innerText = title;
+            document.getElementById('modal-message').innerText = message;
+            document.getElementById('modal-icon').innerText = icon;
+            document.getElementById('custom-modal').classList.remove('hidden');
+        }
+
+        function closeModal() {
+            document.getElementById('custom-modal').classList.add('hidden');
+        }
+
+        function zoomImage(src) {
+            document.getElementById('zoomed-img').src = src;
+            document.getElementById('image-modal').classList.remove('hidden');
+        }
+
+        function closeImageModal() {
+            document.getElementById('image-modal').classList.add('hidden');
+        }
+
+        function switchCustomerTab(tab) {
+            if (tab === 'browse') {
+                document.getElementById('cust-browse-section').classList.remove('hidden');
+                document.getElementById('cust-cart-section').classList.add('hidden');
+                document.getElementById('tab-browse').className = "flex-1 bg-indigo-600 text-white py-2 rounded-xl text-xs font-bold";
+                document.getElementById('tab-cart').className = "flex-1 bg-gray-200 text-gray-700 py-2 rounded-xl text-xs font-bold";
+            } else {
+                document.getElementById('cust-browse-section').classList.add('hidden');
+                document.getElementById('cust-cart-section').classList.remove('hidden');
+                document.getElementById('tab-cart').className = "flex-1 bg-indigo-600 text-white py-2 rounded-xl text-xs font-bold";
+                document.getElementById('tab-browse').className = "flex-1 bg-gray-200 text-gray-700 py-2 rounded-xl text-xs font-bold";
+                renderCustomerOrders();
+            }
+        }
+
+        function checkLogin() {
+            if (!currentCustomer) {
+                document.getElementById('auth-screen').classList.remove('hidden');
+                document.getElementById('dashboard-customer').classList.add('hidden');
+                document.getElementById('user-info').classList.add('hidden');
+            } else {
+                document.getElementById('auth-screen').classList.add('hidden');
+                document.getElementById('dashboard-customer').classList.remove('hidden');
+                document.getElementById('user-info').classList.remove('hidden');
+                document.getElementById('logged-user-name').innerText = `${currentCustomer.name} (ಗ್ರಾಹಕರು)`;
+                renderCustomerProducts(products);
+                renderCustomerOrders();
+            }
+        }
+
+        function registerCustomer() {
+            let name = document.getElementById('reg-name').value;
+            let phone = document.getElementById('reg-phone').value;
+            let district = document.getElementById('reg-district').value;
+            let taluk = document.getElementById('reg-taluk').value;
+            let city = document.getElementById('reg-city').value;
+            let pincode = document.getElementById('reg-pincode').value;
+
+            if (!name || !phone || phone.length < 10) {
+                alert('ದಯವಿಟ್ಟು ಸರಿಯಾದ ಹೆಸರು ಮತ್ತು ಮೊಬೈಲ್ ನಂಬರ್ ಹಾಕಿ!');
+                return;
+            }
+
+            currentCustomer = { name, phone, district, taluk, city, pincode };
+            localStorage.setItem('currentCustomer', JSON.stringify(currentCustomer));
+            showModal("ಯಶಸ್ವಿ!", "ನಿಮ್ಮ ಖಾತೆ ಸೃಷ್ಟಿಯಾಗಿದೆ!", "🎉");
+            checkLogin();
+        }
+
+        function logout() {
+            localStorage.removeItem('currentCustomer');
+            currentCustomer = null;
+            checkLogin();
+        }
+
+        function renderCustomerProducts(list) {
+            let listDiv = document.getElementById('customer-product-list');
+            if (list.length === 0) {
+                listDiv.innerHTML = "<p class='text-gray-500 text-xs'>ಯಾವುದೇ ವಸ್ತುಗಳು ಲಭ್ಯವಿಲ್ಲ.</p>";
+                return;
+            }
+            listDiv.innerHTML = list.map(p => `
+                <div class="border p-3 rounded-2xl bg-white shadow-sm space-y-2">
+                    <div class="flex gap-2 justify-center">
+                        <img src="${p.frontPhoto}" onclick="zoomImage('${p.frontPhoto}')" class="w-32 h-36 object-cover rounded-xl border shadow cursor-pointer">
+                        <img src="${p.backPhoto}" onclick="zoomImage('${p.backPhoto}')" class="w-32 h-36 object-cover rounded-xl border shadow cursor-pointer">
+                    </div>
+                    <div>
+                        <h4 class="font-bold text-gray-800 text-sm">${p.name} (${p.size})</h4>
+                        <p class="text-[11px] text-gray-500">ಅಂಗಡಿ: ${p.vendorShop}</p>
+                        <p class="text-[11px] text-indigo-600">ಬಣ್ಣ: ${p.colors} | ಸ್ಟಾಕ್: ${p.stock}</p>
+                        <div class="flex items-center gap-2 mt-1">
+                            <span class="text-red-500 line-through text-xs">₹${p.origPrice}</span>
+                            <span class="text-green-600 font-bold text-sm">₹${p.discPrice}</span>
+                        </div>
+                    </div>
+                    <button onclick="addToCart(${p.id})" class="w-full bg-indigo-600 text-white py-2 rounded-xl text-xs font-bold shadow">ಕಾರ್ಟ್‌ಗೆ ಸೇರಿಸಿ</button>
+                </div>
+            `).join('');
+        }
+
+        function searchProducts() {
+            let query = document.getElementById('search-box').value.toLowerCase();
+            let filtered = products.filter(p => p.name.toLowerCase().includes(query) || p.vendorShop.toLowerCase().includes(query));
+            renderCustomerProducts(filtered);
+        }
+
+        function addToCart(id) {
+            let prod = products.find(p => p.id === id);
+            cart.push(prod);
+            renderCart();
+            switchCustomerTab('cart');
+            showModal("ಕಾರ್ಟ್", "ವಸ್ತು ಕಾರ್ಟ್‌ಗೆ ಸೇರಿಸಲಾಗಿದೆ!", "🛒");
+        }
+
+        function renderCart() {
+            let cartDiv = document.getElementById('customer-cart');
+            if (cart.length === 0) {
+                cartDiv.innerHTML = "ಕಾರ್ಟ್ ಖಾಲಿಯಿದೆ.";
+                return;
+            }
+            let total = 0;
+            let html = "";
+            cart.forEach(item => {
+                total += item.discPrice;
+                html += `<div class="flex justify-between border-b py-1 text-xs"><span>${item.name} (${item.size})</span> <span>₹${item.discPrice}</span></div>`;
+            });
+            html += `<div class="font-bold mt-1 flex justify-between text-indigo-700 text-xs"><span>ಒಟ್ಟು ಮೊತ್ತ:</span> <span>₹${total}</span></div>`;
+            cartDiv.innerHTML = html;
+        }
+
+        function placeOrder() {
+            if (cart.length === 0) {
+                alert('ಕಾರ್ಟ್ ಖಾಲಿಯಿದೆ!');
+                return;
+            }
+            let paymentMode = document.getElementById('payment-mode').value;
+            let savedOrders = JSON.parse(localStorage.getItem('market_orders')) || [];
+            
+            let newOrder = {
+                id: Date.now(),
+                customerName: currentCustomer.name,
+                phone: currentCustomer.phone,
+                district: currentCustomer.district,
+                taluk: currentCustomer.taluk,
+                city: currentCustomer.city,
+                pincode: currentCustomer.pincode,
+                address: `${currentCustomer.city}, ${currentCustomer.taluk} (Pin: ${currentCustomer.pincode})`,
+                items: [...cart],
+                paymentMethod: paymentMode,
+                status: 'ಆರ್ಡರ್ ಸ್ವೀಕರಿಸಲಾಗಿದೆ - ಪ್ಯಾಕಿಂಗ್ ನಡೆಯುತ್ತಿದೆ',
+                acceptedByVendor: null,
+                packingReady: false,
+                delivered: false,
+                timestamp: Date.now()
+            };
+
+            savedOrders.push(newOrder);
+            localStorage.setItem('market_orders', JSON.stringify(savedOrders));
+            cart = [];
+            renderCart();
+            switchCustomerTab('cart');
+            showModal("ಯಶಸ್ವಿ!", "ನಿಮ್ಮ ಆರ್ಡರ್ ಕನ್ಫರ್ಮ್ ಆಗಿದೆ! 2-3 ಗಂಟೆಯಲ್ಲಿ ಡೆಲಿವರಿ ಆಗುತ್ತದೆ.", "📦");
+        }
+
+        function renderCustomerOrders() {
+            let cOrdDiv = document.getElementById('customer-orders-list');
+            let savedOrders = JSON.parse(localStorage.getItem('market_orders')) || [];
+            let myOrders = savedOrders.filter(o => o.phone === currentCustomer.phone);
+
+            if (myOrders.length === 0) {
+                cOrdDiv.innerHTML = "ಯಾವುದೇ ಆರ್ಡರ್‌ಗಳಿಲ್ಲ.";
+                return;
+            }
+
+            cOrdDiv.innerHTML = myOrders.map(o => `
+                <div class="border p-3 rounded-xl bg-gray-50 mb-2 space-y-1">
+                    <p class="font-bold text-xs">ಆರ್ಡರ್ ID: ${o.id}</p>
+                    <p class="text-[11px] text-indigo-600 font-semibold">ಸ್ಥಿತಿ: ${o.status}</p>
+                    <p class="text-[10px] text-gray-500">ಪಾವತಿ: ${o.paymentMethod} (${o.delivered ? 'ಪಾವತಿ ಯಶಸ್ವಿ' : 'ಪೆಂಡಿಂಗ್'})</p>
+                </div>
+            `).join('');
+        }
+
+        checkLogin();
+    </script>
+</body>
+</html>
