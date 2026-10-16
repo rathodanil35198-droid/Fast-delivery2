@@ -43,13 +43,13 @@
         <div id="auth-screen" class="bg-white p-6 rounded-2xl shadow-lg space-y-4 page-section">
             <h2 class="text-xl font-bold text-gray-800 border-b pb-2">ಗ್ರಾಹಕರ ನೋಂದಣಿ</h2>
             
-            <div class="space-y-3">
+            <div class="space-y-3 text-xs">
                 <div>
-                    <label class="block text-xs font-medium text-gray-700">ನಿಮ್ಮ ಹೆಸರು</label>
+                    <label class="block font-medium text-gray-700">ನಿಮ್ಮ ಹೆಸರು</label>
                     <input type="text" id="reg-name" placeholder="ನಿಮ್ಮ ಹೆಸರು ನಮೂದಿಸಿ" class="w-full p-2 border rounded-lg text-sm mt-1">
                 </div>
                 <div>
-                    <label class="block text-xs font-medium text-gray-700">ಮೊಬೈಲ್ ನಂಬರ್</label>
+                    <label class="block font-medium text-gray-700">ಮೊಬೈಲ್ ನಂಬರ್</label>
                     <input type="tel" id="reg-phone" placeholder="10 ಅಂಕಿಯ ಮೊಬೈಲ್ ನಂಬರ್" maxlength="10" class="w-full p-2 border rounded-lg text-sm mt-1">
                 </div>
                 <div class="grid grid-cols-2 gap-2">
@@ -188,7 +188,7 @@
                         <img src="${p.backPhoto}" onclick="zoomImage('${p.backPhoto}')" class="w-32 h-36 object-cover rounded-xl border shadow cursor-pointer">
                     </div>
                     <div>
-                        <h4 class="font-bold text-gray-800 text-sm">${p.name} (${p.size})</h4>
+                        <h4 class="font-bold text-gray-800 text-sm">${p.name} (<span class="text-red-600">ಸೈಜ್: ${p.size}</span>)</h4>
                         <p class="text-[11px] text-gray-500">ಅಂಗಡಿ: ${p.vendorShop}</p>
                         <p class="text-[11px] text-indigo-600">ಬಣ್ಣ: ${p.colors} | ಸ್ಟಾಕ್: ${p.stock}</p>
                         <div class="flex items-center gap-2 mt-1">
@@ -196,7 +196,7 @@
                             <span class="text-green-600 font-bold text-sm">₹${p.discPrice}</span>
                         </div>
                     </div>
-                    <button onclick="openBuyModal(${p.id})" class="w-full bg-yellow-400 text-black py-2.5 rounded-xl font-bold text-xs shadow hover:bg-yellow-500">ಕೊಂಡುಕೊಳ್ಳಿ (Buy Now)</button>
+                    <button onclick="openBuyModal(${p.id})" class="w-full bg-yellow-400 text-black py-2.5 rounded-xl font-bold text-xs shadow hover:bg-yellow-500">₹${p.discPrice} ಗೆ ಖರೀದಿಸಿ</button>
                 </div>
             `).join('');
         }
@@ -213,10 +213,16 @@
 
             let html = `
                 <div class="text-left space-y-3 text-xs">
+                    <div class="bg-gray-50 p-2 rounded border space-y-1">
+                        <p class="font-bold text-gray-800"><b>ವಿಳಾಸ:</b> ${currentCustomer.name}</p>
+                        <p class="text-gray-600">1/29 Bheemrav Gudi Maruti Nagar, ${currentCustomer.city}, Near SBI Branch, ${currentCustomer.taluk} Taluk, ${currentCustomer.district} District, Karnataka - ${currentCustomer.pincode}</p>
+                        <p class="text-gray-600"><b>ಫೋನ್:</b> ${currentCustomer.phone}</p>
+                    </div>
+
                     <div class="flex gap-3 items-center border-b pb-2">
                         <img src="${p.frontPhoto}" class="w-16 h-16 object-cover rounded-lg border">
                         <div>
-                            <p class="font-bold text-gray-800">${p.name} (${p.size})</p>
+                            <p class="font-bold text-gray-800">${p.name} (<span class="text-red-600">ಸೈಜ್: ${p.size}</span>)</p>
                             <p class="text-green-600 font-bold">₹${p.discPrice}</p>
                         </div>
                     </div>
@@ -234,17 +240,12 @@
                         <label class="font-semibold text-gray-700">ಪಾವತಿ ವಿಧಾನ (Payment Mode):</label>
                         <select id="modal-payment-mode" class="w-full p-2 border rounded-lg text-xs mt-1">
                             <option value="UPI">UPI (Google Pay / PhonePe / Paytm)</option>
-                            <option value="Credit Card">ಕ್ರೆಡಿಟ್ / ಡೆಬಿಟ್ ಕಾರ್ಡ್ (Credit/Debit Card)</option>
+                            <option value="Credit Card">ಕ್ರೆಡಿಟ್ / ಡೆಬಿಟ್ ಕಾರ್ಡ್</option>
                             <option value="COD">ಕ್ಯಾಶ್ ಆನ್ ಡೆಲಿವರಿ (Cash on Delivery + ₹10)</option>
                         </select>
                     </div>
 
-                    <div class="bg-gray-50 p-2 rounded border text-[11px] text-gray-600">
-                        <p><b>ವಿಳಾಸ:</b> ${currentCustomer.name}, ${currentCustomer.city}, ${currentCustomer.taluk} (Pin: ${currentCustomer.pincode})</p>
-                        <p><b>ಫೋನ್:</b> ${currentCustomer.phone}</p>
-                    </div>
-
-                    <button onclick="confirmOrder(${p.id})" class="w-full bg-yellow-400 text-black py-2.5 rounded-xl font-bold text-xs shadow hover:bg-yellow-500">ಆರ್ಡರ್ ಖಚಿತಪಡಿಸಿ (Continue)</button>
+                    <button onclick="confirmOrderPopup(${p.id})" class="w-full bg-yellow-400 text-black py-2.5 rounded-xl font-bold text-xs shadow hover:bg-yellow-500">Continue (ಆರ್ಡರ್ ಮಾಡಿ)</button>
                 </div>
             `;
             showModal("ಆರ್ಡರ್ ವಿವರಗಳು", html, "🛒", "");
@@ -257,12 +258,33 @@
             qtyEl.innerText = q;
         }
 
-        function confirmOrder(id) {
+        function confirmOrderPopup(id) {
             let p = products.find(x => x.id === id);
             let qty = Number(document.getElementById('order-qty').innerText);
             let paymentMode = document.getElementById('modal-payment-mode').value;
             let totalAmount = (p.discPrice * qty) + (paymentMode === 'COD' ? 10 : 0);
 
+            closeModal();
+
+            let confirmHtml = `
+                <div class="text-left space-y-3 text-xs">
+                    <p class="font-bold text-gray-800 text-sm">ಕ್ಯಾಶ್ ಆನ್ ಡೆಲಿವರಿ ಆರ್ಡರ್ ದೃಢೀಕರಿಸಿ</p>
+                    <p class="text-gray-600">ನೀವು ಆರ್ಡರ್ ಡೆಲಿವರಿ ಪಡೆಯುವಾಗ ನಗದು ಅಥವಾ UPI ಮೂಲಕ ಪಾವತಿಸಿ.</p>
+                    <div class="bg-gray-50 p-2 rounded border space-y-1">
+                        <p><b>ಮೊತ್ತ:</b> ₹${totalAmount} (${paymentMode})</p>
+                        <p><b>ವಸ್ತು:</b> ${p.name} (ಸೈಜ್: ${p.size}) x${qty}</p>
+                    </div>
+                    <div class="flex gap-2 pt-2">
+                        <button onclick="closeModal()" class="flex-1 bg-gray-200 text-gray-800 py-2.5 rounded-xl font-bold">ರದ್ದುಗೊಳಿಸಿ</button>
+                        <button onclick="executeOrder(${p.id}, ${qty}, '${paymentMode}', ${totalAmount})" class="flex-1 bg-yellow-400 text-black py-2.5 rounded-xl font-bold shadow">ಆರ್ಡರ್ ದೃಢೀಕರಿಸಿ</button>
+                    </div>
+                </div>
+            `;
+            showModal("ಆರ್ಡರ್ ದೃಢೀಕರಣ", confirmHtml, "📦", "");
+        }
+
+        function executeOrder(id, qty, paymentMode, totalAmount) {
+            let p = products.find(x => x.id === id);
             let savedOrders = JSON.parse(localStorage.getItem('market_orders')) || [];
             
             let newOrder = {
@@ -273,7 +295,7 @@
                 taluk: currentCustomer.taluk,
                 city: currentCustomer.city,
                 pincode: currentCustomer.pincode,
-                address: `${currentCustomer.city}, ${currentCustomer.taluk} (Pin: ${currentCustomer.pincode})`,
+                address: `1/29 Bheemrav Gudi Maruti Nagar, ${currentCustomer.city}, Near SBI Branch, ${currentCustomer.taluk} Taluk, ${currentCustomer.district} District, Karnataka - ${currentCustomer.pincode}`,
                 items: [{ ...p, quantity: qty }],
                 totalAmount: totalAmount,
                 paymentMethod: paymentMode,
@@ -281,17 +303,17 @@
                 acceptedByVendor: null,
                 packingReady: false,
                 delivered: false,
+                isCancelled: false,
+                cancelTime: '',
                 isReturned: false,
                 returnReason: '',
-                returnPhoto1: '',
-                returnPhoto2: '',
                 timestamp: Date.now()
             };
 
             savedOrders.push(newOrder);
             localStorage.setItem('market_orders', JSON.stringify(savedOrders));
 
-            showModal("Order Placed", `
+            showModal("Thanks for shopping!", `
                 <div class="text-center space-y-2">
                     <div class="text-green-600 text-5xl font-bold">✅</div>
                     <p class="font-bold text-sm text-gray-800">Thanks for shopping with us!</p>
@@ -307,8 +329,12 @@
             let savedOrders = JSON.parse(localStorage.getItem('market_orders')) || [];
             let myOrders = savedOrders.filter(o => o.phone === currentCustomer.phone);
 
-            // ಹೊಸ ಆರ್ಡರ್‌ಗಳು ಮೊದಲು (ಮೇಲ್ಭಾಗದಲ್ಲಿ) ಕಾಣುವಂತೆ ರಿವರ್ಸ್ ಮಾಡುವುದು
-            myOrders.reverse();
+            // ಹೊಸ ಆರ್ಡರ್‌ಗಳು ಮೊದಲು (ಮೇಲ್ಭಾಗದಲ್ಲಿ), ಹಳೆಯದು ಅಥವಾ ಡೆಲಿವರಿ ಆದದ್ದು ಅಥವಾ ಕ್ಯಾನ್ಸಲ್ ಆದದ್ದು ಕೆಳಭಾಗದಲ್ಲಿ (ಲಾಕ್ ಆಗಿ) ಕಾಣುವಂತೆ ವಿಂಗಡಿಸುವುದು
+            myOrders.sort((a, b) => {
+                if (a.isCancelled !== b.isCancelled) return a.isCancelled ? 1 : -1;
+                if (a.delivered !== b.delivered) return a.delivered ? 1 : -1;
+                return b.timestamp - a.timestamp;
+            });
 
             if (myOrders.length === 0) {
                 cOrdDiv.innerHTML = "ಯಾವುದೇ ಆರ್ಡರ್‌ಗಳಿಲ್ಲ.";
@@ -316,7 +342,7 @@
             }
 
             cOrdDiv.innerHTML = myOrders.map(o => `
-                <div onclick="showOrderDetails(${o.id})" class="border p-3 rounded-xl bg-gray-50 mb-3 space-y-2 cursor-pointer hover:bg-indigo-50 transition">
+                <div onclick="showOrderDetails(${o.id})" class="border p-3 rounded-xl ${o.isCancelled ? 'bg-red-50 opacity-75' : (o.delivered ? 'bg-gray-100' : 'bg-gray-50')} mb-3 space-y-2 cursor-pointer hover:bg-indigo-50 transition">
                     <div class="flex justify-between items-center border-b pb-1">
                         <span class="font-bold text-xs text-indigo-700">ಆರ್ಡರ್ ID: ${o.id}</span>
                         <span class="text-[10px] bg-green-100 text-green-800 px-2 py-0.5 rounded font-bold">${o.paymentMethod}</span>
@@ -325,42 +351,45 @@
                         <div class="flex gap-2 items-center">
                             <img src="${i.frontPhoto}" class="w-12 h-12 object-cover rounded border">
                             <div>
-                                <p class="font-bold text-xs">${i.name} (${i.size}) x${i.quantity}</p>
+                                <p class="font-bold text-xs">${i.name} (<span class="text-red-600">ಸೈಜ್: ${i.size}</span>) x${i.quantity}</p>
                                 <p class="text-[11px] text-green-600 font-bold">₹${i.discPrice * i.quantity}</p>
                             </div>
                         </div>
                     `).join('')}
                     <div class="pt-1 flex justify-between items-center">
-                        <span class="text-[11px] font-semibold ${o.delivered ? 'text-green-600' : 'text-indigo-600'}">ಸ್ಥಿತಿ: ${o.status}</span>
+                        <span class="text-[11px] font-semibold ${o.isCancelled ? 'text-red-600' : (o.delivered ? 'text-green-600' : 'text-indigo-600')}">
+                            ${o.isCancelled ? '🔒 ಲಾಕ್ ಆಗಿದೆ: ಗ್ರಾಹಕರಿಂದ ಕ್ಯಾನ್ಸಲ್ ಮಾಡಲಾಗಿದೆ (' + o.cancelTime + ')' : 'ಸ್ಥಿತಿ: ' + o.status}
+                        </span>
                         <span class="text-[10px] text-gray-400 underline">ವಿವರ ನೋಡಿ ▶</span>
                     </div>
                 </div>
             `).join('');
         }
 
-        // 4 ಹಂತಗಳ ಟ್ರ್ಯಾಕಿಂಗ್ ಪ್ರೊಗ್ರೆಸ್ ಬಾರ್ ಮತ್ತು ರಿಟರ್ನ್ ಆಪ್ಷನ್
         function showOrderDetails(id) {
             let savedOrders = JSON.parse(localStorage.getItem('market_orders')) || [];
             let o = savedOrders.find(x => x.id === id);
             if (!o) return;
 
-            let step1Active = true;
-            let step2Active = o.packingReady || o.delivered;
-            let step3Active = o.packingReady && !o.delivered;
-            let step4Active = o.delivered;
+            let step1Active = !o.isCancelled;
+            let step2Active = (!o.isCancelled && (o.packingReady || o.delivered));
+            let step3Active = (!o.isCancelled && o.packingReady && !o.delivered);
+            let step4Active = (!o.isCancelled && o.delivered);
 
-            let dot1Class = "w-5 h-5 rounded-full flex items-center justify-center text-white text-[10px] font-bold " + (step1Active ? "bg-green-600" : "bg-gray-300");
+            let dot1Class = "w-5 h-5 rounded-full flex items-center justify-center text-white text-[10px] font-bold " + (o.isCancelled ? "bg-red-500" : (step1Active ? "bg-green-600" : "bg-gray-300"));
             let dot2Class = "w-5 h-5 rounded-full flex items-center justify-center text-white text-[10px] font-bold " + (step2Active ? "bg-green-600" : "bg-gray-300");
             let dot3Class = "w-5 h-5 rounded-full flex items-center justify-center text-white text-[10px] font-bold " + (step3Active ? "bg-green-600" : "bg-gray-300");
             let dot4Class = "w-5 h-5 rounded-full flex items-center justify-center text-white text-[10px] font-bold " + (step4Active ? "bg-green-600" : "bg-gray-300");
 
             let statusMsg = "";
-            if (o.delivered) {
+            if (o.isCancelled) {
+                statusMsg = `🔒 ಈ ಆರ್ಡರ್ ಕ್ಯಾನ್ಸಲ್ ಮಾಡಲಾಗಿದೆ (${o.cancelTime}). ಲಾಕ್ ಮಾಡಲಾಗಿದೆ.`;
+            } else if (o.delivered) {
                 statusMsg = "✨ ಡೆಲಿವರಿ ಯಶಸ್ವಿಯಾಗಿದೆ (Success)!";
             } else if (o.packingReady) {
-                statusMsg = "📦 ಪ್ಯಾಕಿಂಗ್ ಆಗಿ ಡೆಲಿವರಿಗೆ ಕಳುಹಿಸಲಾಗಿದೆ. 2 ರಿಂದ 3 ಗಂಟೆಯೊಳಗೆ ಡೆಲಿವರಿ ಆಗುತ್ತದೆ.";
+                statusMsg = "📦 ಪ್ಯಾಕಿಂಗ್ ಆಗಿ ಡೆಲಿವರಿಗೆ ಕಳುಹಿಸಲಾಗಿದೆ.";
             } else {
-                statusMsg = "⏳ ಆರ್ಡರ್ ದೃಢೀಕರಿಸಲಾಗಿದೆ. ನಾಳೆ ನಿಮಗೆ ಡೆಲಿವರಿ ತಲುಪುತ್ತದೆ.";
+                statusMsg = "⏳ ಆರ್ಡರ್ ದೃಢೀಕರಿಸಲಾಗಿದೆ.";
             }
 
             let html = `
@@ -370,121 +399,75 @@
                         <p class="font-semibold text-gray-800 pt-1">${statusMsg}</p>
                     </div>
 
-                    <!-- 4 ಹಂತಗಳ ಟ್ರ್ಯಾಕಿಂಗ್ ಚುಕ್ಕೆಗಳು -->
+                    ${!o.isCancelled && !o.delivered && !o.packingReady ? `
+                        <div class="bg-red-50 p-2 rounded border text-center space-y-2">
+                            <p class="font-bold text-red-700">ಲೈವ್ ಆರ್ಡರ್ ಕ್ಯಾನ್ಸಲ್ ಮಾಡಲು ಬಟನ್:</p>
+                            <button onclick="cancelCustomerOrder(${o.id})" class="bg-red-600 text-white px-4 py-2 rounded-xl font-bold shadow">❌ ಆರ್ಡರ್ ಕ್ಯಾನ್ಸಲ್ ಮಾಡಿ (Cancel Order)</button>
+                        </div>
+                    ` : ''}
+
                     <div class="p-3 bg-white rounded border space-y-2">
                         <p class="font-bold text-gray-700 mb-2">ಆರ್ಡರ್ ಸ್ಟೇಟಸ್ ಹಂತಗಳು:</p>
                         
-                        <!-- ಚುಕ್ಕೆ 1 -->
                         <div class="flex items-center gap-3">
-                            <div class="${dot1Class}">✓</div>
-                            <div>
-                                <p class="font-bold text-gray-800">1. ಆರ್ಡರ್ ದೃಢೀಕರಿಸಲಾಗಿದೆ</p>
-                            </div>
+                            <div class="${dot1Class}">${o.isCancelled ? '✕' : '✓'}</div>
+                            <div><p class="font-bold text-gray-800">1. ಆರ್ಡರ್ ದೃಢೀಕರಿಸಲಾಗಿದೆ</p></div>
                         </div>
                         <div class="ml-2.5 w-0.5 h-3 bg-gray-300"></div>
 
-                        <!-- ಚುಕ್ಕೆ 2 -->
                         <div class="flex items-center gap-3">
                             <div class="${dot2Class}">${step2Active ? '✓' : '2'}</div>
-                            <div>
-                                <p class="font-bold text-gray-800">2. ಪ್ಯಾಕಿಂಗ್ ಆಗಿ ಡೆಲಿವರಿಗೆ ಕಳುಹಿಸಲಾಗಿದೆ</p>
-                                <p class="text-[10px] text-gray-500">ನಾಳೆ ನಿಮಗೆ ಡೆಲಿವರಿ ತಲುಪುತ್ತದೆ</p>
-                            </div>
+                            <div><p class="font-bold text-gray-800">2. ಪ್ಯಾಕಿಂಗ್ ಆಗಿ ಡೆಲಿವರಿಗೆ ಕಳುಹಿಸಲಾಗಿದೆ</p></div>
                         </div>
                         <div class="ml-2.5 w-0.5 h-3 bg-gray-300"></div>
 
-                        <!-- ಚುಕ್ಕೆ 3 -->
                         <div class="flex items-center gap-3">
                             <div class="${dot3Class}">${step3Active ? '✓' : '3'}</div>
-                            <div>
-                                <p class="font-bold text-gray-800">3. ಡೆಲಿವರಿ ಬಾಯ್ ಹೊರಟಿದ್ದಾರೆ</p>
-                                <p class="text-[10px] text-gray-500">2 ರಿಂದ 3 ಗಂಟೆಯೊಳಗೆ ಡೆಲಿವರಿ ಆಗುತ್ತದೆ</p>
-                            </div>
+                            <div><p class="font-bold text-gray-800">3. ಡೆಲಿವರಿ ಬಾಯ್ ಹೊರಟಿದ್ದಾರೆ</p></div>
                         </div>
                         <div class="ml-2.5 w-0.5 h-3 bg-gray-300"></div>
 
-                        <!-- ಚುಕ್ಕೆ 4 -->
                         <div class="flex items-center gap-3">
                             <div class="${dot4Class}">${step4Active ? '✓' : '4'}</div>
-                            <div>
-                                <p class="font-bold text-gray-800">4. ಡೆಲಿವರಿ ಯಶಸ್ವಿ (Success)</p>
-                            </div>
+                            <div><p class="font-bold text-gray-800">4. ಡೆಲಿವರಿ ಯಶಸ್ವಿ (Success)</p></div>
                         </div>
                     </div>
 
                     <div class="border-t pt-2">
                         <p class="font-bold text-gray-700 mb-1">ವಸ್ತುವಿನ ವಿವರ:</p>
                         ${o.items.map(i => `
-                            <div class="flex justify-between items-center border-b pb-1">
-                                <span>${i.name} (${i.size}) x${i.quantity}</span>
-                                <span class="font-bold text-green-600">₹${i.discPrice * i.quantity}</span>
+                            <div class="flex gap-2 items-center border-b pb-1">
+                                <img src="${i.frontPhoto}" class="w-12 h-12 object-cover rounded border">
+                                <div class="flex-1">
+                                    <p class="font-bold">${i.name} (<span class="text-red-600">ಸೈಜ್: ${i.size}</span>) x${i.quantity}</p>
+                                    <p class="text-green-600 font-bold">₹${i.discPrice * i.quantity}</p>
+                                </div>
                             </div>
                         `).join('')}
                     </div>
 
                     <div class="border-t pt-2 text-[11px] text-gray-600 space-y-1">
-                        <p><b>ಪಾವತಿ ವಿಧಾನ:</b> ${o.paymentMethod}</p>
-                        <p><b>ವಿಳಾಸ:</b> ${o.address}</p>
-                        <p><b>ಮೊಬೈಲ್:</b> ${o.phone}</p>
+                        <p><b>ಗ್ರಾಹಕರ ಹೆಸರು:</b> ${o.customerName} (📞 ${o.phone})</p>
+                        <p><b>ಪೂರ್ಣ ವಿಳಾಸ:</b> ${o.address}</p>
+                        <p><b>ಜಿಲ್ಲೆ/ತಾಲೂಕು:</b> ${o.district} ಜಿಲ್ಲೆ, ${o.taluk} ತಾಲೂಕು, ${o.city}</p>
+                        <p><b>ಪಿನ್ ಕೋಡ್:</b> ${o.pincode}</p>
                     </div>
-
-                    ${o.delivered && !o.isReturned ? `
-                        <div class="border-t pt-2">
-                            <button onclick="openReturnModal(${o.id})" class="w-full bg-red-600 text-white py-2 rounded-xl font-bold text-xs shadow hover:bg-red-700">🔄 ವಸ್ತು ರಿಟರ್ನ್ ಮಾಡಿ (Return)</button>
-                        </div>
-                    ` : ''}
-
-                    ${o.isReturned ? `
-                        <div class="bg-red-50 p-2 rounded border text-red-700 font-bold text-center">
-                            🔄 ಈ ವಸ್ತುವನ್ನು ರಿಟರ್ನ್ ಮಾಡಲಾಗಿದೆ.
-                        </div>
-                    ` : ''}
                 </div>
             `;
             showModal("ಆರ್ಡರ್ ಟ್ರ್ಯಾಕಿಂಗ್ ವಿವರ", html, "📦", '<button onclick="closeModal()" class="w-full bg-indigo-600 text-white py-2 rounded-xl font-bold text-xs">ಸರಿ (OK)</button>');
         }
 
-        // ರಿಟರ್ನ್ ಪಾಪ್‌ಅಪ್ ಮತ್ತು ಫೋಟೋ ಅಪ್ಲೋಡ್
-        function openReturnModal(id) {
-            closeModal();
-            let html = `
-                <div class="text-left space-y-3 text-xs">
-                    <p class="font-bold text-gray-800">ರಿಟರ್ನ್ ಮಾಡಲು ಕಾರಣ ಬರೆಯಿರಿ:</p>
-                    <textarea id="return-reason" placeholder="ಕಾರಣ ತಿಳಿಸಿ (ಉದಾ: ಸೈಜ್ ಸರಿ ಇಲ್ಲ / ಡ್ಯಾಮೇಜ್ ಆಗಿದೆ)" class="w-full p-2 border rounded-lg text-xs h-20"></textarea>
-                    
-                    <div>
-                        <label class="block font-semibold text-gray-700 mb-1">ವಸ್ತುವಿನ ಫೋಟೋ 1 (Camera):</label>
-                        <input type="file" id="return-photo1" accept="image/*" capture="environment" class="w-full p-1 border rounded-lg text-xs">
-                    </div>
-                    <div>
-                        <label class="block font-semibold text-gray-700 mb-1">ವಸ್ತುವಿನ ಫೋಟೋ 2 (Camera):</label>
-                        <input type="file" id="return-photo2" accept="image/*" capture="environment" class="w-full p-1 border rounded-lg text-xs">
-                    </div>
-
-                    <button onclick="submitReturn(${id})" class="w-full bg-red-600 text-white py-2.5 rounded-xl font-bold text-xs shadow">ರಿಟರ್ನ್ ವಿನಂತಿ ಕಳುಹಿಸಿ</button>
-                </div>
-            `;
-            showModal("ವಸ್ತು ವಾಪಸ್ (Return)", html, "🔄", "");
-        }
-
-        function submitReturn(id) {
-            let reason = document.getElementById('return-reason').value;
-            let photo1 = document.getElementById('return-photo1').files[0];
-            let photo2 = document.getElementById('return-photo2').files[0];
-
-            if (!reason) {
-                alert('ದಯವಿಟ್ಟು ರಿಟರ್ನ್ ಮಾಡಲು ಕಾರಣ ಬರೆಯಿರಿ!');
-                return;
-            }
-
+        function cancelCustomerOrder(id) {
             let savedOrders = JSON.parse(localStorage.getItem('market_orders')) || [];
             let o = savedOrders.find(x => x.id === id);
             if (o) {
-                o.isReturned = true;
-                o.returnReason = reason;
-                o.status = 'ರಿಟರ್ನ್ ವಿನಂತಿ ಸಲ್ಲಿಸಲಾಗಿದೆ';
+                let timeStr = new Date().toLocaleTimeString();
+                o.isCancelled = true;
+                o.cancelTime = timeStr;
+                o.status = `ಕ್ಯಾನ್ಸಲ್ ಮಾಡಲಾಗಿದೆ (${timeStr}) - ಅಂಗಡಿ ಮತ್ತು ಡೆಲಿವರಿ ಬಾಯ್‌ಗೆ ತಿಳಿಸಲಾಗಿದೆ`;
                 localStorage.setItem('market_orders', JSON.stringify(savedOrders));
-                showModal("ಯಶಸ್ವಿ!", "ನಿಮ್ಮ ರಿಟರ್ನ್ ವಿನಂತಿಯನ್ನು ಅಂಗಡಿ ಮಾಲೀಕರಿಗೆ ಮತ್ತು ಡೆಲಿವರಿ ಬಾಯ್‌ಗೆ ಕಳುಹಿಸಲಾಗಿದೆ!", "🔄");
+                closeModal();
+                showModal("ಯಶಸ್ವಿ!", "ನಿಮ್ಮ ಆರ್ಡರ್ ಕ್ಯಾನ್ಸಲ್ ಮಾಡಲಾಗಿದೆ! ಅಂಗಡಿ ಮಾಲೀಕರಿಗೆ ಮತ್ತು ಡೆಲಿವರಿ ಬಾಯ್‌ಗೆ ಸಂದೇಶ ಕಳುಹಿಸಲಾಗಿದೆ.", "❌");
                 renderCustomerOrders();
             }
         }
