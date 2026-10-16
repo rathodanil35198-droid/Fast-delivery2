@@ -290,7 +290,6 @@
             }
         ];
 
-        // ಲೋಕಲ್ ಸ್ಟೋರೇಜ್‌ನಲ್ಲಿ ವಸ್ತುಗಳು ಇಲ್ಲದಿದ್ದರೆ ಡೀಫಾಲ್ಟ್ ವಸ್ತುಗಳನ್ನು ಸೇರಿಸುವುದು
         function getStoredProducts() {
             let stored = JSON.parse(localStorage.getItem('market_products')) || [];
             if (stored.length === 0) {
