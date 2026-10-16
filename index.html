@@ -39,9 +39,12 @@
 
     <main class="container mx-auto p-4 max-w-md">
 
-        <!-- ೧. ಗ್ರಾಹಕರ ನೋಂದಣಿ ಪೇಜ್ -->
-        <div id="auth-screen" class="bg-white p-6 rounded-2xl shadow-lg space-y-4 page-section">
-            <h2 class="text-xl font-bold text-gray-800 border-b pb-2">ಗ್ರಾಹಕರ ನೋಂದಣಿ</h2>
+        <!-- ೧. ಗ್ರಾಹಕರ ನೋಂದಣಿ / ಲಾಗಿನ್ ಪೇಜ್ (ಖರೀದಿಸುವಾಗ ಮಾತ್ರ ಬರುತ್ತದೆ) -->
+        <div id="auth-screen" class="bg-white p-6 rounded-2xl shadow-lg space-y-4 hidden page-section">
+            <div class="flex justify-between items-center border-b pb-2">
+                <h2 class="text-xl font-bold text-gray-800">ಗ್ರಾಹಕರ ವಿವರ & ವಿಳಾಸ</h2>
+                <button onclick="goBackToBrowse()" class="text-xs text-indigo-600 font-bold underline">← ವಾಪಸ್ ಹೋಗಿ</button>
+            </div>
             
             <div class="space-y-3 text-xs">
                 <div>
@@ -65,12 +68,12 @@
                     <textarea id="reg-address" placeholder="ಮನೆ ನಂಬರ್, ಬೀದಿ, ಊರು ಇತ್ಯಾದಿ" class="w-full p-2 border rounded-lg text-sm mt-1 h-16">1/29 Bheemrav Gudi Maruti Nagar, Near SBI Branch</textarea>
                 </div>
 
-                <button onclick="registerCustomer()" class="w-full bg-indigo-600 text-white py-2.5 rounded-xl font-bold text-sm shadow">ಖಾತೆ ಸೃಷ್ಟಿಸಿ & ಶಾಪಿಂಗ್ ಮಾಡಿ</button>
+                <button onclick="registerAndContinueOrder()" class="w-full bg-indigo-600 text-white py-2.5 rounded-xl font-bold text-sm shadow">ವಿಳಾಸ ಸೇವ್ ಮಾಡಿ ಮುಂದುವರಿಸಿ</button>
             </div>
         </div>
 
-        <!-- ೨. ಗ್ರಾಹಕರ ಡ್ಯಾಶ್‌ಬೋರ್ಡ್ -->
-        <div id="dashboard-customer" class="space-y-4 hidden page-section">
+        <!-- ೨. ಗ್ರಾಹಕರ ಮುಖ್ಯ ಮುಖಪುಟ (ಎಲ್ಲರಿಗೂ ಮೊದಲು ಕಾಣುವುದು) -->
+        <div id="dashboard-customer" class="space-y-4 page-section">
             
             <!-- ಟ್ಯಾಬ್ ಬಟನ್‌ಗಳು -->
             <div class="flex gap-2 mb-2">
@@ -102,6 +105,7 @@
     <script>
         let currentCustomer = JSON.parse(localStorage.getItem('currentCustomer')) || null;
         let products = JSON.parse(localStorage.getItem('market_products')) || [];
+        let pendingProductId = null; // ಯಾವ ವಸ್ತುವನ್ನು ಖರೀದಿಸಲು ಕ್ಲಿಕ್ ಮಾಡಲಾಗಿತ್ತು ಎಂಬುದನ್ನು ನೆನಪಿಡಲು
 
         function showModal(title, message, icon = '🎉', buttonsHtml = '<button onclick="closeModal()" class="w-full bg-indigo-600 text-white py-2 rounded-xl font-bold text-xs">ಸರಿ (OK)</button>') {
             document.getElementById('modal-title').innerText = title;
@@ -113,6 +117,7 @@
 
         function closeModal() {
             document.getElementById('custom-modal').classList.add('hidden');
+            initApp();
         }
 
         function zoomImage(src) {
@@ -131,6 +136,13 @@
                 document.getElementById('tab-browse').className = "flex-1 bg-indigo-600 text-white py-2 rounded-xl text-xs font-bold";
                 document.getElementById('tab-orders').className = "flex-1 bg-gray-200 text-gray-700 py-2 rounded-xl text-xs font-bold";
             } else {
+                // ಆರ್ಡರ್ ಟ್ಯಾಬ್ ನೋಡುವಾಗ ಲಾಗಿನ್ ಆಗಿಲ್ಲದಿದ್ದರೆ ಮೊದಲು ಅಡ್ರೆಸ್/ಲಾಗಿನ್ ಕೇಳುವುದು
+                if (!currentCustomer) {
+                    pendingProductId = null;
+                    document.getElementById('auth-screen').classList.remove('hidden');
+                    document.getElementById('dashboard-customer').classList.add('hidden');
+                    return;
+                }
                 document.getElementById('cust-browse-section').classList.add('hidden');
                 document.getElementById('cust-orders-section').classList.remove('hidden');
                 document.getElementById('tab-orders').className = "flex-1 bg-indigo-600 text-white py-2 rounded-xl text-xs font-bold";
@@ -139,22 +151,26 @@
             }
         }
 
-        function checkLogin() {
-            if (!currentCustomer) {
-                document.getElementById('auth-screen').classList.remove('hidden');
-                document.getElementById('dashboard-customer').classList.add('hidden');
-                document.getElementById('user-info').classList.add('hidden');
-            } else {
-                document.getElementById('auth-screen').classList.add('hidden');
-                document.getElementById('dashboard-customer').classList.remove('hidden');
+        function initApp() {
+            // ಮೊದಲಿಗೆ ಎಲ್ಲರಿಗೂ ಮುಖಪುಟ (ವಸ್ತುಗಳು) ನೇರವಾಗಿ ಕಾಣಿಸುತ್ತದೆ
+            document.getElementById('auth-screen').classList.add('hidden');
+            document.getElementById('dashboard-customer').classList.remove('hidden');
+            
+            if (currentCustomer) {
                 document.getElementById('user-info').classList.remove('hidden');
                 document.getElementById('logged-user-name').innerText = `${currentCustomer.name} (ಗ್ರಾಹಕರು)`;
-                renderCustomerProducts(products);
-                renderCustomerOrders();
+            } else {
+                document.getElementById('user-info').classList.add('hidden');
             }
+            renderCustomerProducts(products);
         }
 
-        function registerCustomer() {
+        function goBackToBrowse() {
+            document.getElementById('auth-screen').classList.add('hidden');
+            document.getElementById('dashboard-customer').classList.remove('hidden');
+        }
+
+        function registerAndContinueOrder() {
             let name = document.getElementById('reg-name').value;
             let phone = document.getElementById('reg-phone').value;
             let district = document.getElementById('reg-district').value;
@@ -171,14 +187,25 @@
             currentCustomer = { name, phone, district, taluk, city, pincode, address };
             localStorage.setItem('currentCustomer', JSON.stringify(currentCustomer));
             
-            // ನೋಂದಣಿ ಆದ ತಕ್ಷಣ ನೇರವಾಗಿ ಶಾಪಿಂಗ್ ಪುಟಕ್ಕೆ ತೆರಳುತ್ತದೆ
-            checkLogin();
+            document.getElementById('auth-screen').classList.add('hidden');
+            document.getElementById('dashboard-customer').classList.remove('hidden');
+            document.getElementById('user-info').classList.remove('hidden');
+            document.getElementById('logged-user-name').innerText = `${currentCustomer.name} (ಗ್ರಾಹಕರು)`;
+
+            // ಒಂದು ವೇಳೆ ವಸ್ತುವನ್ನು ಖರೀದಿಸಲು ಕ್ಲಿಕ್ ಮಾಡಿ ಅಡ್ರೆಸ್ ಕೇಳಿದ್ದರೆ, ಈಗ ನೇರವಾಗಿ ಖರೀದಿ ಪಾಪ್‌ಅಪ್ ಓಪನ್ ಆಗುತ್ತದೆ
+            if (pendingProductId) {
+                let pid = pendingProductId;
+                pendingProductId = null;
+                openBuyModal(pid);
+            } else {
+                renderCustomerProducts(products);
+            }
         }
 
         function logout() {
             localStorage.removeItem('currentCustomer');
             currentCustomer = null;
-            checkLogin();
+            initApp();
         }
 
         function renderCustomerProducts(list) {
@@ -202,7 +229,7 @@
                             <span class="text-green-600 font-bold text-sm">₹${p.discPrice}</span>
                         </div>
                     </div>
-                    <button onclick="openBuyModal(${p.id})" class="w-full bg-yellow-400 text-black py-2.5 rounded-xl font-bold text-xs shadow hover:bg-yellow-500">₹${p.discPrice} ಗೆ ಖರೀದಿಸಿ</button>
+                    <button onclick="handleBuyClick(${p.id})" class="w-full bg-yellow-400 text-black py-2.5 rounded-xl font-bold text-xs shadow hover:bg-yellow-500">₹${p.discPrice} ಗೆ ಖರೀದಿಸಿ</button>
                 </div>
             `).join('');
         }
@@ -211,6 +238,17 @@
             let query = document.getElementById('search-box').value.toLowerCase();
             let filtered = products.filter(p => p.name.toLowerCase().includes(query) || p.vendorShop.toLowerCase().includes(query));
             renderCustomerProducts(filtered);
+        }
+
+        function handleBuyClick(id) {
+            // ಮೊದಲಿಗೆ ಗ್ರಾಹಕರ ಅಡ್ರೆಸ್ ಸೇವ್ ಆಗಿದೆಯಾ ಪರಿಶೀಲಿಸುವುದು. ಇಲ್ಲದಿದ್ದರೆ ಅಡ್ರೆಸ್/ಲಾಗಿನ್ ಪೇಜ್ ತೋರಿಸುವುದು.
+            if (!currentCustomer) {
+                pendingProductId = id;
+                document.getElementById('dashboard-customer').classList.add('hidden');
+                document.getElementById('auth-screen').classList.remove('hidden');
+                return;
+            }
+            openBuyModal(id);
         }
 
         function openBuyModal(id) {
@@ -304,7 +342,7 @@
             let paymentMode = document.getElementById('modal-payment-mode').value;
             let totalAmount = (p.discPrice * qty) + (paymentMode === 'COD' ? 10 : 0);
 
-            closeModal();
+            document.getElementById('custom-modal').classList.add('hidden');
 
             let confirmHtml = `
                 <div class="text-left space-y-3 text-xs">
@@ -353,6 +391,7 @@
             savedOrders.push(newOrder);
             localStorage.setItem('market_orders', JSON.stringify(savedOrders));
 
+            // ಆರ್ಡರ್ ಯಶಸ್ವಿಯಾದ ನಂತರ ಮುಖಪುಟಕ್ಕೆ (ವಸ್ತುಗಳ ಪುಟಕ್ಕೆ) ಮರಳಿ ಕಳುಹಿಸುವುದು
             showModal("ಯಶಸ್ವಿ!", `
                 <div class="text-center space-y-2">
                     <div class="text-green-600 text-5xl font-bold">✅</div>
@@ -493,7 +532,7 @@
             `;
             
             let buttonsHtml = `
-                <button onclick="closeModal()" class="w-full bg-indigo-600 text-white py-2 rounded-xl font-bold text-xs">ಸರಿ (OK)</button>
+                <button onclick="document.getElementById('custom-modal').classList.add('hidden')" class="w-full bg-indigo-600 text-white py-2 rounded-xl font-bold text-xs">ಸರಿ (OK)</button>
             `;
             showModal("ಆರ್ಡರ್ ಟ್ರ್ಯಾಕಿಂಗ್ ವಿವರ", html, "📦", buttonsHtml);
         }
@@ -507,13 +546,25 @@
                 o.cancelTime = timeStr;
                 o.status = `ಕ್ಯಾನ್ಸಲ್ ಮಾಡಲಾಗಿದೆ (${timeStr}) - ಅಂಗಡಿ ಮತ್ತು ಡೆಲಿವರಿ ಬಾಯ್‌ಗೆ ತಿಳಿಸಲಾಗಿದೆ`;
                 localStorage.setItem('market_orders', JSON.stringify(savedOrders));
-                closeModal();
+                document.getElementById('custom-modal').classList.add('hidden');
                 showModal("ಯಶಸ್ವಿ!", "ನಿಮ್ಮ ಆರ್ಡರ್ ಕ್ಯಾನ್ಸಲ್ ಮಾಡಲಾಗಿದೆ! ಅಂಗಡಿ ಮಾಲೀಕರಿಗೆ ಮತ್ತು ಡೆಲಿವರಿ ಬಾಯ್‌ಗೆ ಸಂದೇಶ ಕಳುಹಿಸಲಾಗಿದೆ.", "❌");
                 renderCustomerOrders();
             }
         }
 
-        checkLogin();
+        // ಮೊಬೈಲ್ ಬ್ಯಾಕ್ ಬಟನ್ ಒತ್ತಿದಾಗ ಪೇಜ್ ಸಂಪೂರ್ಣವಾಗಿ ಮಾಯವಾಗದೆ, ಹಿಂದಿನ ಸೆಕ್ಷನ್‌ಗೆ ಅಥವಾ ಮುಖಪುಟಕ್ಕೆ ಮರಳುವಂತೆ ನಿರ್ವಹಿಸುವುದು
+        window.addEventListener('popstate', function(event) {
+            let authScreen = document.getElementById('auth-screen');
+            let modal = document.getElementById('custom-modal');
+            
+            if (!modal.classList.contains('hidden')) {
+                modal.classList.add('hidden');
+            } else if (!authScreen.classList.contains('hidden')) {
+                goBackToBrowse();
+            }
+        });
+
+        initApp();
     </script>
 </body>
 </html>
