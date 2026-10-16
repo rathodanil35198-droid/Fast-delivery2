@@ -329,7 +329,6 @@
             let savedOrders = JSON.parse(localStorage.getItem('market_orders')) || [];
             let myOrders = savedOrders.filter(o => o.phone === currentCustomer.phone);
 
-            // ಹೊಸ ಆರ್ಡರ್‌ಗಳು ಮೇಲ್ಭಾಗದಲ್ಲಿ, ಕ್ಯಾನ್ಸಲ್ ಅಥವಾ ಡೆಲಿವರಿ ಆದ ಹಳೆಯ ಆರ್ಡರ್‌ಗಳು ಕೆಳಭಾಗದಲ್ಲಿ (ಲಾಕ್ ಆಗಿ) ಕಾಣುವಂತೆ ವಿಂಗಡಿಸುವುದು[span_2](start_span)[span_2](end_span)
             myOrders.sort((a, b) => {
                 if (a.isCancelled !== b.isCancelled) return a.isCancelled ? 1 : -1;
                 if (a.delivered !== b.delivered) return a.delivered ? 1 : -1;
@@ -453,7 +452,6 @@
                 </div>
             `;
             
-            // ಇಲ್ಲಿ ನೀವು ಕೇಳಿದಂತೆ ಕ್ಯಾನ್ಸಲೇಶನ್ ಮತ್ತು ಇತರ ಬಟನ್‌ಗಳ ಕೆಳಗೆ 'ಸರಿ (OK)' ಬಟನ್ ಬರುವಂತೆ ಜೋಡಿಸಲಾಗಿದೆ
             let buttonsHtml = `
                 <button onclick="closeModal()" class="w-full bg-indigo-600 text-white py-2 rounded-xl font-bold text-xs">ಸರಿ (OK)</button>
             `;
