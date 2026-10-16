@@ -37,14 +37,11 @@
         </div>
     </header>
 
-    <main class="container mx-auto p-4 max-w-md pb-20">
+    <main class="container mx-auto p-4 max-w-md">
 
-        <!-- ೧. ಗ್ರಾಹಕರ ನೋಂದಣಿ / ಲಾಗಿನ್ ಪೇಜ್ (ಖರೀದಿಸುವಾಗ ಮಾತ್ರ ಬರುತ್ತದೆ) -->
-        <div id="auth-screen" class="bg-white p-6 rounded-2xl shadow-lg space-y-4 hidden page-section">
-            <div class="flex justify-between items-center border-b pb-2">
-                <h2 class="text-xl font-bold text-gray-800">ಗ್ರಾಹಕರ ವಿವರ & ವಿಳಾಸ</h2>
-                <button onclick="goBackToBrowse()" class="text-xs text-indigo-600 font-bold underline">← ವಾಪಸ್ ಹೋಗಿ</button>
-            </div>
+        <!-- ೧. ಗ್ರಾಹಕರ ನೋಂದಣಿ ಪೇಜ್ -->
+        <div id="auth-screen" class="bg-white p-6 rounded-2xl shadow-lg space-y-4 page-section">
+            <h2 class="text-xl font-bold text-gray-800 border-b pb-2">ಗ್ರಾಹಕರ ನೋಂದಣಿ</h2>
             
             <div class="space-y-3 text-xs">
                 <div>
@@ -65,15 +62,15 @@
                 </div>
                 <div>
                     <label class="block font-medium text-gray-700">ಪೂರ್ಣ ವಿಳಾಸ (Address)</label>
-                    <textarea id="reg-address" placeholder="ಮನೆ ನಂಬರ್, ಬೀದಿ, ಊರು ಇತ್ಯಾದಿ" class="w-full p-2 border rounded-lg text-sm mt-1 h-16">ಶಹಾಪುರ ಮುಖ್ಯ ರಸ್ತೆ</textarea>
+                    <textarea id="reg-address" placeholder="ಮನೆ ನಂಬರ್, ಬೀದಿ, ಊರು ಇತ್ಯಾದಿ" class="w-full p-2 border rounded-lg text-sm mt-1 h-16">1/29 Bheemrav Gudi Maruti Nagar, Near SBI Branch</textarea>
                 </div>
 
-                <button onclick="registerAndContinueOrder()" class="w-full bg-indigo-600 text-white py-2.5 rounded-xl font-bold text-sm shadow">ವಿಳಾಸ ಸೇವ್ ಮಾಡಿ ಮುಂದುವರಿಸಿ</button>
+                <button onclick="registerCustomer()" class="w-full bg-indigo-600 text-white py-2.5 rounded-xl font-bold text-sm shadow">ಖಾತೆ ಸೃಷ್ಟಿಸಿ & ಶಾಪಿಂಗ್ ಮಾಡಿ</button>
             </div>
         </div>
 
-        <!-- ೨. ಗ್ರಾಹಕರ ಮುಖ್ಯ ಮುಖಪುಟ (ಎಲ್ಲರಿಗೂ ಮೊದಲು ಕಾಣುವುದು) -->
-        <div id="dashboard-customer" class="space-y-4 page-section">
+        <!-- ೨. ಗ್ರಾಹಕರ ಡ್ಯಾಶ್‌ಬೋರ್ಡ್ -->
+        <div id="dashboard-customer" class="space-y-4 hidden page-section">
             
             <!-- ಟ್ಯಾಬ್ ಬಟನ್‌ಗಳು -->
             <div class="flex gap-2 mb-2">
@@ -104,200 +101,7 @@
 
     <script>
         let currentCustomer = JSON.parse(localStorage.getItem('currentCustomer')) || null;
-        let pendingProductId = null;
-
-        // ಡಿಫಾಲ್ಟ್ 12 ಆಕರ್ಷಕ ವಸ್ತುಗಳು (ಲೇಡೀಸ್ ಸೀರೆ, ಜೆಂಟ್ಸ್ ಪ್ಯಾಂಟ್, ಶರ್ಟ್, ಶೂಸ್ & ಚಪ್ಪಲಿ)
-        let defaultProducts = [
-            {
-                id: 101,
-                name: "ಡಿಸೈನರ್ ಸಿಲ್ಕ್ ಸೀರೆ (Designer Silk Saree)",
-                category: "Clothing",
-                origPrice: 2500,
-                discPrice: 1299,
-                pieces: "1 ಪೀಸ್",
-                returnPolicy: "ರಿಟರ್ನ್ ಉಂಟು",
-                size: "Standard Saree",
-                stock: 15,
-                vendorShop: "ಶ್ರೀ ಸಾಯಿ ಸಿಲ್ಕ್ಸ್ ಶಹಾಪುರ",
-                vendorPhone: "9888888888",
-                frontPhoto: "https://images.unsplash.com/photo-1610030469983-98e550d6193c?w=400",
-                backPhoto: "https://images.unsplash.com/photo-1583391733956-3750e0ff4e8b?w=400"
-            },
-            {
-                id: 102,
-                name: "ಕಾಟನ್ ಸಾಫ್ಟ್ ಸೀರೆ (Cotton Soft Saree)",
-                category: "Clothing",
-                origPrice: 1200,
-                discPrice: 699,
-                pieces: "1 ಪೀಸ್",
-                returnPolicy: "ರಿಟರ್ನ್ ಉಂಟು",
-                size: "Standard Saree",
-                stock: 20,
-                vendorShop: "ಮಹಾಲಕ್ಷ್ಮಿ ಟೆಕ್ಸ್‌ಟೈಲ್ಸ್",
-                vendorPhone: "9777777777",
-                frontPhoto: "https://images.unsplash.com/photo-1617627143750-d86bc21e42bb?w=400",
-                backPhoto: "https://images.unsplash.com/photo-1610030477265-24e2d36d8d9b?w=400"
-            },
-            {
-                id: 103,
-                name: "ಫ್ಯಾನ್ಸಿ ಪಾರ್ಟಿ ವೇರ್ ಸೀರೆ (Party Wear Saree)",
-                category: "Clothing",
-                origPrice: 3000,
-                discPrice: 1799,
-                pieces: "1 ಪೀಸ್",
-                returnPolicy: "ರಿಟರ್ನ್ ಉಂಟು",
-                size: "Standard Saree",
-                stock: 10,
-                vendorShop: "ಶ್ರೀ ಸಾಯಿ ಸಿಲ್ಕ್ಸ್ ಶಹಾಪುರ",
-                vendorPhone: "9888888888",
-                frontPhoto: "https://images.unsplash.com/photo-1583391733956-3750e0ff4e8b?w=400",
-                backPhoto: "https://images.unsplash.com/photo-1610030469983-98e550d6193c?w=400"
-            },
-            {
-                id: 104,
-                name: "ಪುರುಷರ ಕಾಟನ್ ಶರ್ಟ್ (Gents Cotton Shirt)",
-                category: "Clothing",
-                origPrice: 1299,
-                discPrice: 599,
-                pieces: "1 ಪೀಸ್",
-                returnPolicy: "ರಿಟರ್ನ್ ಉಂಟು",
-                size: "40 (L)",
-                stock: 25,
-                vendorShop: "ಬಸವೇಶ್ವರ ಫ್ಯಾಷನ್ಸ್",
-                vendorPhone: "9666666666",
-                frontPhoto: "https://images.unsplash.com/photo-1602810318383-e386cc2a3ccf?w=400",
-                backPhoto: "https://images.unsplash.com/photo-1598033129183-c4f50c736f10?w=400"
-            },
-            {
-                id: 105,
-                name: "ಸ್ಟೈಲಿಶ್ ಜೀನ್ಸ್ ಪ್ಯಾಂಟ್ (Stylish Jeans)",
-                category: "Clothing",
-                origPrice: 1800,
-                discPrice: 899,
-                pieces: "1 ಪೀಸ್",
-                returnPolicy: "ರಿಟರ್ನ್ ಉಂಟು",
-                size: "32",
-                stock: 18,
-                vendorShop: "ಬಸವೇಶ್ವರ ಫ್ಯಾಷನ್ಸ್",
-                vendorPhone: "9666666666",
-                frontPhoto: "https://images.unsplash.com/photo-1542272604-787c3835535d?w=400",
-                backPhoto: "https://images.unsplash.com/photo-1541099649105-f69ad21f3246?w=400"
-            },
-            {
-                id: 106,
-                name: "ಫಾರ್ಮಲ್ ಟ್ರೌಸರ್ ಪ್ಯಾಂಟ್ (Formal Trouser)",
-                category: "Clothing",
-                origPrice: 1500,
-                discPrice: 799,
-                pieces: "1 ಪೀಸ್",
-                returnPolicy: "ರಿಟರ್ನ್ ಉಂಟು",
-                size: "34",
-                stock: 12,
-                vendorShop: "ಅಂಬಿಕಾ ಬಟ್ಟೆ ಅಂಗಡಿ",
-                vendorPhone: "9555555555",
-                frontPhoto: "https://images.unsplash.com/photo-1624378439575-d8705ad7ae80?w=400",
-                backPhoto: "https://images.unsplash.com/photo-1594633312681-425c7b97ccd1?w=400"
-            },
-            {
-                id: 107,
-                name: "ಕ್ಯಾಶುಯಲ್ ಚೆಕ್ಸ್ ಶರ್ಟ್ (Checks Shirt)",
-                category: "Clothing",
-                origPrice: 1100,
-                discPrice: 549,
-                pieces: "1 ಪೀಸ್",
-                returnPolicy: "ರಿಟರ್ನ್ ಉಂಟು",
-                size: "38 (M)",
-                stock: 22,
-                vendorShop: "ಅಂಬಿಕಾ ಬಟ್ಟೆ ಅಂಗಡಿ",
-                vendorPhone: "9555555555",
-                frontPhoto: "https://images.unsplash.com/photo-1598033129183-c4f50c736f10?w=400",
-                backPhoto: "https://images.unsplash.com/photo-1602810318383-e386cc2a3ccf?w=400"
-            },
-            {
-                id: 108,
-                name: "ರನ್ನಿಂಗ್ ಸ್ಪೋರ್ಟ್ಸ್ ಶೂಸ್ (Sports Shoes)",
-                category: "Footwear",
-                origPrice: 2200,
-                discPrice: 999,
-                pieces: "1 ಪೀಸ್",
-                returnPolicy: "ರಿಟರ್ನ್ ಉಂಟು",
-                size: "8 No",
-                stock: 14,
-                vendorShop: "ರಾಜಾ ಶೂಸ್ & ಚಪ್ಪಲಿ",
-                vendorPhone: "9444444444",
-                frontPhoto: "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=400",
-                backPhoto: "https://images.unsplash.com/photo-1608231387042-66d1773070a5?w=400"
-            },
-            {
-                id: 109,
-                name: "ಲೆದರ್ ಕ್ಯಾಶುಯಲ್ ಶೂಸ್ (Leather Shoes)",
-                category: "Footwear",
-                origPrice: 2500,
-                discPrice: 1299,
-                pieces: "1 ಪೀಸ್",
-                returnPolicy: "ರಿಟರ್ನ್ ಉಂಟು",
-                size: "9 No",
-                stock: 10,
-                vendorShop: "ರಾಜಾ ಶೂಸ್ & ಚಪ್ಪಲಿ",
-                vendorPhone: "9444444444",
-                frontPhoto: "https://images.unsplash.com/photo-1533867617858-e7d97e0afd8b?w=400",
-                backPhoto: "https://images.unsplash.com/photo-1560769629-975ec94e6a86?w=400"
-            },
-            {
-                id: 110,
-                name: "ಪುರುಷರ ಸ್ಟೈಲಿಶ್ ಚಪ್ಪಲಿ (Gents Slippers)",
-                category: "Footwear",
-                origPrice: 600,
-                discPrice: 299,
-                pieces: "1 ಪೀಸ್",
-                returnPolicy: "ರಿಟರ್ನ್ ಉಂಟು",
-                size: "7 No",
-                stock: 30,
-                vendorShop: "ನಾಗರಾಜ ಚಪ್ಪಲಿ ಹೌಸ್",
-                vendorPhone: "9333333333",
-                frontPhoto: "https://images.unsplash.com/photo-1603808033192-082d693cdd31?w=400",
-                backPhoto: "https://images.unsplash.com/photo-1575537302964-96cd47c06b1b?w=400"
-            },
-            {
-                id: 111,
-                name: "ಕಂಫರ್ಟೆಬಲ್ ಹವಾಯಿ ಚಪ್ಪಲಿ (Hawaiian Slippers)",
-                category: "Footwear",
-                origPrice: 400,
-                discPrice: 199,
-                pieces: "1 ಪೀಸ್",
-                returnPolicy: "ರಿಟರ್ನ್ ಉಂಟು",
-                size: "8 No",
-                stock: 40,
-                vendorShop: "ನಾಗರಾಜ ಚಪ್ಪಲಿ ಹೌಸ್",
-                vendorPhone: "9333333333",
-                frontPhoto: "https://images.unsplash.com/photo-1575537302964-96cd47c06b1b?w=400",
-                backPhoto: "https://images.unsplash.com/photo-1603808033192-082d693cdd31?w=400"
-            },
-            {
-                id: 112,
-                name: "ಮಹಿಳೆಯರ ಫ್ಯಾನ್ಸಿ ಚಪ್ಪಲಿ (Ladies Sandals)",
-                category: "Footwear",
-                origPrice: 900,
-                discPrice: 449,
-                pieces: "1 ಪೀಸ್",
-                returnPolicy: "ರಿಟರ್ನ್ ಉಂಟು",
-                size: "6 No",
-                stock: 25,
-                vendorShop: "ರಾಜಾ ಶೂಸ್ & ಚಪ್ಪಲಿ",
-                vendorPhone: "9444444444",
-                frontPhoto: "https://images.unsplash.com/photo-1535043934128-cf0b28d52f95?w=400",
-                backPhoto: "https://images.unsplash.com/photo-1543163521-1bf539c55dd2?w=400"
-            }
-        ];
-
-        function getStoredProducts() {
-            let stored = JSON.parse(localStorage.getItem('market_products')) || [];
-            if (stored.length === 0) {
-                localStorage.setItem('market_products', JSON.stringify(defaultProducts));
-                return defaultProducts;
-            }
-            return stored;
-        }
+        let products = JSON.parse(localStorage.getItem('market_products')) || [];
 
         function showModal(title, message, icon = '🎉', buttonsHtml = '<button onclick="closeModal()" class="w-full bg-indigo-600 text-white py-2 rounded-xl font-bold text-xs">ಸರಿ (OK)</button>') {
             document.getElementById('modal-title').innerText = title;
@@ -309,7 +113,6 @@
 
         function closeModal() {
             document.getElementById('custom-modal').classList.add('hidden');
-            initApp();
         }
 
         function zoomImage(src) {
@@ -327,14 +130,7 @@
                 document.getElementById('cust-orders-section').classList.add('hidden');
                 document.getElementById('tab-browse').className = "flex-1 bg-indigo-600 text-white py-2 rounded-xl text-xs font-bold";
                 document.getElementById('tab-orders').className = "flex-1 bg-gray-200 text-gray-700 py-2 rounded-xl text-xs font-bold";
-                renderCustomerProducts(getStoredProducts());
             } else {
-                if (!currentCustomer) {
-                    pendingProductId = null;
-                    document.getElementById('auth-screen').classList.remove('hidden');
-                    document.getElementById('dashboard-customer').classList.add('hidden');
-                    return;
-                }
                 document.getElementById('cust-browse-section').classList.add('hidden');
                 document.getElementById('cust-orders-section').classList.remove('hidden');
                 document.getElementById('tab-orders').className = "flex-1 bg-indigo-600 text-white py-2 rounded-xl text-xs font-bold";
@@ -343,26 +139,22 @@
             }
         }
 
-        function initApp() {
-            let products = getStoredProducts();
-            document.getElementById('auth-screen').classList.add('hidden');
-            document.getElementById('dashboard-customer').classList.remove('hidden');
-            
-            if (currentCustomer) {
+        function checkLogin() {
+            if (!currentCustomer) {
+                document.getElementById('auth-screen').classList.remove('hidden');
+                document.getElementById('dashboard-customer').classList.add('hidden');
+                document.getElementById('user-info').classList.add('hidden');
+            } else {
+                document.getElementById('auth-screen').classList.add('hidden');
+                document.getElementById('dashboard-customer').classList.remove('hidden');
                 document.getElementById('user-info').classList.remove('hidden');
                 document.getElementById('logged-user-name').innerText = `${currentCustomer.name} (ಗ್ರಾಹಕರು)`;
-            } else {
-                document.getElementById('user-info').classList.add('hidden');
+                renderCustomerProducts(products);
+                renderCustomerOrders();
             }
-            renderCustomerProducts(products);
         }
 
-        function goBackToBrowse() {
-            document.getElementById('auth-screen').classList.add('hidden');
-            document.getElementById('dashboard-customer').classList.remove('hidden');
-        }
-
-        function registerAndContinueOrder() {
+        function registerCustomer() {
             let name = document.getElementById('reg-name').value;
             let phone = document.getElementById('reg-phone').value;
             let district = document.getElementById('reg-district').value;
@@ -379,30 +171,20 @@
             currentCustomer = { name, phone, district, taluk, city, pincode, address };
             localStorage.setItem('currentCustomer', JSON.stringify(currentCustomer));
             
-            document.getElementById('auth-screen').classList.add('hidden');
-            document.getElementById('dashboard-customer').classList.remove('hidden');
-            document.getElementById('user-info').classList.remove('hidden');
-            document.getElementById('logged-user-name').innerText = `${currentCustomer.name} (ಗ್ರಾಹಕರು)`;
-
-            if (pendingProductId) {
-                let pid = pendingProductId;
-                pendingProductId = null;
-                openBuyModal(pid);
-            } else {
-                renderCustomerProducts(getStoredProducts());
-            }
+            // ನೋಂದಣಿ ಆದ ತಕ್ಷಣ ನೇರವಾಗಿ ಶಾಪಿಂಗ್ ಪುಟಕ್ಕೆ ತೆರಳುತ್ತದೆ
+            checkLogin();
         }
 
         function logout() {
             localStorage.removeItem('currentCustomer');
             currentCustomer = null;
-            initApp();
+            checkLogin();
         }
 
         function renderCustomerProducts(list) {
             let listDiv = document.getElementById('customer-product-list');
-            if (!list || list.length === 0) {
-                listDiv.innerHTML = "<p class='text-gray-500 text-xs text-center py-4'>ಯಾವುದೇ ವಸ್ತುಗಳು ಲಭ್ಯವಿಲ್ಲ.</p>";
+            if (list.length === 0) {
+                listDiv.innerHTML = "<p class='text-gray-500 text-xs'>ಯಾವುದೇ ವಸ್ತುಗಳು ಲಭ್ಯವಿಲ್ಲ.</p>";
                 return;
             }
             listDiv.innerHTML = list.map(p => `
@@ -414,36 +196,24 @@
                     <div>
                         <h4 class="font-bold text-gray-800 text-sm">${p.name} (<span class="text-red-600">ಸೈಜ್: ${p.size || 'M'}</span>)</h4>
                         <p class="text-[11px] text-gray-500">ಅಂಗಡಿ: ${p.vendorShop}</p>
-                        <p class="text-[11px] text-indigo-600 font-semibold">${p.pieces || '1 ಪೀಸ್'} | ${p.returnPolicy || 'ರಿಟರ್ನ್ ಉಂಟು'}</p>
+                        <p class="text-[11px] text-indigo-600">ಬಣ್ಣ: ${p.colors} | ಸ್ಟಾಕ್: ${p.stock}</p>
                         <div class="flex items-center gap-2 mt-1">
                             <span class="text-red-500 line-through text-xs">₹${p.origPrice}</span>
                             <span class="text-green-600 font-bold text-sm">₹${p.discPrice}</span>
                         </div>
                     </div>
-                    <button onclick="handleBuyClick(${p.id})" class="w-full bg-yellow-400 text-black py-2.5 rounded-xl font-bold text-xs shadow hover:bg-yellow-500">₹${p.discPrice} ಗೆ ಖರೀದಿಸಿ</button>
+                    <button onclick="openBuyModal(${p.id})" class="w-full bg-yellow-400 text-black py-2.5 rounded-xl font-bold text-xs shadow hover:bg-yellow-500">₹${p.discPrice} ಗೆ ಖರೀದಿಸಿ</button>
                 </div>
             `).join('');
         }
 
         function searchProducts() {
             let query = document.getElementById('search-box').value.toLowerCase();
-            let products = getStoredProducts();
             let filtered = products.filter(p => p.name.toLowerCase().includes(query) || p.vendorShop.toLowerCase().includes(query));
             renderCustomerProducts(filtered);
         }
 
-        function handleBuyClick(id) {
-            if (!currentCustomer) {
-                pendingProductId = id;
-                document.getElementById('dashboard-customer').classList.add('hidden');
-                document.getElementById('auth-screen').classList.remove('hidden');
-                return;
-            }
-            openBuyModal(id);
-        }
-
         function openBuyModal(id) {
-            let products = getStoredProducts();
             let p = products.find(x => x.id === id);
             if (!p) return;
 
@@ -458,6 +228,7 @@
                         <p class="text-gray-600"><b>ಫೋನ್:</b> ${currentCustomer.phone}</p>
                     </div>
 
+                    <!-- ಅಡ್ರೆಸ್ ಎಡಿಟ್ ಮಾಡುವ ಬಾಕ್ಸ್ (Default Hidden) -->
                     <div id="address-edit-box" class="hidden bg-indigo-50 p-2 rounded border space-y-2">
                         <p class="font-bold text-indigo-700">ವಿಳಾಸ ಬದಲಾಯಿಸಿ:</p>
                         <input type="text" id="edit-address" value="${currentCustomer.address}" class="w-full p-1.5 border rounded text-xs" placeholder="ವಿಳಾಸ">
@@ -472,7 +243,6 @@
                         <img src="${p.frontPhoto}" class="w-16 h-16 object-cover rounded-lg border">
                         <div>
                             <p class="font-bold text-gray-800">${p.name} (<span class="text-red-600">ಸೈಜ್: ${p.size || 'M'}</span>)</p>
-                            <p class="text-[10px] text-indigo-600">${p.pieces || '1 ಪೀಸ್'} | ${p.returnPolicy || 'ರಿಟರ್ನ್ ಉಂಟು'}</p>
                             <p class="text-green-600 font-bold">₹${p.discPrice}</p>
                         </div>
                     </div>
@@ -529,13 +299,12 @@
         }
 
         function confirmOrderPopup(id) {
-            let products = getStoredProducts();
             let p = products.find(x => x.id === id);
             let qty = Number(document.getElementById('order-qty').innerText);
             let paymentMode = document.getElementById('modal-payment-mode').value;
             let totalAmount = (p.discPrice * qty) + (paymentMode === 'COD' ? 10 : 0);
 
-            document.getElementById('custom-modal').classList.add('hidden');
+            closeModal();
 
             let confirmHtml = `
                 <div class="text-left space-y-3 text-xs">
@@ -555,7 +324,6 @@
         }
 
         function executeOrder(id, qty, paymentMode, totalAmount) {
-            let products = getStoredProducts();
             let p = products.find(x => x.id === id);
             let savedOrders = JSON.parse(localStorage.getItem('market_orders')) || [];
             
@@ -608,7 +376,7 @@
             });
 
             if (myOrders.length === 0) {
-                cOrdDiv.innerHTML = "<p class='text-gray-500 text-xs text-center py-4'>ಯಾವುದೇ ಆರ್ಡರ್‌ಗಳಿಲ್ಲ.</p>";
+                cOrdDiv.innerHTML = "ಯಾವುದೇ ಆರ್ಡರ್‌ಗಳಿಲ್ಲ.";
                 return;
             }
 
@@ -725,7 +493,7 @@
             `;
             
             let buttonsHtml = `
-                <button onclick="document.getElementById('custom-modal').classList.add('hidden')" class="w-full bg-indigo-600 text-white py-2 rounded-xl font-bold text-xs">ಸರಿ (OK)</button>
+                <button onclick="closeModal()" class="w-full bg-indigo-600 text-white py-2 rounded-xl font-bold text-xs">ಸರಿ (OK)</button>
             `;
             showModal("ಆರ್ಡರ್ ಟ್ರ್ಯಾಕಿಂಗ್ ವಿವರ", html, "📦", buttonsHtml);
         }
@@ -739,24 +507,13 @@
                 o.cancelTime = timeStr;
                 o.status = `ಕ್ಯಾನ್ಸಲ್ ಮಾಡಲಾಗಿದೆ (${timeStr}) - ಅಂಗಡಿ ಮತ್ತು ಡೆಲಿವರಿ ಬಾಯ್‌ಗೆ ತಿಳಿಸಲಾಗಿದೆ`;
                 localStorage.setItem('market_orders', JSON.stringify(savedOrders));
-                document.getElementById('custom-modal').classList.add('hidden');
-                showModal("ಯಶಸ್ವಿ!", "ನಿಮ್ಮ ಆರ್ಡರ್ ಕ್ಯಾನ್ಸಲ್ ಮಾಡಲಾಗಿದೆ!", "❌");
+                closeModal();
+                showModal("ಯಶಸ್ವಿ!", "ನಿಮ್ಮ ಆರ್ಡರ್ ಕ್ಯಾನ್ಸಲ್ ಮಾಡಲಾಗಿದೆ! ಅಂಗಡಿ ಮಾಲೀಕರಿಗೆ ಮತ್ತು ಡೆಲಿವರಿ ಬಾಯ್‌ಗೆ ಸಂದೇಶ ಕಳುಹಿಸಲಾಗಿದೆ.", "❌");
                 renderCustomerOrders();
             }
         }
 
-        window.addEventListener('popstate', function(event) {
-            let authScreen = document.getElementById('auth-screen');
-            let modal = document.getElementById('custom-modal');
-            
-            if (!modal.classList.contains('hidden')) {
-                modal.classList.add('hidden');
-            } else if (!authScreen.classList.contains('hidden')) {
-                goBackToBrowse();
-            }
-        });
-
-        initApp();
+        checkLogin();
     </script>
 </body>
 </html>
