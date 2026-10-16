@@ -60,6 +60,10 @@
                     <input type="text" id="reg-city" placeholder="ಊರು / ಗ್ರಾಮ" class="p-2 border rounded-lg text-sm" value="ಶಹಾಪುರ">
                     <input type="text" id="reg-pincode" placeholder="ಪಿನ್ ಕೋಡ್" maxlength="6" class="p-2 border rounded-lg text-sm" value="585223">
                 </div>
+                <div>
+                    <label class="block font-medium text-gray-700">ಪೂರ್ಣ ವಿಳಾಸ (Address)</label>
+                    <textarea id="reg-address" placeholder="ಮನೆ ನಂಬರ್, ಬೀದಿ, ಊರು ಇತ್ಯಾದಿ" class="w-full p-2 border rounded-lg text-sm mt-1 h-16">1/29 Bheemrav Gudi Maruti Nagar, Near SBI Branch</textarea>
+                </div>
 
                 <button onclick="registerCustomer()" class="w-full bg-indigo-600 text-white py-2.5 rounded-xl font-bold text-sm shadow">ಖಾತೆ ಸೃಷ್ಟಿಸಿ & ಶಾಪಿಂಗ್ ಮಾಡಿ</button>
             </div>
@@ -109,7 +113,6 @@
 
         function closeModal() {
             document.getElementById('custom-modal').classList.add('hidden');
-            checkLogin();
         }
 
         function zoomImage(src) {
@@ -158,15 +161,18 @@
             let taluk = document.getElementById('reg-taluk').value;
             let city = document.getElementById('reg-city').value;
             let pincode = document.getElementById('reg-pincode').value;
+            let address = document.getElementById('reg-address').value;
 
             if (!name || !phone || phone.length < 10) {
                 alert('ದಯವಿಟ್ಟು ಸರಿಯಾದ ಹೆಸರು ಮತ್ತು ಮೊಬೈಲ್ ನಂಬರ್ ಹಾಕಿ!');
                 return;
             }
 
-            currentCustomer = { name, phone, district, taluk, city, pincode };
+            currentCustomer = { name, phone, district, taluk, city, pincode, address };
             localStorage.setItem('currentCustomer', JSON.stringify(currentCustomer));
-            showModal("ಯಶಸ್ವಿ!", "ನಿಮ್ಮ ಖಾತೆ ಯಶಸ್ವಿಯಾಗಿ ಸೃಷ್ಟಿಯಾಗಿದೆ!", "🎉");
+            
+            // ನೋಂದಣಿ ಆದ ತಕ್ಷಣ ನೇರವಾಗಿ ಶಾಪಿಂಗ್ ಪುಟಕ್ಕೆ ತೆರಳುತ್ತದೆ
+            checkLogin();
         }
 
         function logout() {
@@ -214,9 +220,23 @@
             let html = `
                 <div class="text-left space-y-3 text-xs">
                     <div class="bg-gray-50 p-2 rounded border space-y-1">
-                        <p class="font-bold text-gray-800"><b>ವಿಳಾಸ:</b> ${currentCustomer.name}</p>
-                        <p class="text-gray-600">${currentCustomer.city}, ${currentCustomer.taluk} ತಾಲೂಕು, ${currentCustomer.district} ಜಿಲ್ಲೆ - ${currentCustomer.pincode}</p>
+                        <div class="flex justify-between items-center">
+                            <p class="font-bold text-gray-800"><b>ವಿಳಾಸ:</b> ${currentCustomer.name}</p>
+                            <button onclick="openAddressEdit()" class="text-blue-600 underline font-bold text-[11px]">ಅಡ್ರೆಸ್ ಬದಲಾಯಿಸಿ (Change)</button>
+                        </div>
+                        <p id="display-customer-address" class="text-gray-600">${currentCustomer.address}, ${currentCustomer.city}, ${currentCustomer.taluk} ತಾಲೂಕು, ${currentCustomer.district} ಜಿಲ್ಲೆ - ${currentCustomer.pincode}</p>
                         <p class="text-gray-600"><b>ಫೋನ್:</b> ${currentCustomer.phone}</p>
+                    </div>
+
+                    <!-- ಅಡ್ರೆಸ್ ಎಡಿಟ್ ಮಾಡುವ ಬಾಕ್ಸ್ (Default Hidden) -->
+                    <div id="address-edit-box" class="hidden bg-indigo-50 p-2 rounded border space-y-2">
+                        <p class="font-bold text-indigo-700">ವಿಳಾಸ ಬದಲಾಯಿಸಿ:</p>
+                        <input type="text" id="edit-address" value="${currentCustomer.address}" class="w-full p-1.5 border rounded text-xs" placeholder="ವಿಳಾಸ">
+                        <div class="grid grid-cols-2 gap-1">
+                            <input type="text" id="edit-city" value="${currentCustomer.city}" class="p-1 border rounded text-xs" placeholder="ಊರು">
+                            <input type="text" id="edit-pincode" value="${currentCustomer.pincode}" class="p-1 border rounded text-xs" placeholder="ಪಿನ್ ಕೋಡ್">
+                        </div>
+                        <button onclick="saveNewAddress()" class="bg-green-600 text-white px-3 py-1 rounded font-bold text-xs w-full">ಅಡ್ರೆಸ್ ಸೇವ್ ಮಾಡಿ</button>
                     </div>
 
                     <div class="flex gap-3 items-center border-b pb-2">
@@ -251,6 +271,26 @@
             showModal("ಆರ್ಡರ್ ವಿವರಗಳು", html, "🛒", "");
         }
 
+        function openAddressEdit() {
+            let box = document.getElementById('address-edit-box');
+            box.classList.toggle('hidden');
+        }
+
+        function saveNewAddress() {
+            let newAddr = document.getElementById('edit-address').value;
+            let newCity = document.getElementById('edit-city').value;
+            let newPin = document.getElementById('edit-pincode').value;
+
+            currentCustomer.address = newAddr;
+            currentCustomer.city = newCity;
+            currentCustomer.pincode = newPin;
+            localStorage.setItem('currentCustomer', JSON.stringify(currentCustomer));
+
+            document.getElementById('display-customer-address').innerText = `${newAddr}, ${newCity} ತಾಲೂಕು, ${currentCustomer.taluk} ಜಿಲ್ಲೆ - ${newPin}`;
+            document.getElementById('address-edit-box').classList.add('hidden');
+            alert('ವಿಳಾಸ ಯಶಸ್ವಿಯಾಗಿ ಬದಲಾಯಿಸಲಾಗಿದೆ!');
+        }
+
         function changeQty(val) {
             let qtyEl = document.getElementById('order-qty');
             let q = Number(qtyEl.innerText) + val;
@@ -264,7 +304,7 @@
             let paymentMode = document.getElementById('modal-payment-mode').value;
             let totalAmount = (p.discPrice * qty) + (paymentMode === 'COD' ? 10 : 0);
 
-            closeModalWithoutCheck();
+            closeModal();
 
             let confirmHtml = `
                 <div class="text-left space-y-3 text-xs">
@@ -275,16 +315,12 @@
                         <p><b>ವಸ್ತು:</b> ${p.name} (ಸೈಜ್: ${p.size || 'M'}) x${qty}</p>
                     </div>
                     <div class="flex gap-2 pt-2">
-                        <button onclick="closeModalWithoutCheck()" class="flex-1 bg-gray-200 text-gray-800 py-2.5 rounded-xl font-bold">ರದ್ದುಗೊಳಿಸಿ</button>
+                        <button onclick="closeModal()" class="flex-1 bg-gray-200 text-gray-800 py-2.5 rounded-xl font-bold">ರದ್ದುಗೊಳಿಸಿ</button>
                         <button onclick="executeOrder(${p.id}, ${qty}, '${paymentMode}', ${totalAmount})" class="flex-1 bg-yellow-400 text-black py-2.5 rounded-xl font-bold shadow">ಆರ್ಡರ್ ದೃಢೀಕರಿಸಿ</button>
                     </div>
                 </div>
             `;
             showModal("ಆರ್ಡರ್ ದೃಢೀಕರಣ", confirmHtml, "📦", "");
-        }
-
-        function closeModalWithoutCheck() {
-            document.getElementById('custom-modal').classList.add('hidden');
         }
 
         function executeOrder(id, qty, paymentMode, totalAmount) {
@@ -299,7 +335,7 @@
                 taluk: currentCustomer.taluk,
                 city: currentCustomer.city,
                 pincode: currentCustomer.pincode,
-                address: `${currentCustomer.city}, ${currentCustomer.taluk} ತಾಲೂಕು, ${currentCustomer.district} ಜಿಲ್ಲೆ - ${currentCustomer.pincode}`,
+                address: `${currentCustomer.address}, ${currentCustomer.city}, ${currentCustomer.taluk} ತಾಲೂಕು, ${currentCustomer.district} ಜಿಲ್ಲೆ - ${currentCustomer.pincode}`,
                 items: [{ ...p, quantity: qty, size: p.size || 'M' }],
                 totalAmount: totalAmount,
                 paymentMethod: paymentMode,
@@ -323,7 +359,7 @@
                     <p class="font-bold text-sm text-gray-800">ಆರ್ಡರ್ ಯಶಸ್ವಿಯಾಗಿ ಸಲ್ಲಿಸಲಾಗಿದೆ!</p>
                     <p class="text-xs text-green-700 font-semibold">ನೀವು ಉಳಿಸಿದ ಮೊತ್ತ: ₹${(p.origPrice - p.discPrice) * qty}</p>
                     <p class="text-xs text-gray-600">ಒಟ್ಟು ಮೊತ್ತ: ₹${totalAmount} (${paymentMode})</p>
-                    <button onclick="closeModalWithoutCheck(); switchCustomerTab('orders');" class="w-full bg-indigo-600 text-white py-2.5 rounded-xl font-bold text-xs mt-2">ನನ್ನ ಆರ್ಡರ್‌ಗಳು ನೋಡಿ</button>
+                    <button onclick="closeModal(); switchCustomerTab('orders');" class="w-full bg-indigo-600 text-white py-2.5 rounded-xl font-bold text-xs mt-2">ನನ್ನ ಆರ್ಡರ್‌ಗಳು ನೋಡಿ</button>
                 </div>
             `, "", "");
         }
@@ -457,7 +493,7 @@
             `;
             
             let buttonsHtml = `
-                <button onclick="closeModalWithoutCheck()" class="w-full bg-indigo-600 text-white py-2 rounded-xl font-bold text-xs">ಸರಿ (OK)</button>
+                <button onclick="closeModal()" class="w-full bg-indigo-600 text-white py-2 rounded-xl font-bold text-xs">ಸರಿ (OK)</button>
             `;
             showModal("ಆರ್ಡರ್ ಟ್ರ್ಯಾಕಿಂಗ್ ವಿವರ", html, "📦", buttonsHtml);
         }
@@ -471,7 +507,7 @@
                 o.cancelTime = timeStr;
                 o.status = `ಕ್ಯಾನ್ಸಲ್ ಮಾಡಲಾಗಿದೆ (${timeStr}) - ಅಂಗಡಿ ಮತ್ತು ಡೆಲಿವರಿ ಬಾಯ್‌ಗೆ ತಿಳಿಸಲಾಗಿದೆ`;
                 localStorage.setItem('market_orders', JSON.stringify(savedOrders));
-                closeModalWithoutCheck();
+                closeModal();
                 showModal("ಯಶಸ್ವಿ!", "ನಿಮ್ಮ ಆರ್ಡರ್ ಕ್ಯಾನ್ಸಲ್ ಮಾಡಲಾಗಿದೆ! ಅಂಗಡಿ ಮಾಲೀಕರಿಗೆ ಮತ್ತು ಡೆಲಿವರಿ ಬಾಯ್‌ಗೆ ಸಂದೇಶ ಕಳುಹಿಸಲಾಗಿದೆ.", "❌");
                 renderCustomerOrders();
             }
