@@ -11,7 +11,7 @@
     <!-- ಫೋಟೋ ಜೂಮ್ ಪಾಪ್‌ಅಪ್ -->
     <div id="image-modal" class="fixed inset-0 bg-black bg-opacity-80 z-50 hidden flex items-center justify-center p-4">
         <div class="relative bg-white p-2 rounded-2xl max-w-sm w-full text-center">
-            <button onclick="closeImageModal()" class="absolute top-2 right-2 bg-red-500 text-white w-8 h-8 rounded-full font-bold">✕</button>
+            <button type="button" onclick="closeImageModal()" class="absolute top-2 right-2 bg-red-500 text-white w-8 h-8 rounded-full font-bold cursor-pointer">✕</button>
             <img id="zoomed-img" src="" class="w-full h-96 object-contain rounded-xl">
         </div>
     </div>
@@ -22,7 +22,7 @@
             <div id="modal-icon" class="text-4xl">🎉</div>
             <h3 id="modal-title" class="text-lg font-bold text-gray-800">ಯಶಸ್ವಿ!</h3>
             <p id="modal-message" class="text-xs text-gray-600"></p>
-            <button onclick="closeModal()" class="w-full bg-indigo-600 text-white py-2 rounded-xl font-bold text-xs">ಸರಿ (OK)</button>
+            <button type="button" onclick="closeModal()" class="w-full bg-indigo-600 text-white py-2 rounded-xl font-bold text-xs cursor-pointer">ಸರಿ (OK)</button>
         </div>
     </div>
 
@@ -31,7 +31,7 @@
         <div class="bg-white rounded-t-3xl sm:rounded-2xl p-5 max-w-md w-full max-h-[90vh] overflow-y-auto space-y-4">
             <div class="flex justify-between items-center border-b pb-2">
                 <h3 id="det-title" class="font-bold text-sm text-gray-800">ವಸ್ತುವಿನ ವಿವರ</h3>
-                <button onclick="closeProductDetail()" class="text-red-500 font-bold text-base">✕</button>
+                <button type="button" onclick="closeProductDetail()" class="text-red-500 font-bold text-base cursor-pointer">✕</button>
             </div>
             <div class="grid grid-cols-2 gap-2">
                 <img id="det-front" src="" class="w-full h-40 object-cover rounded-xl border cursor-pointer" onclick="zoomImage(this.src)">
@@ -50,10 +50,10 @@
             </div>
 
             <div class="flex gap-2 pt-2">
-                <button onclick="buyNowFromDetail()" class="flex-1 bg-amber-400 hover:bg-amber-500 text-gray-900 py-2.5 rounded-xl font-bold text-xs shadow">⚡ ಈಗ ಖರೀದಿಸಿ</button>
-                <button onclick="addCurrentToCart()" class="flex-1 bg-indigo-600 text-white py-2.5 rounded-xl font-bold text-xs shadow">🛒 ಕಾರ್ಟ್‌ಗೆ ಹಾಕಿ</button>
+                <button type="button" onclick="buyNowFromDetail()" class="flex-1 bg-amber-400 hover:bg-amber-500 text-gray-900 py-2.5 rounded-xl font-bold text-xs shadow cursor-pointer">⚡ ಈಗ ಖರೀದಿಸಿ</button>
+                <button type="button" onclick="addCurrentToCart()" class="flex-1 bg-indigo-600 text-white py-2.5 rounded-xl font-bold text-xs shadow cursor-pointer">🛒 ಕಾರ್ಟ್‌ಗೆ ಹಾಕಿ</button>
             </div>
-            <button onclick="closeProductDetail()" class="w-full bg-gray-200 text-gray-700 py-2 rounded-xl font-bold text-xs">ಕ್ಯಾನ್ಸಲ್ ಮಾಡಿ</button>
+            <button type="button" onclick="closeProductDetail()" class="w-full bg-gray-200 text-gray-700 py-2 rounded-xl font-bold text-xs cursor-pointer">ಕ್ಯಾನ್ಸಲ್ ಮಾಡಿ</button>
         </div>
     </div>
 
@@ -63,8 +63,8 @@
             <h3 class="font-bold text-sm text-gray-800 border-b pb-1">ಕ್ಯಾಶ್ ಆನ್ ಡೆಲಿವರಿ ಆರ್ಡರ್ ದೃಢೀಕರಿಸಿ</h3>
             <p class="text-xs text-gray-600">ನೀವು ಆರ್ಡರ್ ಡೆಲಿವರಿ ಪಡೆಯುವಾಗ ನಗದು ಅಥವಾ UPI ಮೂಲಕ ಪಾವತಿಸಿ. ಓಪನ್ ಡೆಲಿವರಿ ಸೌಲಭ್ಯ ಲಭ್ಯವಿದೆ.</p>
             <div class="flex gap-2 pt-2">
-                <button onclick="closeOrderConfirm()" class="flex-1 bg-gray-200 text-gray-800 py-2 rounded-xl text-xs font-bold">ರದ್ದುಗೊಳಿಸಿ</button>
-                <button onclick="confirmFinalOrder()" class="flex-1 bg-amber-400 hover:bg-amber-500 text-gray-900 py-2 rounded-xl text-xs font-bold shadow">ಆರ್ಡರ್ ದೃಢೀಕರಿಸಿ</button>
+                <button type="button" onclick="closeOrderConfirm()" class="flex-1 bg-gray-200 text-gray-800 py-2 rounded-xl text-xs font-bold cursor-pointer">ರದ್ದುಗೊಳಿಸಿ</button>
+                <button type="button" onclick="confirmFinalOrder()" class="flex-1 bg-amber-400 hover:bg-amber-500 text-gray-900 py-2 rounded-xl text-xs font-bold shadow cursor-pointer">ಆರ್ಡರ್ ದೃಢೀಕರಿಸಿ</button>
             </div>
         </div>
     </div>
@@ -86,8 +86,8 @@
             </div>
 
             <div class="flex gap-2 pt-2">
-                <button onclick="closeReturnModal()" class="flex-1 bg-gray-200 text-gray-800 py-2 rounded-xl text-xs font-bold">ಮುಚ್ಚಿ</button>
-                <button onclick="submitReturnRequest()" class="flex-1 bg-red-600 text-white py-2 rounded-xl text-xs font-bold">ರಿಟರ್ನ್ ಸಬ್ಮಿಟ್ ಮಾಡಿ</button>
+                <button type="button" onclick="closeReturnModal()" class="flex-1 bg-gray-200 text-gray-800 py-2 rounded-xl text-xs font-bold cursor-pointer">ಮುಚ್ಚಿ</button>
+                <button type="button" onclick="submitReturnRequest()" class="flex-1 bg-red-600 text-white py-2 rounded-xl text-xs font-bold cursor-pointer">ರಿಟರ್ನ್ ಸಬ್ಮಿಟ್ ಮಾಡಿ</button>
             </div>
         </div>
     </div>
@@ -99,8 +99,8 @@
             <p class="text-[10px] text-indigo-200">ಸ್ಥಳೀಯ ಅಂಗಡಿಗಳ ಆನ್‌ಲೈನ್ ಶಾಪಿಂಗ್</p>
         </div>
         <div class="flex items-center gap-2">
-            <button onclick="openMyOrders()" class="bg-teal-600 text-white px-2.5 py-1.5 rounded-xl text-xs font-bold">📦 ನನ್ನ ಆರ್ಡರ್‌ಗಳು</button>
-            <button onclick="openCart()" class="relative bg-indigo-600 border border-indigo-400 px-3 py-1.5 rounded-xl text-xs font-bold flex items-center gap-1">
+            <button type="button" onclick="openMyOrders()" class="bg-teal-600 text-white px-2.5 py-1.5 rounded-xl text-xs font-bold cursor-pointer">📦 ನನ್ನ ಆರ್ಡರ್‌ಗಳು</button>
+            <button type="button" onclick="openCart()" class="relative bg-indigo-600 border border-indigo-400 px-3 py-1.5 rounded-xl text-xs font-bold flex items-center gap-1 cursor-pointer">
                 🛒 ಕಾರ್ಟ್ <span id="cart-count" class="bg-red-500 text-white text-[10px] px-1.5 py-0.2 rounded-full">0</span>
             </button>
         </div>
@@ -112,11 +112,11 @@
         <div class="space-y-2">
             <input type="text" id="search-box" placeholder="🔍 ವಸ್ತು ಅಥವಾ ಅಂಗಡಿಯ ಹೆಸರು ಹುಡುಕಿ..." oninput="filterProducts()" class="w-full p-2.5 border rounded-xl text-xs shadow-sm">
             <div class="flex gap-1 overflow-x-auto pb-1 text-xs">
-                <button onclick="filterCategory('All')" class="cat-btn bg-indigo-600 text-white px-3 py-1.5 rounded-full font-bold whitespace-nowrap">ಎಲ್ಲಾ (All)</button>
-                <button onclick="filterCategory('Clothing')" class="cat-btn bg-white text-gray-700 border px-3 py-1.5 rounded-full whitespace-nowrap">ಬಟ್ಟೆಗಳು</button>
-                <button onclick="filterCategory('Footwear')" class="cat-btn bg-white text-gray-700 border px-3 py-1.5 rounded-full whitespace-nowrap">ಚಪ್ಪಲಿ & ಶೂಸ್</button>
-                <button onclick="filterCategory('Gifts')" class="cat-btn bg-white text-gray-700 border px-3 py-1.5 rounded-full whitespace-nowrap">ಗಿಫ್ಟ್ ಐಟಮ್ಸ್</button>
-                <button onclick="filterCategory('General')" class="cat-btn bg-white text-gray-700 border px-3 py-1.5 rounded-full whitespace-nowrap">ಜನರಲ್ / ಇತರೆ</button>
+                <button type="button" onclick="filterCategory('All')" class="cat-btn bg-indigo-600 text-white px-3 py-1.5 rounded-full font-bold whitespace-nowrap cursor-pointer">ಎಲ್ಲಾ (All)</button>
+                <button type="button" onclick="filterCategory('Clothing')" class="cat-btn bg-white text-gray-700 border px-3 py-1.5 rounded-full whitespace-nowrap cursor-pointer">ಬಟ್ಟೆಗಳು</button>
+                <button type="button" onclick="filterCategory('Footwear')" class="cat-btn bg-white text-gray-700 border px-3 py-1.5 rounded-full whitespace-nowrap cursor-pointer">ಚಪ್ಪಲಿ & ಶೂಸ್</button>
+                <button type="button" onclick="filterCategory('Gifts')" class="cat-btn bg-white text-gray-700 border px-3 py-1.5 rounded-full whitespace-nowrap cursor-pointer">ಗಿಫ್ಟ್ ಐಟಮ್ಸ್</button>
+                <button type="button" onclick="filterCategory('General')" class="cat-btn bg-white text-gray-700 border px-3 py-1.5 rounded-full whitespace-nowrap cursor-pointer">ಜನರಲ್ / ಇತರೆ</button>
             </div>
         </div>
 
@@ -132,7 +132,7 @@
         <div class="bg-white rounded-t-3xl p-5 max-h-[85vh] overflow-y-auto space-y-4">
             <div class="flex justify-between items-center border-b pb-2">
                 <h2 class="font-bold text-sm text-gray-800">📦 ನನ್ನ ಆರ್ಡರ್‌ಗಳು ಹಾಗೂ ಲೈವ್ ಟ್ರ್ಯಾಕಿಂಗ್</h2>
-                <button onclick="closeMyOrders()" class="text-red-500 font-bold text-base">✕ ಮುಚ್ಚಿ</button>
+                <button type="button" onclick="closeMyOrders()" class="text-red-500 font-bold text-base cursor-pointer">✕ ಮುಚ್ಚಿ</button>
             </div>
             <div id="my-orders-list" class="space-y-3 text-xs text-gray-700">
                 ಯಾವುದೇ ಆರ್ಡರ್‌ಗಳಿಲ್ಲ.
@@ -145,7 +145,7 @@
         <div class="bg-white rounded-t-3xl p-5 max-h-[85vh] overflow-y-auto space-y-4">
             <div class="flex justify-between items-center border-b pb-2">
                 <h2 class="font-bold text-sm text-gray-800">🛒 ನಿಮ್ಮ ಕಾರ್ಟ್ (Cart)</h2>
-                <button onclick="closeCart()" class="text-red-500 font-bold text-base">✕ ಮುಚ್ಚಿ</button>
+                <button type="button" onclick="closeCart()" class="text-red-500 font-bold text-base cursor-pointer">✕ ಮುಚ್ಚಿ</button>
             </div>
 
             <div id="cart-items-list" class="space-y-2 text-xs text-gray-700">
@@ -241,7 +241,7 @@
                             <span class="text-xs font-bold text-green-600">₹${p.discPrice}</span>
                             <span class="text-[10px] text-gray-400 line-through">₹${p.origPrice}</span>
                         </div>
-                        <button type="button" onclick="event.stopPropagation(); openProductDetail(${p.id})" class="w-full bg-amber-400 hover:bg-amber-500 text-gray-900 py-1.5 rounded-xl text-[11px] font-bold shadow">ಈಗ ಖರೀದಿಸಿ / ಆಯ್ಕೆ</button>
+                        <button type="button" onclick="event.stopPropagation(); openProductDetail(${p.id})" class="w-full bg-amber-400 hover:bg-amber-500 text-gray-900 py-1.5 rounded-xl text-[11px] font-bold shadow cursor-pointer">ಈಗ ಖರೀದಿಸಿ / ಆಯ್ಕೆ</button>
                     </div>
                 </div>
             `).join('');
@@ -267,7 +267,7 @@
                 let shoeNums = [5, 6, 7, 8, 9, 10, 11, 12];
                 selectedSizeForProduct = '7 No';
                 sizeContainer.innerHTML = shoeNums.map((num, idx) => `
-                    <button type="button" onclick="selectSizeOption('${num} No')" id="sz-opt-${num}" class="px-3 py-1 border rounded text-xs font-bold ${idx === 2 ? 'bg-indigo-600 text-white' : 'bg-gray-100 text-gray-800'}">${num} No</button>
+                    <button type="button" onclick="selectSizeOption('${num} No')" id="sz-opt-${num}" class="px-3 py-1 border rounded text-xs font-bold cursor-pointer ${idx === 2 ? 'bg-indigo-600 text-white' : 'bg-gray-100 text-gray-800'}">${num} No</button>
                 `).join('');
             } else if (p.category === 'Gifts') {
                 sizeLabel.innerText = "ಗಿಫ್ಟ್ ಅಳತೆ (ಉದ್ದ ಹಾಗೂ ಅಗಲ):";
@@ -282,7 +282,7 @@
                 let sizes = ['XS', 'S', 'M', 'L', 'XL', 'XXL'];
                 selectedSizeForProduct = 'M';
                 sizeContainer.innerHTML = sizes.map((sz, idx) => `
-                    <button type="button" onclick="selectSizeOption('${sz}')" id="sz-opt-${sz}" class="px-3 py-1 border rounded text-xs font-bold ${idx === 2 ? 'bg-indigo-600 text-white' : 'bg-gray-100 text-gray-800'}">${sz}</button>
+                    <button type="button" onclick="selectSizeOption('${sz}')" id="sz-opt-${sz}" class="px-3 py-1 border rounded text-xs font-bold cursor-pointer ${idx === 2 ? 'bg-indigo-600 text-white' : 'bg-gray-100 text-gray-800'}">${sz}</button>
                 `).join('');
             }
 
@@ -294,9 +294,9 @@
             let container = document.getElementById('size-options-container');
             container.querySelectorAll('button').forEach(btn => {
                 if (btn.innerText.includes(sz)) {
-                    btn.className = "px-3 py-1 border rounded text-xs font-bold bg-indigo-600 text-white";
+                    btn.className = "px-3 py-1 border rounded text-xs font-bold bg-indigo-600 text-white cursor-pointer";
                 } else {
-                    btn.className = "px-3 py-1 border rounded text-xs font-bold bg-gray-100 text-gray-800";
+                    btn.className = "px-3 py-1 border rounded text-xs font-bold bg-gray-100 text-gray-800 cursor-pointer";
                 }
             });
         }
@@ -336,9 +336,9 @@
         function filterCategory(cat) {
             currentCategory = cat;
             document.querySelectorAll('.cat-btn').forEach(btn => {
-                btn.className = "cat-btn bg-white text-gray-700 border px-3 py-1.5 rounded-full whitespace-nowrap text-xs";
+                btn.className = "cat-btn bg-white text-gray-700 border px-3 py-1.5 rounded-full whitespace-nowrap text-xs cursor-pointer";
             });
-            event.target.className = "cat-btn bg-indigo-600 text-white px-3 py-1.5 rounded-full whitespace-nowrap text-xs font-bold";
+            event.target.className = "cat-btn bg-indigo-600 text-white px-3 py-1.5 rounded-full whitespace-nowrap text-xs font-bold cursor-pointer";
 
             if (cat === 'All') {
                 renderProducts(products);
@@ -379,11 +379,11 @@
                             </div>
                             <div class="flex items-center gap-2">
                                 <div class="flex items-center border rounded bg-gray-50">
-                                    <button type="button" onclick="changeQty(${index}, -1)" class="px-2 py-0.5 font-bold text-gray-700">-</button>
+                                    <button type="button" onclick="changeQty(${index}, -1)" class="px-2 py-0.5 font-bold text-gray-700 cursor-pointer">-</button>
                                     <span class="px-2 text-xs font-bold">${item.quantity}</span>
-                                    <button type="button" onclick="changeQty(${index}, 1)" class="px-2 py-0.5 font-bold text-gray-700">+</button>
+                                    <button type="button" onclick="changeQty(${index}, 1)" class="px-2 py-0.5 font-bold text-gray-700 cursor-pointer">+</button>
                                 </div>
-                                <button type="button" onclick="removeFromCart(${index})" class="text-red-500 font-bold px-1.5">✕</button>
+                                <button type="button" onclick="removeFromCart(${index})" class="text-red-500 font-bold px-1.5 cursor-pointer">✕</button>
                             </div>
                         </div>
                     `;
@@ -430,7 +430,6 @@
                 return;
             }
 
-            // ಕಾರ್ಟ್ ಮುಚ್ಚಿ ಆರ್ಡರ್ ಕನ್ಫರ್ಮೇಷನ್ ಪಾಪ್‌ಅಪ್ ತೋರಿಸಿ
             document.getElementById('cart-drawer').classList.add('hidden');
             document.getElementById('order-confirm-modal').classList.remove('hidden');
         }
@@ -514,29 +513,22 @@
                                 </div>
                             `).join('')}
 
-                            <!-- 4 ಹಂತದ ಸುಂದರವಾದ ಚುಕ್ಕೆಗಳು (Dots & Progress Tracker) -->
                             <div class="bg-indigo-50 p-3 rounded-xl space-y-2">
                                 <p class="text-[11px] font-bold text-indigo-900">📍 ಲೈವ್ ರೂಟ್ ಟ್ರ್ಯಾಕರ್ / ಸ್ಟೇಟಸ್:</p>
                                 <div class="flex justify-between items-center px-2 relative">
-                                    <!-- ಪ್ರೋಗ್ರೆಸ್ ಲೈನ್ -->
                                     <div class="absolute left-6 right-6 top-3 h-1 bg-gray-300 z-0"></div>
-                                    
-                                    <!-- ಹಂತ 1 -->
                                     <div class="flex flex-col items-center z-10">
                                         <div class="w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold ${step >= 1 ? 'bg-green-600 text-white' : 'bg-gray-300 text-gray-700'}">✓</div>
                                         <span class="text-[9px] font-bold mt-1 text-center">ಕನ್ಫರ್ಮ್</span>
                                     </div>
-                                    <!-- ಹಂತ 2 -->
                                     <div class="flex flex-col items-center z-10">
                                         <div class="w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold ${step >= 2 ? 'bg-green-600 text-white' : 'bg-gray-300 text-gray-700'}">2</div>
                                         <span class="text-[9px] font-bold mt-1 text-center">ಪ್ಯಾಕಿಂಗ್</span>
                                     </div>
-                                    <!-- ಹಂತ 3 -->
                                     <div class="flex flex-col items-center z-10">
                                         <div class="w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold ${step >= 3 ? 'bg-green-600 text-white' : 'bg-gray-300 text-gray-700'}">3</div>
                                         <span class="text-[9px] font-bold mt-1 text-center">ಡೆಲಿವರಿ ಬಾಯ್</span>
                                     </div>
-                                    <!-- ಹಂತ 4 -->
                                     <div class="flex flex-col items-center z-10">
                                         <div class="w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold ${step >= 4 ? 'bg-green-600 text-white' : 'bg-gray-300 text-gray-700'}">4</div>
                                         <span class="text-[9px] font-bold mt-1 text-center">ತಲುಪಿದೆ</span>
@@ -552,7 +544,7 @@
                             ${o.returned ? `
                                 <p class="text-[11px] text-red-600 font-bold text-center">🔄 ರಿಟರ್ನ್ ವಿನಂತಿ ಸಲ್ಲಿಸಲಾಗಿದೆ (ರೂ. 50 ಕಡಿತಗೊಂಡು 2-3 ಗಂಟೆಗಳಲ್ಲಿ ಅಮೌಂಟ್ ಬರುತ್ತದೆ)</p>
                             ` : `
-                                <button type="button" onclick="openReturnModal(${o.id})" class="w-full bg-red-500 hover:bg-red-600 text-white py-1.5 rounded-lg font-bold text-xs shadow">🔄 ರಿಟರ್ನ್ / ಎಕ್ಸ್‌ಚೇಂಜ್ ಮಾಡಿ (2 ದಿನಗಳ ಒಳಗೆ)</button>
+                                <button type="button" onclick="openReturnModal(${o.id})" class="w-full bg-red-500 hover:bg-red-600 text-white py-1.5 rounded-lg font-bold text-xs shadow cursor-pointer">🔄 ರಿಟರ್ನ್ / ಎಕ್ಸ್‌ಚೇಂಜ್ ಮಾಡಿ (2 ದಿನಗಳ ಒಳಗೆ)</button>
                             `}
                         </div>
                     `;
