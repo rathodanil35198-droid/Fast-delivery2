@@ -64,7 +64,7 @@
             <p class="text-xs text-gray-600">ನೀವು ಆರ್ಡರ್ ಡೆಲಿವರಿ ಪಡೆಯುವಾಗ ನಗದು ಅಥವಾ UPI ಮೂಲಕ ಪಾವತಿಸಿ. ಓಪನ್ ಡೆಲಿವರಿ ಸೌಲಭ್ಯ ಲಭ್ಯವಿದೆ.</p>
             <div class="flex gap-2 pt-2">
                 <button type="button" onclick="closeOrderConfirm()" class="flex-1 bg-gray-200 text-gray-800 py-2 rounded-xl text-xs font-bold cursor-pointer">ರದ್ದುಗೊಳಿಸಿ</button>
-                <button type="button" onclick="confirmFinalOrder()" class="flex-1 bg-amber-400 hover:bg-amber-500 text-gray-900 py-2 rounded-xl font-bold text-xs shadow cursor-pointer">ಆರ್ಡರ್ ದೃಢೀಕರಿಸಿ</button>
+                <button type="button" onclick="confirmFinalOrder()" class="flex-1 bg-amber-400 hover:bg-amber-500 text-gray-900 py-2 rounded-xl text-xs font-bold shadow cursor-pointer">ಆರ್ಡರ್ ದೃಢೀಕರಿಸಿ</button>
             </div>
         </div>
     </div>
@@ -196,7 +196,7 @@
 
         function showModal(title, message, icon = '🎉', callback = null) {
             document.getElementById('modal-title').innerText = title;
-            document.getElementById('modal-message').innerText = message;
+            document.getElementById('modal-message').innerHTML = message;
             document.getElementById('modal-icon').innerText = icon;
             document.getElementById('custom-modal').classList.remove('hidden');
             window.modalCallback = callback;
@@ -478,6 +478,7 @@
             updateCartCount();
             closeOrderConfirm();
 
+            // ನೇರವಾಗಿ ಪಾಪ್‌ಅಪ್ ಮುಚ್ಚಿ "ನನ್ನ ಆರ್ಡರ್‌ಗಳು" ಪುಟ ತೆರೆಯುವುದು
             showModal("ಯಶಸ್ವಿ!", `ನಿಮ್ಮ ಆರ್ಡರ್ ಯಶಸ್ವಿಯಾಗಿ ಸಲ್ಲಿಕೆಯಾಗಿದೆ!<br><b>ಆರ್ಡರ್ ID: ${orderId}</b>`, "🚀", () => {
                 openMyOrders();
             });
