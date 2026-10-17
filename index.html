@@ -194,16 +194,43 @@
         let selectedSizeForProduct = 'M';
         let currentReturnOrderId = null;
 
+        // ಹಿಸ್ಟರಿ ಸ್ಟೇಟ್ ಮ್ಯಾನೇಜ್‌ಮೆಂಟ್ (ಮೊಬೈಲ್ ಬ್ಯಾಕ್ ಬಟನ್ ಕೆಲಸ ಮಾಡಲು)
+        let activeModalId = null;
+
+        function pushModalState(modalId) {
+            activeModalId = modalId;
+            history.pushState({ modal: modalId }, '');
+        }
+
+        window.addEventListener('popstate', function(event) {
+            // ಮೊಬೈಲ್ ಬ್ಯಾಕ್ ಬಟನ್ ಒತ್ತಿದಾಗ ಆಪ್ ಮಾಯವಾಗದೆ ಒಂದೊಂದಾಗಿ ಮುಚ್ಚಿಕೊಳ್ಳುತ್ತದೆ
+            let modals = ['image-modal', 'custom-modal', 'product-detail-modal', 'order-confirm-modal', 'return-modal', 'orders-drawer', 'cart-drawer'];
+            let closedAny = false;
+            modals.forEach(id => {
+                let el = document.getElementById(id);
+                if (el && !el.classList.contains('hidden')) {
+                    el.classList.add('hidden');
+                    closedAny = true;
+                }
+            });
+            activeModalId = null;
+        });
+
         function showModal(title, message, icon = '🎉', callback = null) {
             document.getElementById('modal-title').innerText = title;
             document.getElementById('modal-message').innerHTML = message;
             document.getElementById('modal-icon').innerText = icon;
             document.getElementById('custom-modal').classList.remove('hidden');
+            pushModalState('custom-modal');
             window.modalCallback = callback;
         }
 
         function closeModal() {
             document.getElementById('custom-modal').classList.add('hidden');
+            if (activeModalId === 'custom-modal') {
+                history.back();
+                activeModalId = null;
+            }
             if (typeof window.modalCallback === 'function') {
                 window.modalCallback();
                 window.modalCallback = null;
@@ -213,10 +240,15 @@
         function zoomImage(src) {
             document.getElementById('zoomed-img').src = src;
             document.getElementById('image-modal').classList.remove('hidden');
+            pushModalState('image-modal');
         }
 
         function closeImageModal() {
             document.getElementById('image-modal').classList.add('hidden');
+            if (activeModalId === 'image-modal') {
+                history.back();
+                activeModalId = null;
+            }
         }
 
         function renderProducts(itemsToRender = products) {
@@ -288,6 +320,7 @@
             }
 
             document.getElementById('product-detail-modal').classList.remove('hidden');
+            pushModalState('product-detail-modal');
         }
 
         function selectSizeOption(sz) {
@@ -304,6 +337,10 @@
 
         function closeProductDetail() {
             document.getElementById('product-detail-modal').classList.add('hidden');
+            if (activeModalId === 'product-detail-modal') {
+                history.back();
+                activeModalId = null;
+            }
         }
 
         function addCurrentToCart() {
@@ -392,6 +429,7 @@
                 document.getElementById('cart-total').innerText = `₹${total}`;
             }
             document.getElementById('cart-drawer').classList.remove('hidden');
+            pushModalState('cart-drawer');
         }
 
         function changeQty(index, delta) {
@@ -405,6 +443,10 @@
 
         function closeCart() {
             document.getElementById('cart-drawer').classList.add('hidden');
+            if (activeModalId === 'cart-drawer') {
+                history.back();
+                activeModalId = null;
+            }
         }
 
         function removeFromCart(index) {
@@ -429,10 +471,15 @@
 
             document.getElementById('cart-drawer').classList.add('hidden');
             document.getElementById('order-confirm-modal').classList.remove('hidden');
+            pushModalState('order-confirm-modal');
         }
 
         function closeOrderConfirm() {
             document.getElementById('order-confirm-modal').classList.add('hidden');
+            if (activeModalId === 'order-confirm-modal') {
+                history.back();
+                activeModalId = null;
+            }
         }
 
         function confirmFinalOrder() {
@@ -478,7 +525,6 @@
             updateCartCount();
             closeOrderConfirm();
 
-            // ನೇರವಾಗಿ ಪಾಪ್‌ಅಪ್ ಮುಚ್ಚಿ "ನನ್ನ ಆರ್ಡರ್‌ಗಳು" ಪುಟ ತೆರೆಯುವುದು
             showModal("ಯಶಸ್ವಿ!", `ನಿಮ್ಮ ಆರ್ಡರ್ ಯಶಸ್ವಿಯಾಗಿ ಸಲ್ಲಿಕೆಯಾಗಿದೆ!<br><b>ಆರ್ಡರ್ ID: ${orderId}</b>`, "🚀", () => {
                 openMyOrders();
             });
@@ -578,10 +624,15 @@
                 }).join('');
             }
             document.getElementById('orders-drawer').classList.remove('hidden');
+            pushModalState('orders-drawer');
         }
 
         function closeMyOrders() {
             document.getElementById('orders-drawer').classList.add('hidden');
+            if (activeModalId === 'orders-drawer') {
+                history.back();
+                activeModalId = null;
+            }
         }
 
         function openReturnModal(orderId) {
@@ -589,10 +640,15 @@
             document.getElementById('return-reason').value = '';
             document.getElementById('return-photo').value = '';
             document.getElementById('return-modal').classList.remove('hidden');
+            pushModalState('return-modal');
         }
 
         function closeReturnModal() {
             document.getElementById('return-modal').classList.add('hidden');
+            if (activeModalId === 'return-modal') {
+                history.back();
+                activeModalId = null;
+            }
         }
 
         function submitReturnRequest() {
