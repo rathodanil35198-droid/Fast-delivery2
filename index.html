@@ -255,7 +255,7 @@
             document.getElementById('det-title').innerText = p.name;
             document.getElementById('det-front').src = p.frontPhoto;
             document.getElementById('det-back').src = p.backPhoto;
-            document.getElementById('det-shop').innerText = `ಅಂಗಡಿ: ${p.vendorShop} (ದೂರವಾಣಿ: ${p.vendorPhone || 'ಲಭ್ಯವಿದೆ'})`;
+            document.getElementById('det-shop').innerText = `ಅಂಗಡಿ: ${p.vendorShop}`;
             document.getElementById('det-price').innerText = `₹${p.discPrice} (ಮೂಲ ಬೆಲೆ: ₹${p.origPrice})`;
             document.getElementById('det-return-policy').innerText = `${p.pieces || '1 ಪೀಸ್'} | ${p.returnPolicy || 'ರಿಟರ್ನ್ ಉಂಟು'}`;
 
@@ -465,9 +465,9 @@
                 paymentSuccess: paymentMethod === 'Cash on Delivery' ? false : true,
                 statusStep: 1,
                 statusText: '1. ನಿಮ್ಮ ಆರ್ಡರ್ ಕನ್ಫರ್ಮ್ ಆಗಿದೆ - 2 ದಿನಗಳ ಒಳಗೆ ತಲುಪುತ್ತದೆ',
-                acceptedByVendor: null,
-                packingReady: false,
-                delivered: false,
+                orderTime: Date.now(),
+                deliveredTime: null,
+                cancelled: false,
                 returned: false,
                 returnReason: '',
                 returnPhoto: ''
@@ -485,6 +485,19 @@
             openMyOrders();
         }
 
+        function cancelOrder(orderId) {
+            if (!confirm('ಖಂಡಿತವಾಗಿ ನೀವು ಈ ಆರ್ಡರ್ ಅನ್ನು ಕ್ಯಾನ್ಸಲ್ ಮಾಡಲು ಬಯಸುತ್ತೀರಾ?')) return;
+            let allOrders = JSON.parse(localStorage.getItem('market_orders')) || [];
+            let o = allOrders.find(x => x.id === orderId);
+            if (o) {
+                o.cancelled = true;
+                o.statusText = '❌ ಆರ್ಡರ್ ರದ್ದುಗೊಳಿಸಲಾಗಿದೆ (Cancelled)';
+                localStorage.setItem('market_orders', JSON.stringify(allOrders));
+                openMyOrders();
+                showModal("ರದ್ದುಗೊಳಿಸಲಾಗಿದೆ", "ನಿಮ್ಮ ಆರ್ಡರ್ ಯಶಸ್ವಿಯಾಗಿ ಕ್ಯಾನ್ಸಲ್ ಆಗಿದೆ.", "❌");
+            }
+        }
+
         function openMyOrders() {
             let list = document.getElementById('my-orders-list');
             let allOrders = JSON.parse(localStorage.getItem('market_orders')) || [];
@@ -494,8 +507,17 @@
             if (allOrders.length === 0) {
                 list.innerHTML = "ಯಾವುದೇ ಆರ್ಡರ್‌ಗಳಿಲ್ಲ.";
             } else {
+                let currentTime = Date.now();
+                let twoDaysMs = 2 * 24 * 60 * 60 * 1000;
+
                 list.innerHTML = allOrders.map(o => {
                     let step = o.statusStep || 1;
+                    let isDelivered = (step >= 4 || o.delivered);
+                    
+                    // 2 ದಿನಗಳ ಮಿತಿ ಪರಿಶೀಲನೆ (ಡೆಲಿವರಿ ಆದ ಸಮಯದಿಂದ 48 ಗಂಟೆಗಳು)
+                    let deliveredTime = o.deliveredTime || o.orderTime;
+                    let isWithinTwoDays = (currentTime - deliveredTime) <= twoDaysMs;
+
                     return `
                         <div class="border p-3 rounded-xl bg-gray-50 space-y-3 shadow-sm">
                             <div class="flex justify-between items-center border-b pb-1">
@@ -537,14 +559,24 @@
                                 <p class="text-[11px] font-bold text-teal-800 text-center pt-1">${o.statusText || o.status}</p>
                             </div>
 
-                            <div class="flex gap-2">
-                                <a href="tel:${o.phone}" class="flex-1 bg-teal-600 hover:bg-teal-700 text-white text-center py-2 rounded-lg font-bold text-xs shadow">📞 ಡೆಲಿವರಿ ಬಾಯ್ / ಅಂಗಡಿಗೆ ಕಾಲ್ ಮಾಡಿ</a>
-                            </div>
+                            <!-- ಕಾಲಿಂಗ್ ಬಟನ್: 3ನೇ ಹಂತ (ಡೆಲಿವರಿ ಬಾಯ್ ಹಂತ) ತಲುಪಿದ ಮೇಲೆ ಮಾತ್ರ ಕಾಣಿಸುತ್ತದೆ -->
+                            ${step >= 3 && !o.cancelled ? `
+                                <div class="flex gap-2">
+                                    <a href="tel:${o.phone}" class="flex-1 bg-teal-600 hover:bg-teal-700 text-white text-center py-2 rounded-lg font-bold text-xs shadow">📞 ಡೆಲಿವರಿ ಬಾಯ್ / ಅಂಗಡಿಗೆ ಕಾಲ್ ಮಾಡಿ</a>
+                                </div>
+                            ` : ''}
 
-                            ${o.returned ? `
+                            <!-- ಕ್ಯಾನ್ಸಲ್ ಅಥವಾ ರಿಟರ್ನ್ ಬಟನ್ ನಿರ್ವಹಣೆ -->
+                            ${o.cancelled ? `
+                                <p class="text-[11px] text-red-600 font-bold text-center">❌ ಈ ಆರ್ಡರ್ ರದ್ದುಗೊಳಿಸಲಾಗಿದೆ</p>
+                            ` : !isDelivered ? `
+                                <button type="button" onclick="cancelOrder(${o.id})" class="w-full bg-red-500 hover:bg-red-600 text-white py-1.5 rounded-lg font-bold text-xs shadow cursor-pointer">❌ ಆರ್ಡರ್ ರದ್ದುಗೊಳಿಸಿ (Cancel Order)</button>
+                            ` : o.returned ? `
                                 <p class="text-[11px] text-red-600 font-bold text-center">🔄 ರಿಟರ್ನ್ ವಿನಂತಿ ಸಲ್ಲಿಸಲಾಗಿದೆ (ರೂ. 50 ಕಡಿತಗೊಂಡು 2-3 ಗಂಟೆಗಳಲ್ಲಿ ಅಮೌಂಟ್ ಬರುತ್ತದೆ)</p>
-                            ` : `
+                            ` : isWithinTwoDays ? `
                                 <button type="button" onclick="openReturnModal(${o.id})" class="w-full bg-red-500 hover:bg-red-600 text-white py-1.5 rounded-lg font-bold text-xs shadow cursor-pointer">🔄 ರಿಟರ್ನ್ / ಎಕ್ಸ್‌ಚೇಂಜ್ ಮಾಡಿ (2 ದಿನಗಳ ಒಳಗೆ)</button>
+                            ` : `
+                                <p class="text-[11px] text-gray-400 font-bold text-center">🔒 2 ದಿನಗಳು ಮುಗಿದಿರುವುದರಿಂದ ರಿಟರ್ನ್ ಅವಕಾಶ ಮುಕ್ತಾಯಗೊಂಡಿದೆ</p>
                             `}
                         </div>
                     `;
