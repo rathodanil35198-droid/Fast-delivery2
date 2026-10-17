@@ -43,7 +43,7 @@
                 <p class="text-[11px] text-purple-700 font-semibold mt-0.5" id="det-return-policy"></p>
             </div>
 
-            <!-- ಸೈಜ್ / ನಂಬರ್ / ಅಳತೆ ಆಯ್ಕೆ -->
+            <!-- ಸೈಜ್ ಆಯ್ಕೆ -->
             <div id="size-selection-area" class="space-y-1">
                 <label id="size-label-text" class="block text-xs font-bold text-gray-700">ಸೈಜ್ / ನಂಬರ್ ಆಯ್ಕೆಮಾಡಿ:</label>
                 <div id="size-options-container" class="flex flex-wrap gap-1.5"></div>
@@ -64,7 +64,7 @@
             <p class="text-xs text-gray-600">ನೀವು ಆರ್ಡರ್ ಡೆಲಿವರಿ ಪಡೆಯುವಾಗ ನಗದು ಅಥವಾ UPI ಮೂಲಕ ಪಾವತಿಸಿ. ಓಪನ್ ಡೆಲಿವರಿ ಸೌಲಭ್ಯ ಲಭ್ಯವಿದೆ.</p>
             <div class="flex gap-2 pt-2">
                 <button type="button" onclick="closeOrderConfirm()" class="flex-1 bg-gray-200 text-gray-800 py-2 rounded-xl text-xs font-bold cursor-pointer">ರದ್ದುಗೊಳಿಸಿ</button>
-                <button type="button" onclick="confirmFinalOrder()" class="flex-1 bg-amber-400 hover:bg-amber-500 text-gray-900 py-2 rounded-xl text-xs font-bold shadow cursor-pointer">ಆರ್ಡರ್ ದೃಢೀಕರಿಸಿ</button>
+                <button type="button" onclick="confirmFinalOrder()" class="flex-1 bg-amber-400 hover:bg-amber-500 text-gray-900 py-2 rounded-xl font-bold text-xs shadow cursor-pointer">ಆರ್ಡರ್ ದೃಢೀಕರಿಸಿ</button>
             </div>
         </div>
     </div>
@@ -120,7 +120,7 @@
             </div>
         </div>
 
-        <!-- ವಸ್ತುಗಳ ಲಿಸ್ಟ್ (Products Grid) -->
+        <!-- ವಸ್ತುಗಳ ಲಿಸ್ಟ್ -->
         <div id="products-list" class="grid grid-cols-2 gap-3">
             <p class="col-span-2 text-center text-xs text-gray-500 py-6">ಯಾವುದೇ ವಸ್ತುಗಳು ಲಭ್ಯವಿಲ್ಲ.</p>
         </div>
@@ -160,8 +160,8 @@
 
                 <div class="space-y-2 pt-2 border-t">
                     <h3 class="font-bold text-xs text-gray-800">ವಿಳಾಸ ಮತ್ತು ಸಂಪರ್ಕ ವಿವರಗಳು:</h3>
-                    <input type="text" id="cust-name" placeholder="ನಿಮ್ಮ ಹೆಸರು" class="w-full p-2 border rounded-lg text-xs">
-                    <input type="tel" id="cust-phone" placeholder="10 ಅಂಕಿಯ ಮೊಬೈಲ್ ನಂಬರ್" maxlength="10" class="w-full p-2 border rounded-lg text-xs">
+                    <input type="text" id="cust-name" placeholder="ನಿಮ್ಮ ಹೆಸರು" class="w-full p-2 border rounded-lg text-xs" value="ಅನಿಲ್ ರಾಥೋಡ್">
+                    <input type="tel" id="cust-phone" placeholder="10 ಅಂಕಿಯ ಮೊಬೈಲ್ ನಂಬರ್" maxlength="10" class="w-full p-2 border rounded-lg text-xs" value="9353444070">
                     <div class="grid grid-cols-2 gap-2">
                         <input type="text" id="cust-pincode" placeholder="ಪಿನ್ ಕೋಡ್" maxlength="6" class="p-2 border rounded-lg text-xs" value="585223">
                         <input type="text" id="cust-city" placeholder="ಊರು / ಗ್ರಾಮ" class="p-2 border rounded-lg text-xs" value="ಶಹಾಪುರ">
@@ -194,15 +194,20 @@
         let selectedSizeForProduct = 'M';
         let currentReturnOrderId = null;
 
-        function showModal(title, message, icon = '🎉') {
+        function showModal(title, message, icon = '🎉', callback = null) {
             document.getElementById('modal-title').innerText = title;
             document.getElementById('modal-message').innerText = message;
             document.getElementById('modal-icon').innerText = icon;
             document.getElementById('custom-modal').classList.remove('hidden');
+            window.modalCallback = callback;
         }
 
         function closeModal() {
             document.getElementById('custom-modal').classList.add('hidden');
+            if (typeof window.modalCallback === 'function') {
+                window.modalCallback();
+                window.modalCallback = null;
+            }
         }
 
         function zoomImage(src) {
@@ -232,7 +237,7 @@
                         </div>
                         <h3 class="font-bold text-xs text-gray-800 mt-2 truncate">${p.name}</h3>
                         <p class="text-[10px] text-gray-500 truncate">ಅಂಗಡಿ: <b class="text-indigo-600">${p.vendorShop}</b></p>
-                        <p class="text-[10px] text-gray-500">ಸೈಜ್: <span class="font-bold text-red-600">${p.size}</span></p>
+                        <p class="text-[10px] text-gray-500">ಸೈಜ್: <span class="font-bold text-red-600">${p.size || 'M'}</span></p>
                         <p class="text-[10px] font-semibold text-purple-700">${p.pieces || '1 ಪೀಸ್'} | ${p.returnPolicy || 'ರಿಟರ್ನ್ ಉಂಟು'}</p>
                     </div>
 
@@ -263,26 +268,22 @@
             let sizeLabel = document.getElementById('size-label-text');
 
             if (p.category === 'Footwear') {
-                sizeLabel.innerText = "ಚಪ್ಪಲಿ / ಶೂಸ್ ನಂಬರ್ ಆಯ್ಕೆಮಾಡಿ (5 ರಿಂದ 12):";
+                sizeLabel.innerText = "ಚಪ್ಪಲಿ / ಶೂಸ್ ನಂಬರ್ ಆಯ್ಕೆಮಾಡಿ:";
                 let shoeNums = [5, 6, 7, 8, 9, 10, 11, 12];
                 selectedSizeForProduct = '7 No';
                 sizeContainer.innerHTML = shoeNums.map((num, idx) => `
-                    <button type="button" onclick="selectSizeOption('${num} No')" id="sz-opt-${num}" class="px-3 py-1 border rounded text-xs font-bold cursor-pointer ${idx === 2 ? 'bg-indigo-600 text-white' : 'bg-gray-100 text-gray-800'}">${num} No</button>
+                    <button type="button" onclick="selectSizeOption('${num} No')" class="sz-btn px-3 py-1 border rounded text-xs font-bold cursor-pointer ${idx === 2 ? 'bg-indigo-600 text-white' : 'bg-gray-100 text-gray-800'}">${num} No</button>
                 `).join('');
             } else if (p.category === 'Gifts') {
-                sizeLabel.innerText = "ಗಿಫ್ಟ್ ಅಳತೆ (ಉದ್ದ ಹಾಗೂ ಅಗಲ):";
-                selectedSizeForProduct = 'ಉದ್ದ: 2 ಅಡಿ, ಅಗಲ: 1.5 ಅಡಿ';
-                sizeContainer.innerHTML = `
-                    <div class="text-xs text-indigo-700 font-bold bg-indigo-50 p-2 rounded w-full">
-                        📏 ಪ್ರಮಾಣಿತ ಅಳತೆ (Standard Size): ಉದ್ದ 2 ಅಡಿ x ಅಗಲ 1.5 ಅಡಿ (Open Delivery ಲಭ್ಯವಿದೆ)
-                    </div>
-                `;
+                sizeLabel.innerText = "ಗಿಫ್ಟ್ ಅಳತೆ:";
+                selectedSizeForProduct = 'ಸ್ಟ್ಯಾಂಡರ್ಡ್ ಅಳತೆ';
+                sizeContainer.innerHTML = `<div class="text-xs text-indigo-700 font-bold bg-indigo-50 p-2 rounded w-full">📏 ಪ್ರಮಾಣಿತ ಅಳತೆ (Open Delivery ಲಭ್ಯವಿದೆ)</div>`;
             } else {
                 sizeLabel.innerText = "ಬಟ್ಟೆಗಳ ಸೈಜ್ ಆಯ್ಕೆಮಾಡಿ:";
                 let sizes = ['XS', 'S', 'M', 'L', 'XL', 'XXL'];
                 selectedSizeForProduct = 'M';
                 sizeContainer.innerHTML = sizes.map((sz, idx) => `
-                    <button type="button" onclick="selectSizeOption('${sz}')" id="sz-opt-${sz}" class="px-3 py-1 border rounded text-xs font-bold cursor-pointer ${idx === 2 ? 'bg-indigo-600 text-white' : 'bg-gray-100 text-gray-800'}">${sz}</button>
+                    <button type="button" onclick="selectSizeOption('${sz}')" class="sz-btn px-3 py-1 border rounded text-xs font-bold cursor-pointer ${idx === 2 ? 'bg-indigo-600 text-white' : 'bg-gray-100 text-gray-800'}">${sz}</button>
                 `).join('');
             }
 
@@ -294,9 +295,9 @@
             let container = document.getElementById('size-options-container');
             container.querySelectorAll('button').forEach(btn => {
                 if (btn.innerText.includes(sz)) {
-                    btn.className = "px-3 py-1 border rounded text-xs font-bold bg-indigo-600 text-white cursor-pointer";
+                    btn.className = "sz-btn px-3 py-1 border rounded text-xs font-bold bg-indigo-600 text-white cursor-pointer";
                 } else {
-                    btn.className = "px-3 py-1 border rounded text-xs font-bold bg-gray-100 text-gray-800 cursor-pointer";
+                    btn.className = "sz-btn px-3 py-1 border rounded text-xs font-bold bg-gray-100 text-gray-800 cursor-pointer";
                 }
             });
         }
@@ -413,12 +414,8 @@
         }
 
         function proceedToOrderConfirm() {
-            let name = document.getElementById('cust-name').value;
-            let phone = document.getElementById('cust-phone').value;
-            let pincode = document.getElementById('cust-pincode').value;
-            let city = document.getElementById('cust-city').value;
-            let taluk = document.getElementById('cust-taluk').value;
-            let district = document.getElementById('cust-district').value;
+            let name = document.getElementById('cust-name').value.trim();
+            let phone = document.getElementById('cust-phone').value.trim();
 
             if (!name || !phone || phone.length < 10) {
                 alert('ದಯವಿಟ್ಟು ನಿಮ್ಮ ಹೆಸರು ಮತ್ತು ಸರಿಯಾದ 10 ಅಂಕಿಯ ಮೊಬೈಲ್ ನಂಬರ್ ನಮೂದಿಸಿ!');
@@ -439,12 +436,12 @@
         }
 
         function confirmFinalOrder() {
-            let name = document.getElementById('cust-name').value;
-            let phone = document.getElementById('cust-phone').value;
-            let pincode = document.getElementById('cust-pincode').value;
-            let city = document.getElementById('cust-city').value;
-            let taluk = document.getElementById('cust-taluk').value;
-            let district = document.getElementById('cust-district').value;
+            let name = document.getElementById('cust-name').value.trim();
+            let phone = document.getElementById('cust-phone').value.trim();
+            let pincode = document.getElementById('cust-pincode').value.trim();
+            let city = document.getElementById('cust-city').value.trim();
+            let taluk = document.getElementById('cust-taluk').value.trim();
+            let district = document.getElementById('cust-district').value.trim();
             let paymentMethod = document.getElementById('payment-method').value;
 
             let orderId = Date.now();
@@ -481,8 +478,9 @@
             updateCartCount();
             closeOrderConfirm();
 
-            showModal("ಯಶಸ್ವಿ!", `ನಿಮ್ಮ ಆರ್ಡರ್ ಯಶಸ್ವಿಯಾಗಿ ಸಲ್ಲಿಕೆಯಾಗಿದೆ! ಆರ್ಡರ್ ID: ${orderId}`, "🚀");
-            openMyOrders();
+            showModal("ಯಶಸ್ವಿ!", `ನಿಮ್ಮ ಆರ್ಡರ್ ಯಶಸ್ವಿಯಾಗಿ ಸಲ್ಲಿಕೆಯಾಗಿದೆ!<br><b>ಆರ್ಡರ್ ID: ${orderId}</b>`, "🚀", () => {
+                openMyOrders();
+            });
         }
 
         function cancelOrder(orderId) {
@@ -513,8 +511,6 @@
                 list.innerHTML = allOrders.map(o => {
                     let step = o.statusStep || 1;
                     let isDelivered = (step >= 4 || o.delivered);
-                    
-                    // 2 ದಿನಗಳ ಮಿತಿ ಪರಿಶೀಲನೆ (ಡೆಲಿವರಿ ಆದ ಸಮಯದಿಂದ 48 ಗಂಟೆಗಳು)
                     let deliveredTime = o.deliveredTime || o.orderTime;
                     let isWithinTwoDays = (currentTime - deliveredTime) <= twoDaysMs;
 
@@ -559,14 +555,12 @@
                                 <p class="text-[11px] font-bold text-teal-800 text-center pt-1">${o.statusText || o.status}</p>
                             </div>
 
-                            <!-- ಕಾಲಿಂಗ್ ಬಟನ್: 3ನೇ ಹಂತ (ಡೆಲಿವರಿ ಬಾಯ್ ಹಂತ) ತಲುಪಿದ ಮೇಲೆ ಮಾತ್ರ ಕಾಣಿಸುತ್ತದೆ -->
                             ${step >= 3 && !o.cancelled ? `
                                 <div class="flex gap-2">
                                     <a href="tel:${o.phone}" class="flex-1 bg-teal-600 hover:bg-teal-700 text-white text-center py-2 rounded-lg font-bold text-xs shadow">📞 ಡೆಲಿವರಿ ಬಾಯ್ / ಅಂಗಡಿಗೆ ಕಾಲ್ ಮಾಡಿ</a>
                                 </div>
                             ` : ''}
 
-                            <!-- ಕ್ಯಾನ್ಸಲ್ ಅಥವಾ ರಿಟರ್ನ್ ಬಟನ್ ನಿರ್ವಹಣೆ -->
                             ${o.cancelled ? `
                                 <p class="text-[11px] text-red-600 font-bold text-center">❌ ಈ ಆರ್ಡರ್ ರದ್ದುಗೊಳಿಸಲಾಗಿದೆ</p>
                             ` : !isDelivered ? `
