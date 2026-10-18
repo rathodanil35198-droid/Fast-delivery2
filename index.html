@@ -11,7 +11,7 @@
     <!-- ಫೋಟೋ ಜೂಮ್ ಪಾಪ್‌ಅಪ್ -->
     <div id="image-modal" class="fixed inset-0 bg-black bg-opacity-80 z-50 hidden flex items-center justify-center p-4">
         <div class="relative bg-white p-2 rounded-2xl max-w-sm w-full text-center">
-            <button type="button" onclick="closeImageModal()" class="absolute top-2 right-2 bg-red-500 text-white w-8 h-8 rounded-full font-bold cursor-pointer">✕</button>
+            <button onclick="closeImageModal()" class="absolute top-2 right-2 bg-red-500 text-white w-8 h-8 rounded-full font-bold">✕</button>
             <img id="zoomed-img" src="" class="w-full h-96 object-contain rounded-xl">
         </div>
     </div>
@@ -22,7 +22,7 @@
             <div id="modal-icon" class="text-4xl">🎉</div>
             <h3 id="modal-title" class="text-lg font-bold text-gray-800">ಯಶಸ್ವಿ!</h3>
             <p id="modal-message" class="text-xs text-gray-600"></p>
-            <button type="button" onclick="closeModal()" class="w-full bg-indigo-600 text-white py-2 rounded-xl font-bold text-xs cursor-pointer">ಸರಿ (OK)</button>
+            <button onclick="closeModal()" class="w-full bg-indigo-600 text-white py-2 rounded-xl font-bold text-xs">ಸರಿ (OK)</button>
         </div>
     </div>
 
@@ -31,7 +31,7 @@
         <div class="bg-white rounded-t-3xl sm:rounded-2xl p-5 max-w-md w-full max-h-[90vh] overflow-y-auto space-y-4">
             <div class="flex justify-between items-center border-b pb-2">
                 <h3 id="det-title" class="font-bold text-sm text-gray-800">ವಸ್ತುವಿನ ವಿವರ</h3>
-                <button type="button" onclick="closeProductDetail()" class="text-red-500 font-bold text-base cursor-pointer">✕</button>
+                <button onclick="closeProductDetail()" class="text-red-500 font-bold text-base">✕</button>
             </div>
             <div class="grid grid-cols-2 gap-2">
                 <img id="det-front" src="" class="w-full h-40 object-cover rounded-xl border cursor-pointer" onclick="zoomImage(this.src)">
@@ -43,17 +43,17 @@
                 <p class="text-[11px] text-purple-700 font-semibold mt-0.5" id="det-return-policy"></p>
             </div>
 
-            <!-- ಸೈಜ್ ಆಯ್ಕೆ -->
+            <!-- ಸೈಜ್ / ನಂಬರ್ / ಅಳತೆ ಆಯ್ಕೆ -->
             <div id="size-selection-area" class="space-y-1">
                 <label id="size-label-text" class="block text-xs font-bold text-gray-700">ಸೈಜ್ / ನಂಬರ್ ಆಯ್ಕೆಮಾಡಿ:</label>
                 <div id="size-options-container" class="flex flex-wrap gap-1.5"></div>
             </div>
 
             <div class="flex gap-2 pt-2">
-                <button type="button" onclick="buyNowFromDetail()" class="flex-1 bg-amber-400 hover:bg-amber-500 text-gray-900 py-2.5 rounded-xl font-bold text-xs shadow cursor-pointer">⚡ ಈಗ ಖರೀದಿಸಿ</button>
-                <button type="button" onclick="addCurrentToCart()" class="flex-1 bg-indigo-600 text-white py-2.5 rounded-xl font-bold text-xs shadow cursor-pointer">🛒 ಕಾರ್ಟ್‌ಗೆ ಹಾಕಿ</button>
+                <button onclick="buyNowFromDetail()" class="flex-1 bg-amber-400 hover:bg-amber-500 text-gray-900 py-2.5 rounded-xl font-bold text-xs shadow">⚡ ಈಗ ಖರೀದಿಸಿ</button>
+                <button onclick="addCurrentToCart()" class="flex-1 bg-indigo-600 text-white py-2.5 rounded-xl font-bold text-xs shadow">🛒 ಕಾರ್ಟ್‌ಗೆ ಹಾಕಿ</button>
             </div>
-            <button type="button" onclick="closeProductDetail()" class="w-full bg-gray-200 text-gray-700 py-2 rounded-xl font-bold text-xs cursor-pointer">ಕ್ಯಾನ್ಸಲ್ ಮಾಡಿ</button>
+            <button onclick="closeProductDetail()" class="w-full bg-gray-200 text-gray-700 py-2 rounded-xl font-bold text-xs">ಕ್ಯಾನ್ಸಲ್ ಮಾಡಿ</button>
         </div>
     </div>
 
@@ -63,8 +63,8 @@
             <h3 class="font-bold text-sm text-gray-800 border-b pb-1">ಕ್ಯಾಶ್ ಆನ್ ಡೆಲಿವರಿ ಆರ್ಡರ್ ದೃಢೀಕರಿಸಿ</h3>
             <p class="text-xs text-gray-600">ನೀವು ಆರ್ಡರ್ ಡೆಲಿವರಿ ಪಡೆಯುವಾಗ ನಗದು ಅಥವಾ UPI ಮೂಲಕ ಪಾವತಿಸಿ. ಓಪನ್ ಡೆಲಿವರಿ ಸೌಲಭ್ಯ ಲಭ್ಯವಿದೆ.</p>
             <div class="flex gap-2 pt-2">
-                <button type="button" onclick="closeOrderConfirm()" class="flex-1 bg-gray-200 text-gray-800 py-2 rounded-xl text-xs font-bold cursor-pointer">ರದ್ದುಗೊಳಿಸಿ</button>
-                <button type="button" onclick="confirmFinalOrder()" class="flex-1 bg-amber-400 hover:bg-amber-500 text-gray-900 py-2 rounded-xl text-xs font-bold shadow cursor-pointer">ಆರ್ಡರ್ ದೃಢೀಕರಿಸಿ</button>
+                <button onclick="closeOrderConfirm()" class="flex-1 bg-gray-200 text-gray-800 py-2 rounded-xl text-xs font-bold">ರದ್ದುಗೊಳಿಸಿ</button>
+                <button onclick="confirmFinalOrder()" class="flex-1 bg-amber-400 hover:bg-amber-500 text-gray-900 py-2 rounded-xl text-xs font-bold shadow">ಆರ್ಡರ್ ದೃಢೀಕರಿಸಿ</button>
             </div>
         </div>
     </div>
@@ -86,8 +86,8 @@
             </div>
 
             <div class="flex gap-2 pt-2">
-                <button type="button" onclick="closeReturnModal()" class="flex-1 bg-gray-200 text-gray-800 py-2 rounded-xl text-xs font-bold cursor-pointer">ಮುಚ್ಚಿ</button>
-                <button type="button" onclick="submitReturnRequest()" class="flex-1 bg-red-600 text-white py-2 rounded-xl text-xs font-bold cursor-pointer">ರಿಟರ್ನ್ ಸಬ್ಮಿಟ್ ಮಾಡಿ</button>
+                <button onclick="closeReturnModal()" class="flex-1 bg-gray-200 text-gray-800 py-2 rounded-xl text-xs font-bold">ಮುಚ್ಚಿ</button>
+                <button onclick="submitReturnRequest()" class="flex-1 bg-red-600 text-white py-2 rounded-xl text-xs font-bold">ರಿಟರ್ನ್ ಸಬ್ಮಿಟ್ ಮಾಡಿ</button>
             </div>
         </div>
     </div>
@@ -99,8 +99,8 @@
             <p class="text-[10px] text-indigo-200">ಸ್ಥಳೀಯ ಅಂಗಡಿಗಳ ಆನ್‌ಲೈನ್ ಶಾಪಿಂಗ್</p>
         </div>
         <div class="flex items-center gap-2">
-            <button type="button" onclick="openMyOrders()" class="bg-teal-600 text-white px-2.5 py-1.5 rounded-xl text-xs font-bold cursor-pointer">📦 ನನ್ನ ಆರ್ಡರ್‌ಗಳು</button>
-            <button type="button" onclick="openCart()" class="relative bg-indigo-600 border border-indigo-400 px-3 py-1.5 rounded-xl text-xs font-bold flex items-center gap-1 cursor-pointer">
+            <button onclick="openMyOrders()" class="bg-teal-600 text-white px-2.5 py-1.5 rounded-xl text-xs font-bold">📦 ನನ್ನ ಆರ್ಡರ್‌ಗಳು</button>
+            <button onclick="openCart()" class="relative bg-indigo-600 border border-indigo-400 px-3 py-1.5 rounded-xl text-xs font-bold flex items-center gap-1">
                 🛒 ಕಾರ್ಟ್ <span id="cart-count" class="bg-red-500 text-white text-[10px] px-1.5 py-0.2 rounded-full">0</span>
             </button>
         </div>
@@ -112,15 +112,15 @@
         <div class="space-y-2">
             <input type="text" id="search-box" placeholder="🔍 ವಸ್ತು ಅಥವಾ ಅಂಗಡಿಯ ಹೆಸರು ಹುಡುಕಿ..." oninput="filterProducts()" class="w-full p-2.5 border rounded-xl text-xs shadow-sm">
             <div class="flex gap-1 overflow-x-auto pb-1 text-xs">
-                <button type="button" onclick="filterCategory('All')" class="cat-btn bg-indigo-600 text-white px-3 py-1.5 rounded-full font-bold whitespace-nowrap cursor-pointer">ಎಲ್ಲಾ (All)</button>
-                <button type="button" onclick="filterCategory('Clothing')" class="cat-btn bg-white text-gray-700 border px-3 py-1.5 rounded-full whitespace-nowrap cursor-pointer">ಬಟ್ಟೆಗಳು</button>
-                <button type="button" onclick="filterCategory('Footwear')" class="cat-btn bg-white text-gray-700 border px-3 py-1.5 rounded-full whitespace-nowrap cursor-pointer">ಚಪ್ಪಲಿ & ಶೂಸ್</button>
-                <button type="button" onclick="filterCategory('Gifts')" class="cat-btn bg-white text-gray-700 border px-3 py-1.5 rounded-full whitespace-nowrap cursor-pointer">ಗಿಫ್ಟ್ ಐಟಮ್ಸ್</button>
-                <button type="button" onclick="filterCategory('General')" class="cat-btn bg-white text-gray-700 border px-3 py-1.5 rounded-full whitespace-nowrap cursor-pointer">ಜನರಲ್ / ಇತರೆ</button>
+                <button onclick="filterCategory('All')" class="cat-btn bg-indigo-600 text-white px-3 py-1.5 rounded-full font-bold whitespace-nowrap">ಎಲ್ಲಾ (All)</button>
+                <button onclick="filterCategory('Clothing')" class="cat-btn bg-white text-gray-700 border px-3 py-1.5 rounded-full whitespace-nowrap">ಬಟ್ಟೆಗಳು</button>
+                <button onclick="filterCategory('Footwear')" class="cat-btn bg-white text-gray-700 border px-3 py-1.5 rounded-full whitespace-nowrap">ಚಪ್ಪಲಿ & ಶೂಸ್</button>
+                <button onclick="filterCategory('Gifts')" class="cat-btn bg-white text-gray-700 border px-3 py-1.5 rounded-full whitespace-nowrap">ಗಿಫ್ಟ್ ಐಟಮ್ಸ್</button>
+                <button onclick="filterCategory('General')" class="cat-btn bg-white text-gray-700 border px-3 py-1.5 rounded-full whitespace-nowrap">ಜನರಲ್ / ಇತರೆ</button>
             </div>
         </div>
 
-        <!-- ವಸ್ತುಗಳ ಲಿಸ್ಟ್ -->
+        <!-- ವಸ್ತುಗಳ ಲಿಸ್ಟ್ (Products Grid) -->
         <div id="products-list" class="grid grid-cols-2 gap-3">
             <p class="col-span-2 text-center text-xs text-gray-500 py-6">ಯಾವುದೇ ವಸ್ತುಗಳು ಲಭ್ಯವಿಲ್ಲ.</p>
         </div>
@@ -132,7 +132,7 @@
         <div class="bg-white rounded-t-3xl p-5 max-h-[85vh] overflow-y-auto space-y-4">
             <div class="flex justify-between items-center border-b pb-2">
                 <h2 class="font-bold text-sm text-gray-800">📦 ನನ್ನ ಆರ್ಡರ್‌ಗಳು ಹಾಗೂ ಲೈವ್ ಟ್ರ್ಯಾಕಿಂಗ್</h2>
-                <button type="button" onclick="closeMyOrders()" class="text-red-500 font-bold text-base cursor-pointer">✕ ಮುಚ್ಚಿ</button>
+                <button onclick="closeMyOrders()" class="text-red-500 font-bold text-base">✕ ಮುಚ್ಚಿ</button>
             </div>
             <div id="my-orders-list" class="space-y-3 text-xs text-gray-700">
                 ಯಾವುದೇ ಆರ್ಡರ್‌ಗಳಿಲ್ಲ.
@@ -145,7 +145,7 @@
         <div class="bg-white rounded-t-3xl p-5 max-h-[85vh] overflow-y-auto space-y-4">
             <div class="flex justify-between items-center border-b pb-2">
                 <h2 class="font-bold text-sm text-gray-800">🛒 ನಿಮ್ಮ ಕಾರ್ಟ್ (Cart)</h2>
-                <button type="button" onclick="closeCart()" class="text-red-500 font-bold text-base cursor-pointer">✕ ಮುಚ್ಚಿ</button>
+                <button onclick="closeCart()" class="text-red-500 font-bold text-base">✕ ಮುಚ್ಚಿ</button>
             </div>
 
             <div id="cart-items-list" class="space-y-2 text-xs text-gray-700">
@@ -160,8 +160,8 @@
 
                 <div class="space-y-2 pt-2 border-t">
                     <h3 class="font-bold text-xs text-gray-800">ವಿಳಾಸ ಮತ್ತು ಸಂಪರ್ಕ ವಿವರಗಳು:</h3>
-                    <input type="text" id="cust-name" placeholder="ನಿಮ್ಮ ಹೆಸರು" class="w-full p-2 border rounded-lg text-xs" value="ಅನಿಲ್ ರಾಥೋಡ್">
-                    <input type="tel" id="cust-phone" placeholder="10 ಅಂಕಿಯ ಮೊಬೈಲ್ ನಂಬರ್" maxlength="10" class="w-full p-2 border rounded-lg text-xs" value="9353444070">
+                    <input type="text" id="cust-name" placeholder="ನಿಮ್ಮ ಹೆಸರು" class="w-full p-2 border rounded-lg text-xs">
+                    <input type="tel" id="cust-phone" placeholder="10 ಅಂಕಿಯ ಮೊಬೈಲ್ ನಂಬರ್" maxlength="10" class="w-full p-2 border rounded-lg text-xs">
                     <div class="grid grid-cols-2 gap-2">
                         <input type="text" id="cust-pincode" placeholder="ಪಿನ್ ಕೋಡ್" maxlength="6" class="p-2 border rounded-lg text-xs" value="585223">
                         <input type="text" id="cust-city" placeholder="ಊರು / ಗ್ರಾಮ" class="p-2 border rounded-lg text-xs" value="ಶಹಾಪುರ">
@@ -194,20 +194,15 @@
         let selectedSizeForProduct = 'M';
         let currentReturnOrderId = null;
 
-        function showModal(title, message, icon = '🎉', callback = null) {
+        function showModal(title, message, icon = '🎉') {
             document.getElementById('modal-title').innerText = title;
-            document.getElementById('modal-message').innerHTML = message;
+            document.getElementById('modal-message').innerText = message;
             document.getElementById('modal-icon').innerText = icon;
             document.getElementById('custom-modal').classList.remove('hidden');
-            window.modalCallback = callback;
         }
 
         function closeModal() {
             document.getElementById('custom-modal').classList.add('hidden');
-            if (typeof window.modalCallback === 'function') {
-                window.modalCallback();
-                window.modalCallback = null;
-            }
         }
 
         function zoomImage(src) {
@@ -237,7 +232,7 @@
                         </div>
                         <h3 class="font-bold text-xs text-gray-800 mt-2 truncate">${p.name}</h3>
                         <p class="text-[10px] text-gray-500 truncate">ಅಂಗಡಿ: <b class="text-indigo-600">${p.vendorShop}</b></p>
-                        <p class="text-[10px] text-gray-500">ಸೈಜ್: <span class="font-bold text-red-600">${p.size || 'M'}</span></p>
+                        <p class="text-[10px] text-gray-500">ಸೈಜ್: <span class="font-bold text-red-600">${p.size}</span></p>
                         <p class="text-[10px] font-semibold text-purple-700">${p.pieces || '1 ಪೀಸ್'} | ${p.returnPolicy || 'ರಿಟರ್ನ್ ಉಂಟು'}</p>
                     </div>
 
@@ -246,7 +241,7 @@
                             <span class="text-xs font-bold text-green-600">₹${p.discPrice}</span>
                             <span class="text-[10px] text-gray-400 line-through">₹${p.origPrice}</span>
                         </div>
-                        <button type="button" onclick="event.stopPropagation(); openProductDetail(${p.id})" class="w-full bg-amber-400 hover:bg-amber-500 text-gray-900 py-1.5 rounded-xl text-[11px] font-bold shadow cursor-pointer">ಈಗ ಖರೀದಿಸಿ / ಆಯ್ಕೆ</button>
+                        <button type="button" onclick="event.stopPropagation(); openProductDetail(${p.id})" class="w-full bg-amber-400 hover:bg-amber-500 text-gray-900 py-1.5 rounded-xl text-[11px] font-bold shadow">ಈಗ ಖರೀದಿಸಿ / ಆಯ್ಕೆ</button>
                     </div>
                 </div>
             `).join('');
@@ -260,7 +255,7 @@
             document.getElementById('det-title').innerText = p.name;
             document.getElementById('det-front').src = p.frontPhoto;
             document.getElementById('det-back').src = p.backPhoto;
-            document.getElementById('det-shop').innerText = `ಅಂಗಡಿ: ${p.vendorShop}`;
+            document.getElementById('det-shop').innerText = `ಅಂಗಡಿ: ${p.vendorShop} (ದೂರವಾಣಿ: ${p.vendorPhone || 'ಲಭ್ಯವಿದೆ'})`;
             document.getElementById('det-price').innerText = `₹${p.discPrice} (ಮೂಲ ಬೆಲೆ: ₹${p.origPrice})`;
             document.getElementById('det-return-policy').innerText = `${p.pieces || '1 ಪೀಸ್'} | ${p.returnPolicy || 'ರಿಟರ್ನ್ ಉಂಟು'}`;
 
@@ -268,22 +263,26 @@
             let sizeLabel = document.getElementById('size-label-text');
 
             if (p.category === 'Footwear') {
-                sizeLabel.innerText = "ಚಪ್ಪಲಿ / ಶೂಸ್ ನಂಬರ್ ಆಯ್ಕೆಮಾಡಿ:";
+                sizeLabel.innerText = "ಚಪ್ಪಲಿ / ಶೂಸ್ ನಂಬರ್ ಆಯ್ಕೆಮಾಡಿ (5 ರಿಂದ 12):";
                 let shoeNums = [5, 6, 7, 8, 9, 10, 11, 12];
                 selectedSizeForProduct = '7 No';
                 sizeContainer.innerHTML = shoeNums.map((num, idx) => `
-                    <button type="button" onclick="selectSizeOption('${num} No')" class="sz-btn px-3 py-1 border rounded text-xs font-bold cursor-pointer ${idx === 2 ? 'bg-indigo-600 text-white' : 'bg-gray-100 text-gray-800'}">${num} No</button>
+                    <button type="button" onclick="selectSizeOption('${num} No')" id="sz-opt-${num}" class="px-3 py-1 border rounded text-xs font-bold ${idx === 2 ? 'bg-indigo-600 text-white' : 'bg-gray-100 text-gray-800'}">${num} No</button>
                 `).join('');
             } else if (p.category === 'Gifts') {
-                sizeLabel.innerText = "ಗಿಫ್ಟ್ ಅಳತೆ:";
-                selectedSizeForProduct = 'ಸ್ಟ್ಯಾಂಡರ್ಡ್ ಅಳತೆ';
-                sizeContainer.innerHTML = `<div class="text-xs text-indigo-700 font-bold bg-indigo-50 p-2 rounded w-full">📏 ಪ್ರಮಾಣಿತ ಅಳತೆ (Open Delivery ಲಭ್ಯವಿದೆ)</div>`;
+                sizeLabel.innerText = "ಗಿಫ್ಟ್ ಅಳತೆ (ಉದ್ದ ಹಾಗೂ ಅಗಲ):";
+                selectedSizeForProduct = 'ಉದ್ದ: 2 ಅಡಿ, ಅಗಲ: 1.5 ಅಡಿ';
+                sizeContainer.innerHTML = `
+                    <div class="text-xs text-indigo-700 font-bold bg-indigo-50 p-2 rounded w-full">
+                        📏 ಪ್ರಮಾಣಿತ ಅಳತೆ (Standard Size): ಉದ್ದ 2 ಅಡಿ x ಅಗಲ 1.5 ಅಡಿ (Open Delivery ಲಭ್ಯವಿದೆ)
+                    </div>
+                `;
             } else {
                 sizeLabel.innerText = "ಬಟ್ಟೆಗಳ ಸೈಜ್ ಆಯ್ಕೆಮಾಡಿ:";
                 let sizes = ['XS', 'S', 'M', 'L', 'XL', 'XXL'];
                 selectedSizeForProduct = 'M';
                 sizeContainer.innerHTML = sizes.map((sz, idx) => `
-                    <button type="button" onclick="selectSizeOption('${sz}')" class="sz-btn px-3 py-1 border rounded text-xs font-bold cursor-pointer ${idx === 2 ? 'bg-indigo-600 text-white' : 'bg-gray-100 text-gray-800'}">${sz}</button>
+                    <button type="button" onclick="selectSizeOption('${sz}')" id="sz-opt-${sz}" class="px-3 py-1 border rounded text-xs font-bold ${idx === 2 ? 'bg-indigo-600 text-white' : 'bg-gray-100 text-gray-800'}">${sz}</button>
                 `).join('');
             }
 
@@ -295,9 +294,9 @@
             let container = document.getElementById('size-options-container');
             container.querySelectorAll('button').forEach(btn => {
                 if (btn.innerText.includes(sz)) {
-                    btn.className = "sz-btn px-3 py-1 border rounded text-xs font-bold bg-indigo-600 text-white cursor-pointer";
+                    btn.className = "px-3 py-1 border rounded text-xs font-bold bg-indigo-600 text-white";
                 } else {
-                    btn.className = "sz-btn px-3 py-1 border rounded text-xs font-bold bg-gray-100 text-gray-800 cursor-pointer";
+                    btn.className = "px-3 py-1 border rounded text-xs font-bold bg-gray-100 text-gray-800";
                 }
             });
         }
@@ -337,9 +336,9 @@
         function filterCategory(cat) {
             currentCategory = cat;
             document.querySelectorAll('.cat-btn').forEach(btn => {
-                btn.className = "cat-btn bg-white text-gray-700 border px-3 py-1.5 rounded-full whitespace-nowrap text-xs cursor-pointer";
+                btn.className = "cat-btn bg-white text-gray-700 border px-3 py-1.5 rounded-full whitespace-nowrap text-xs";
             });
-            event.target.className = "cat-btn bg-indigo-600 text-white px-3 py-1.5 rounded-full whitespace-nowrap text-xs font-bold cursor-pointer";
+            event.target.className = "cat-btn bg-indigo-600 text-white px-3 py-1.5 rounded-full whitespace-nowrap text-xs font-bold";
 
             if (cat === 'All') {
                 renderProducts(products);
@@ -380,11 +379,11 @@
                             </div>
                             <div class="flex items-center gap-2">
                                 <div class="flex items-center border rounded bg-gray-50">
-                                    <button type="button" onclick="changeQty(${index}, -1)" class="px-2 py-0.5 font-bold text-gray-700 cursor-pointer">-</button>
+                                    <button type="button" onclick="changeQty(${index}, -1)" class="px-2 py-0.5 font-bold text-gray-700">-</button>
                                     <span class="px-2 text-xs font-bold">${item.quantity}</span>
-                                    <button type="button" onclick="changeQty(${index}, 1)" class="px-2 py-0.5 font-bold text-gray-700 cursor-pointer">+</button>
+                                    <button type="button" onclick="changeQty(${index}, 1)" class="px-2 py-0.5 font-bold text-gray-700">+</button>
                                 </div>
-                                <button type="button" onclick="removeFromCart(${index})" class="text-red-500 font-bold px-1.5 cursor-pointer">✕</button>
+                                <button type="button" onclick="removeFromCart(${index})" class="text-red-500 font-bold px-1.5">✕</button>
                             </div>
                         </div>
                     `;
@@ -414,8 +413,12 @@
         }
 
         function proceedToOrderConfirm() {
-            let name = document.getElementById('cust-name').value.trim();
-            let phone = document.getElementById('cust-phone').value.trim();
+            let name = document.getElementById('cust-name').value;
+            let phone = document.getElementById('cust-phone').value;
+            let pincode = document.getElementById('cust-pincode').value;
+            let city = document.getElementById('cust-city').value;
+            let taluk = document.getElementById('cust-taluk').value;
+            let district = document.getElementById('cust-district').value;
 
             if (!name || !phone || phone.length < 10) {
                 alert('ದಯವಿಟ್ಟು ನಿಮ್ಮ ಹೆಸರು ಮತ್ತು ಸರಿಯಾದ 10 ಅಂಕಿಯ ಮೊಬೈಲ್ ನಂಬರ್ ನಮೂದಿಸಿ!');
@@ -427,6 +430,7 @@
                 return;
             }
 
+            // ಕಾರ್ಟ್ ಮುಚ್ಚಿ ಆರ್ಡರ್ ಕನ್ಫರ್ಮೇಷನ್ ಪಾಪ್‌ಅಪ್ ತೋರಿಸಿ
             document.getElementById('cart-drawer').classList.add('hidden');
             document.getElementById('order-confirm-modal').classList.remove('hidden');
         }
@@ -436,12 +440,12 @@
         }
 
         function confirmFinalOrder() {
-            let name = document.getElementById('cust-name').value.trim();
-            let phone = document.getElementById('cust-phone').value.trim();
-            let pincode = document.getElementById('cust-pincode').value.trim();
-            let city = document.getElementById('cust-city').value.trim();
-            let taluk = document.getElementById('cust-taluk').value.trim();
-            let district = document.getElementById('cust-district').value.trim();
+            let name = document.getElementById('cust-name').value;
+            let phone = document.getElementById('cust-phone').value;
+            let pincode = document.getElementById('cust-pincode').value;
+            let city = document.getElementById('cust-city').value;
+            let taluk = document.getElementById('cust-taluk').value;
+            let district = document.getElementById('cust-district').value;
             let paymentMethod = document.getElementById('payment-method').value;
 
             let orderId = Date.now();
@@ -462,9 +466,9 @@
                 paymentSuccess: paymentMethod === 'Cash on Delivery' ? false : true,
                 statusStep: 1,
                 statusText: '1. ನಿಮ್ಮ ಆರ್ಡರ್ ಕನ್ಫರ್ಮ್ ಆಗಿದೆ - 2 ದಿನಗಳ ಒಳಗೆ ತಲುಪುತ್ತದೆ',
-                orderTime: Date.now(),
-                deliveredTime: null,
-                cancelled: false,
+                acceptedByVendor: null,
+                packingReady: false,
+                delivered: false,
                 returned: false,
                 returnReason: '',
                 returnPhoto: ''
@@ -476,27 +480,10 @@
 
             cart = [];
             updateCartCount();
-            
-            // ಮೊದಲು ಆರ್ಡರ್ ಕನ್ಫರ್ಮೇಷನ್ ಪಾಪ್‌ಅಪ್ ಸಂಪೂರ್ಣವಾಗಿ ಮುಚ್ಚುವುದು
-            document.getElementById('order-confirm-modal').classList.add('hidden');
+            closeOrderConfirm();
 
-            // ನಂತರ ಯಶಸ್ವಿ ಮೆಸೇಜ್ ತೋರಿಸಿ "ನನ್ನ ಆರ್ಡರ್‌ಗಳು" ಪುಟಕ್ಕೆ ಕರೆದೊಯ್ಯುವುದು
-            showModal("ಯಶಸ್ವಿ!", `ನಿಮ್ಮ ಆರ್ಡರ್ ಯಶಸ್ವಿಯಾಗಿ ಸಲ್ಲಿಕೆಯಾಗಿದೆ!<br><b>ಆರ್ಡರ್ ID: ${orderId}</b>`, "🚀", () => {
-                openMyOrders();
-            });
-        }
-
-        function cancelOrder(orderId) {
-            if (!confirm('ಖಂಡಿತವಾಗಿ ನೀವು ಈ ಆರ್ಡರ್ ಅನ್ನು ಕ್ಯಾನ್ಸಲ್ ಮಾಡಲು ಬಯಸುತ್ತೀರಾ?')) return;
-            let allOrders = JSON.parse(localStorage.getItem('market_orders')) || [];
-            let o = allOrders.find(x => x.id === orderId);
-            if (o) {
-                o.cancelled = true;
-                o.statusText = '❌ ಆರ್ಡರ್ ರದ್ದುಗೊಳಿಸಲಾಗಿದೆ (Cancelled)';
-                localStorage.setItem('market_orders', JSON.stringify(allOrders));
-                openMyOrders();
-                showModal("ರದ್ದುಗೊಳಿಸಲಾಗಿದೆ", "ನಿಮ್ಮ ಆರ್ಡರ್ ಯಶಸ್ವಿಯಾಗಿ ಕ್ಯಾನ್ಸಲ್ ಆಗಿದೆ.", "❌");
-            }
+            showModal("ಯಶಸ್ವಿ!", `ನಿಮ್ಮ ಆರ್ಡರ್ ಯಶಸ್ವಿಯಾಗಿ ಸಲ್ಲಿಕೆಯಾಗಿದೆ! ಆರ್ಡರ್ ID: ${orderId}`, "🚀");
+            openMyOrders();
         }
 
         function openMyOrders() {
@@ -508,15 +495,8 @@
             if (allOrders.length === 0) {
                 list.innerHTML = "ಯಾವುದೇ ಆರ್ಡರ್‌ಗಳಿಲ್ಲ.";
             } else {
-                let currentTime = Date.now();
-                let twoDaysMs = 2 * 24 * 60 * 60 * 1000;
-
                 list.innerHTML = allOrders.map(o => {
                     let step = o.statusStep || 1;
-                    let isDelivered = (step >= 4 || o.delivered);
-                    let deliveredTime = o.deliveredTime || o.orderTime;
-                    let isWithinTwoDays = (currentTime - deliveredTime) <= twoDaysMs;
-
                     return `
                         <div class="border p-3 rounded-xl bg-gray-50 space-y-3 shadow-sm">
                             <div class="flex justify-between items-center border-b pb-1">
@@ -534,22 +514,29 @@
                                 </div>
                             `).join('')}
 
+                            <!-- 4 ಹಂತದ ಸುಂದರವಾದ ಚುಕ್ಕೆಗಳು (Dots & Progress Tracker) -->
                             <div class="bg-indigo-50 p-3 rounded-xl space-y-2">
                                 <p class="text-[11px] font-bold text-indigo-900">📍 ಲೈವ್ ರೂಟ್ ಟ್ರ್ಯಾಕರ್ / ಸ್ಟೇಟಸ್:</p>
                                 <div class="flex justify-between items-center px-2 relative">
+                                    <!-- ಪ್ರೋಗ್ರೆಸ್ ಲೈನ್ -->
                                     <div class="absolute left-6 right-6 top-3 h-1 bg-gray-300 z-0"></div>
+                                    
+                                    <!-- ಹಂತ 1 -->
                                     <div class="flex flex-col items-center z-10">
                                         <div class="w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold ${step >= 1 ? 'bg-green-600 text-white' : 'bg-gray-300 text-gray-700'}">✓</div>
                                         <span class="text-[9px] font-bold mt-1 text-center">ಕನ್ಫರ್ಮ್</span>
                                     </div>
+                                    <!-- ಹಂತ 2 -->
                                     <div class="flex flex-col items-center z-10">
                                         <div class="w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold ${step >= 2 ? 'bg-green-600 text-white' : 'bg-gray-300 text-gray-700'}">2</div>
                                         <span class="text-[9px] font-bold mt-1 text-center">ಪ್ಯಾಕಿಂಗ್</span>
                                     </div>
+                                    <!-- ಹಂತ 3 -->
                                     <div class="flex flex-col items-center z-10">
                                         <div class="w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold ${step >= 3 ? 'bg-green-600 text-white' : 'bg-gray-300 text-gray-700'}">3</div>
                                         <span class="text-[9px] font-bold mt-1 text-center">ಡೆಲಿವರಿ ಬಾಯ್</span>
                                     </div>
+                                    <!-- ಹಂತ 4 -->
                                     <div class="flex flex-col items-center z-10">
                                         <div class="w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold ${step >= 4 ? 'bg-green-600 text-white' : 'bg-gray-300 text-gray-700'}">4</div>
                                         <span class="text-[9px] font-bold mt-1 text-center">ತಲುಪಿದೆ</span>
@@ -558,22 +545,14 @@
                                 <p class="text-[11px] font-bold text-teal-800 text-center pt-1">${o.statusText || o.status}</p>
                             </div>
 
-                            ${step >= 3 && !o.cancelled ? `
-                                <div class="flex gap-2">
-                                    <a href="tel:${o.phone}" class="flex-1 bg-teal-600 hover:bg-teal-700 text-white text-center py-2 rounded-lg font-bold text-xs shadow">📞 ಡೆಲಿವರಿ ಬಾಯ್ / ಅಂಗಡಿಗೆ ಕಾಲ್ ಮಾಡಿ</a>
-                                </div>
-                            ` : ''}
+                            <div class="flex gap-2">
+                                <a href="tel:${o.phone}" class="flex-1 bg-teal-600 hover:bg-teal-700 text-white text-center py-2 rounded-lg font-bold text-xs shadow">📞 ಡೆಲಿವರಿ ಬಾಯ್ / ಅಂಗಡಿಗೆ ಕಾಲ್ ಮಾಡಿ</a>
+                            </div>
 
-                            ${o.cancelled ? `
-                                <p class="text-[11px] text-red-600 font-bold text-center">❌ ಈ ಆರ್ಡರ್ ರದ್ದುಗೊಳಿಸಲಾಗಿದೆ</p>
-                            ` : !isDelivered ? `
-                                <button type="button" onclick="cancelOrder(${o.id})" class="w-full bg-red-500 hover:bg-red-600 text-white py-1.5 rounded-lg font-bold text-xs shadow cursor-pointer">❌ ಆರ್ಡರ್ ರದ್ದುಗೊಳಿಸಿ (Cancel Order)</button>
-                            ` : o.returned ? `
+                            ${o.returned ? `
                                 <p class="text-[11px] text-red-600 font-bold text-center">🔄 ರಿಟರ್ನ್ ವಿನಂತಿ ಸಲ್ಲಿಸಲಾಗಿದೆ (ರೂ. 50 ಕಡಿತಗೊಂಡು 2-3 ಗಂಟೆಗಳಲ್ಲಿ ಅಮೌಂಟ್ ಬರುತ್ತದೆ)</p>
-                            ` : isWithinTwoDays ? `
-                                <button type="button" onclick="openReturnModal(${o.id})" class="w-full bg-red-500 hover:bg-red-600 text-white py-1.5 rounded-lg font-bold text-xs shadow cursor-pointer">🔄 ರಿಟರ್ನ್ / ಎಕ್ಸ್‌ಚೇಂಜ್ ಮಾಡಿ (2 ದಿನಗಳ ಒಳಗೆ)</button>
                             ` : `
-                                <p class="text-[11px] text-gray-400 font-bold text-center">🔒 2 ದಿನಗಳು ಮುಗಿದಿರುವುದರಿಂದ ರಿಟರ್ನ್ ಅವಕಾಶ ಮುಕ್ತಾಯಗೊಂಡಿದೆ</p>
+                                <button type="button" onclick="openReturnModal(${o.id})" class="w-full bg-red-500 hover:bg-red-600 text-white py-1.5 rounded-lg font-bold text-xs shadow">🔄 ರಿಟರ್ನ್ / ಎಕ್ಸ್‌ಚೇಂಜ್ ಮಾಡಿ (2 ದಿನಗಳ ಒಳಗೆ)</button>
                             `}
                         </div>
                     `;
