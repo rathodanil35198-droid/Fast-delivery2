@@ -507,7 +507,7 @@
             document.getElementById('totalPriceDisplay').innerText = selectedProduct.newPrice * quantity;
         }
 
-        // STEP 3: ADDRESS FORM & GPS
+        // STEP 3: ADDRESS CHECK & FORM
         function checkAndProceedToAddress(forceEdit = false) {
             let savedAddress = JSON.parse(localStorage.getItem('savedCustomerAddress'));
             if (!savedAddress || forceEdit) {
