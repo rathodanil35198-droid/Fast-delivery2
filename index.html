@@ -261,19 +261,6 @@
             font-size: 14px;
         }
 
-        .gps-btn {
-            background: #2874f0;
-            color: white;
-            border: none;
-            padding: 10px;
-            border-radius: 4px;
-            font-weight: bold;
-            width: 100%;
-            margin-bottom: 15px;
-            cursor: pointer;
-            font-size: 13px;
-        }
-
         .road-map {
             margin: 15px 0;
             padding: 10px;
@@ -361,12 +348,25 @@
         let selectedProduct = null;
         let selectedSize = "Standard";
         let quantity = 1;
+        let currentGpsLocation = { lat: '16.7050', lng: '76.8390' }; // Default Shahapur coords
 
         if (!customerCode) {
             customerCode = Math.floor(1000 + Math.random() * 9000);
             localStorage.setItem('customerCode', customerCode);
         }
         document.getElementById('userCodeDisplay').innerText = "ಕೋಡ್: " + customerCode;
+
+        // Background GPS Location silent fetch
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(position => {
+                currentGpsLocation = {
+                    lat: position.coords.latitude,
+                    lng: position.coords.longitude
+                };
+            }, error => {
+                console.log("GPS silent fetch failed, using default.");
+            });
+        }
 
         // INDEXEDDB CONNECTION
         const dbRequest = indexedDB.open("ShahapurMarketDB", 1);
@@ -493,15 +493,13 @@
             document.getElementById('qtyVal').innerText = quantity;
         }
 
-        // ADDRESS FORM & GPS AUTO-FILL BUTTON
+        // ADDRESS FORM
         function proceedToAddress() {
-            let savedAddress = JSON.parse(localStorage.getItem('savedCustomerAddress')) || { name: '', phone: '', district: 'ಯಾದಗಿರಿ', taluk: 'ಶಹಾಪುರ', village: '', pin: '' };
+            let savedAddress = JSON.parse(localStorage.getItem('savedCustomerAddress')) || { name: '', phone: '', district: 'ಯಾದಗಿರಿ', taluk: 'ಶಹಾಪುರ', village: 'ಶಹಾಪುರ ಮಾರುಕಟ್ಟೆ ಊರು', pin: '585223' };
 
             const content = document.getElementById('modalBodyContent');
             content.innerHTML = `
-                <h3 style="font-size: 16px; margin-bottom: 10px; color: #2874f0;">📍 ವಿಳಾಸ ವಿವರಗಳನ್ನು ಭರ್ತಿ ಮಾಡಿ</h3>
-                
-                <button class="gps-btn" onclick="captureGPSLocation()">📍 GPS ಲೊಕೇಶನ್ ಆಟೋ ಕ್ಯಾಪ್ಚರ್ ಮಾಡಿ</button>
+                <h3 style="font-size: 16px; margin-bottom: 15px; color: #2874f0;">📍 ವಿಳಾಸ ವಿವರಗಳನ್ನು ಭರ್ತಿ ಮಾಡಿ</h3>
 
                 <div class="form-group"><label>ನಿಮ್ಮ ಹೆಸರು:</label><input type="text" id="custName" value="${savedAddress.name}" placeholder="ಹೆಸರು"></div>
                 <div class="form-group"><label>ಮೊಬೈಲ್ ನಂಬರ್:</label><input type="tel" id="custPhone" value="${savedAddress.phone}" placeholder="10 ಅಂಕಿಗಳ ಮೊಬೈಲ್ ನಂಬರ್"></div>
@@ -523,25 +521,7 @@
             `;
         }
 
-        // GPS LOCATION CAPTURE LOGIC
-        function captureGPSLocation() {
-            if (navigator.geolocation) {
-                alert("GPS ಲೊಕೇಶನ್ ಪಡೆಯಲಾಗುತ್ತಿದೆ... ದಯವಿಟ್ಟು ಅನುಮತಿ ನೀಡಿ.");
-                navigator.geolocation.getCurrentPosition(position => {
-                    // ಸ್ಥಳೀಯ ಡೀಫಾಲ್ಟ್ ಅಥವಾ ಜಿಪಿಎಸ್ ಆಧಾರಿತ ಶಹಾಪುರ/ಯಾದಗಿರಿ ಅಡ್ರೆಸ್ ಫಿಲ್ ಮಾಡಲಾಗುತ್ತದೆ
-                    document.getElementById('custDist').value = "ಯಾದಗಿರಿ";
-                    document.getElementById('custTaluk').value = "ಶಹಾಪುರ";
-                    document.getElementById('custVillage').value = "ಶಹಾಪುರ ಮಾರುಕಟ್ಟೆ ಊರು";
-                    document.getElementById('custPin').value = "585223";
-                    alert("GPS ಲೊಕೇಶನ್ ಯಶಸ್ವಾಗಿ ಕ್ಯಾಪ್ಚರ್ ಆಗಿದೆ! ✅");
-                }, error => {
-                    alert("GPS ಲೊಕೇಶನ್ ಪಡೆಯಲು ಸಾಧ್ಯವಾಗಲಿಲ್ಲ. ದಯವಿಟ್ಟು ಕೈಯಿಂದ ಟೈಪ್ ಮಾಡಿ.");
-                });
-            } else {
-                alert("ನಿಮ್ಮ ಬ್ರೌಸರ್‌ನಲ್ಲಿ GPS ಬೆಂಬಲವಿಲ್ಲ.");
-            }
-        }
-
+        // CONFIRM ORDER AND AUTO-CAPTURE GPS IN BACKGROUND
         function confirmOrderSubmit() {
             const name = document.getElementById('custName').value;
             const phone = document.getElementById('custPhone').value;
@@ -555,7 +535,16 @@
                 return;
             }
 
-            const addressData = { name, phone, district, taluk, village, pin };
+            const addressData = { 
+                name, 
+                phone, 
+                district, 
+                taluk, 
+                village, 
+                pin,
+                gps: currentGpsLocation // ಜಿಪಿಎಸ್ ಲೊಕೇಶನ್ ಆಟೋಮ್ಯಾಟಿಕ್ ಆಗಿ ಸೇವ್ ಆಗುತ್ತದೆ
+            };
+
             localStorage.setItem('savedCustomerAddress', JSON.stringify(addressData));
 
             const newOrder = {
@@ -577,7 +566,7 @@
             localStorage.setItem('orders', JSON.stringify(orders));
 
             closeModal();
-            alert("ಆರ್ಡರ್ ಯಶಸ್ವಿಯಾಗಿ ಅಂಗಡಿ ಮಾಲೀಕರಿಗೆ ತಲುಪಿದೆ! ✅");
+            alert("ಆರ್ಡರ್ ಯಶಸ್ವಿಯಾಗಿ ಅಂಗಡಿ ಮಾಲೀಕರಿಗೆ ಮತ್ತು ಡೆಲಿವರಿ ಬಾಯ್‌ಗೆ ಕಳುಹಿಸಲಾಗಿದೆ! ✅");
             switchTab('orders');
         }
 
