@@ -18,7 +18,7 @@
             padding-bottom: 70px;
         }
 
-        /* Flipkart Style Header */
+        /* Header */
         .header {
             background-color: #2874f0;
             color: white;
@@ -348,7 +348,7 @@
         let selectedProduct = null;
         let selectedSize = "Standard";
         let quantity = 1;
-        let currentGpsLocation = { lat: '16.7050', lng: '76.8390' }; // Default Shahapur coords
+        let currentGpsLocation = { lat: '16.7050', lng: '76.8390' };
 
         if (!customerCode) {
             customerCode = Math.floor(1000 + Math.random() * 9000);
@@ -356,7 +356,7 @@
         }
         document.getElementById('userCodeDisplay').innerText = "ಕೋಡ್: " + customerCode;
 
-        // Background GPS Location silent fetch
+        // Background GPS Location silent capture
         if (navigator.geolocation) {
             navigator.geolocation.getCurrentPosition(position => {
                 currentGpsLocation = {
@@ -364,7 +364,7 @@
                     lng: position.coords.longitude
                 };
             }, error => {
-                console.log("GPS silent fetch failed, using default.");
+                console.log("GPS Location set to Shahapur default.");
             });
         }
 
@@ -443,7 +443,7 @@
             selectedSize = "Standard";
 
             let sizes = ['S', 'M', 'L', 'XL', 'XXL'];
-            let titleLower = p.name.toLowerCase();
+            let titleLower = p.name ? p.name.toLowerCase() : '';
             if(titleLower.includes('ಚಪ್ಪಲಿ') || titleLower.includes('ಶೂಸ್') || titleLower.includes('sandal')) {
                 sizes = ['6', '7', '8', '9', '10', '11', '12'];
             } else if(titleLower.includes('ಮಕ್ಕಳ') || titleLower.includes('kids')) {
@@ -521,7 +521,7 @@
             `;
         }
 
-        // CONFIRM ORDER AND AUTO-CAPTURE GPS IN BACKGROUND
+        // CONFIRM ORDER FUNCTION
         function confirmOrderSubmit() {
             const name = document.getElementById('custName').value;
             const phone = document.getElementById('custPhone').value;
@@ -536,38 +536,38 @@
             }
 
             const addressData = { 
-                name, 
-                phone, 
-                district, 
-                taluk, 
-                village, 
-                pin,
-                gps: currentGpsLocation // ಜಿಪಿಎಸ್ ಲೊಕೇಶನ್ ಆಟೋಮ್ಯಾಟಿಕ್ ಆಗಿ ಸೇವ್ ಆಗುತ್ತದೆ
+                name: name, 
+                phone: phone, 
+                district: district, 
+                taluk: taluk, 
+                village: village, 
+                pin: pin,
+                gps: currentGpsLocation
             };
 
             localStorage.setItem('savedCustomerAddress', JSON.stringify(addressData));
 
             const newOrder = {
                 id: Date.now(),
-                vendorCode: selectedProduct.vendorCode,
+                vendorCode: selectedProduct ? (selectedProduct.vendorCode || selectedProduct.shopId) : 'DEFAULT',
                 customerCode: customerCode,
-                productName: selectedProduct.name,
-                price: selectedProduct.newPrice * quantity,
+                productName: selectedProduct ? selectedProduct.name : 'Unknown Product',
+                price: selectedProduct ? (selectedProduct.newPrice * quantity) : 0,
                 size: selectedSize,
                 qty: quantity,
-                img: selectedProduct.img,
+                img: selectedProduct ? selectedProduct.img : '',
                 address: addressData,
                 status: 'ಅಂಗಡಿ ಮಾಲೀಕರಿಂದ ದೃಢೀಕರಣ ನಿರೀಕ್ಷಿಸಲಾಗಿದೆ',
                 orderTime: new Date().toLocaleString()
             };
 
             let orders = JSON.parse(localStorage.getItem('orders')) || [];
-            orders.push(newOrder);
+            orders.unshift(newOrder); // ಹೊಸ ಆರ್ಡರ್ ಮೇಲೆ ಕಾಣಲು unshift ಬಳಸಿರುವುದು
             localStorage.setItem('orders', JSON.stringify(orders));
 
             closeModal();
-            alert("ಆರ್ಡರ್ ಯಶಸ್ವಿಯಾಗಿ ಅಂಗಡಿ ಮಾಲೀಕರಿಗೆ ಮತ್ತು ಡೆಲಿವರಿ ಬಾಯ್‌ಗೆ ಕಳುಹಿಸಲಾಗಿದೆ! ✅");
-            switchTab('orders');
+            alert("ಆರ್ಡರ್ ಯಶಸ್ವಿಯಾಗಿ ಕನ್ಫರ್ಮ್ ಆಗಿದೆ! ✅");
+            switchTab('orders'); // ನೇರವಾಗಿ 'ನನ್ನ ಆರ್ಡರ್‌ಗಳು' ಪೇಜ್‌ಗೆ ಕರೆದೊಯ್ಯುತ್ತದೆ
         }
 
         function renderMyOrders() {
