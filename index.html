@@ -327,12 +327,10 @@
     </div>
 
     <div class="container">
-        <!-- VIEW 1: HOME PRODUCTS -->
         <div id="homeView">
             <div id="customerProductGrid" class="product-grid"></div>
         </div>
 
-        <!-- VIEW 2: MY ORDERS -->
         <div id="ordersView" style="display: none;">
             <div style="background: white; padding: 15px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
                 <h3 style="font-size: 16px; margin-bottom: 12px; color: #2874f0; border-bottom: 1px solid #eee; padding-bottom: 6px;">📦 ನನ್ನ ಆರ್ಡರ್‌ಗಳು</h3>
@@ -343,13 +341,11 @@
         </div>
     </div>
 
-    <!-- BOTTOM NAVIGATION -->
     <div class="bottom-nav">
         <div class="nav-item active" onclick="switchTab('home')">🏠 ಹೋಮ್</div>
         <div class="nav-item" onclick="switchTab('orders')">📋 ನನ್ನ ಆರ್ಡರ್</div>
     </div>
 
-    <!-- MODAL -->
     <div id="productModal" class="modal">
         <div class="modal-content" id="modalBodyContent"></div>
     </div>
@@ -368,7 +364,6 @@
         }
         document.getElementById('userCodeDisplay').innerText = "ಕೋಡ್: " + customerCode;
 
-        // INDEXEDDB CONNECTION
         const dbRequest = indexedDB.open("ShahapurMarketDB", 1);
         dbRequest.onsuccess = function(e) {
             db = e.target.result;
@@ -437,6 +432,7 @@
             }
         }
 
+        // STEP 1: CLICK PRODUCT & SHOW SIZE + BUY/CANCEL
         function openProductDetails(p) {
             selectedProduct = p;
             quantity = 1;
@@ -466,16 +462,9 @@
                 <p style="font-size: 13px; font-weight: bold; color: #565656;">ಸೈಜ್ ಆಯ್ಕೆಮಾಡಿ (Select Size):</p>
                 <div class="size-container">${sizeHtml}</div>
 
-                <p style="font-size: 13px; font-weight: bold; color: #565656;">ಪ್ರಮಾಣ (Quantity):</p>
-                <div class="qty-box">
-                    <button class="qty-btn" onclick="changeQty(-1)">-</button>
-                    <span id="qtyVal" style="font-size: 16px; font-weight: bold;">1</span>
-                    <button class="qty-btn" onclick="changeQty(1)">+</button>
-                </div>
-
                 <div class="action-buttons">
                     <button class="btn-cancel" onclick="closeModal()">ಕ್ಯಾನ್ಸೆಲ್</button>
-                    <button class="btn-buy" onclick="checkAndProceedToAddress()">ಈಗಲೇ ಖರೀದಿಸಿ</button>
+                    <button class="btn-buy" onclick="showConfirmStep()">ಈಗಲೇ ಖರೀದಿಸಿ</button>
                 </div>
             `;
             document.getElementById('productModal').style.display = 'flex';
@@ -487,20 +476,46 @@
             selectedSize = size;
         }
 
-        function changeQty(val) {
+        // STEP 2: CONFIRMATION & QTY (+/-) WITH LIVE PRICE UPDATE
+        function showConfirmStep() {
+            const content = document.getElementById('modalBodyContent');
+            content.innerHTML = `
+                <div style="text-align: center; margin-bottom: 15px;">
+                    <img src="${selectedProduct.img}" style="max-height: 150px; object-fit: contain;">
+                </div>
+                <h3 style="font-size: 16px;">${selectedProduct.name}</h3>
+                <p style="font-size: 13px; color: #565656; margin: 5px 0;">ಆಯ್ಕೆಮಾಡಿದ ಸೈಜ್: <b>${selectedSize}</b></p>
+                
+                <div style="font-size: 18px; font-weight: bold; color: #388e3c; margin: 10px 0;">
+                    ಒಟ್ಟು ಮೊತ್ತ: ₹<span id="totalPriceDisplay">${selectedProduct.newPrice * quantity}</span>
+                </div>
+
+                <p style="font-size: 13px; font-weight: bold; color: #565656;">ಪೀಸ್ (Quantity):</p>
+                <div class="qty-box">
+                    <button class="qty-btn" onclick="updateQty(-1)">-</button>
+                    <span id="qtyVal" style="font-size: 16px; font-weight: bold;">${quantity}</span>
+                    <button class="qty-btn" onclick="updateQty(1)">+</button>
+                </div>
+
+                <div class="action-buttons">
+                    <button class="btn-cancel" onclick="openProductDetails(selectedProduct)">ಹಿಂದಕ್ಕೆ</button>
+                    <button class="btn-buy" onclick="checkAndProceedToAddress()">ಕನ್ಫರ್ಮ್ ಮಾಡಿ</button>
+                </div>
+            `;
+        }
+
+        function updateQty(val) {
             quantity += val;
             if (quantity < 1) quantity = 1;
             document.getElementById('qtyVal').innerText = quantity;
+            document.getElementById('totalPriceDisplay').innerText = selectedProduct.newPrice * quantity;
         }
 
-        // CHECK IF ADDRESS ALREADY EXISTS. IF NOT, SHOW FORM. ELSE DIRECT ORDER.
         function checkAndProceedToAddress(forceEdit = false) {
             let savedAddress = JSON.parse(localStorage.getItem('savedCustomerAddress'));
-
             if (!savedAddress || forceEdit) {
                 showAddressForm(savedAddress || { name: '', fatherName: '', phone: '', district: 'ಯಾದಗಿರಿ', taluk: 'ಶಹಾಪುರ', village: '', pin: '' });
             } else {
-                // Address already exists, directly submit order with saved address
                 submitOrderWithAddress(savedAddress);
             }
         }
@@ -509,10 +524,9 @@
             const content = document.getElementById('modalBodyContent');
             content.innerHTML = `
                 <h3 style="font-size: 16px; margin-bottom: 10px; color: #2874f0;">📍 ವಿಳಾಸ ವಿವರಗಳನ್ನು ಭರ್ತಿ ಮಾಡಿ</h3>
-                
                 <button class="gps-btn" onclick="captureGPSLocation()">📍 GPS ಲೊಕೇಶನ್ ಆಟೋ ಕ್ಯಾಪ್ಚರ್ ಮಾಡಿ</button>
 
-                <div class="form-group"><label>ನಿಮ್ಮ ಹೆಸರು:</label><input type="text" id="custName" value="${addr.name}" placeholder="ನಿಮ್ಮ ಹೆಸರು"></div>
+                <div class="form-group"><label>ನಿಮ್ಮ ಹೆಸರು:</label><input type="text" id="custName" value="${addr.name}" placeholder="ಹೆಸರು"></div>
                 <div class="form-group"><label>ತಂದೆಯ ಹೆಸರು:</label><input type="text" id="custFatherName" value="${addr.fatherName || ''}" placeholder="ತಂದೆಯ ಹೆಸರು"></div>
                 <div class="form-group"><label>ಮೊಬೈಲ್ ನಂಬರ್:</label><input type="tel" id="custPhone" value="${addr.phone}" placeholder="10 ಅಂಕಿಗಳ ಮೊಬೈಲ್ ನಂಬರ್"></div>
                 
@@ -527,27 +541,21 @@
                 </div>
 
                 <div class="action-buttons">
-                    <button class="btn-cancel" onclick="openProductDetails(selectedProduct)">ಹಿಂದಕ್ಕೆ</button>
-                    <button class="btn-buy" onclick="saveAndSubmitOrder()">ಆರ್ಡರ್ ದೃಢೀಕರಿಸಿ</button>
+                    <button class="btn-cancel" onclick="showConfirmStep()">ಹಿಂದಕ್ಕೆ</button>
+                    <button class="btn-buy" onclick="saveAndSubmitOrder()">ಆರ್ಡರ್ ಮಾಡಿ</button>
                 </div>
             `;
         }
 
-        // GPS LOCATION AUTO CAPTURE
         function captureGPSLocation() {
             if (navigator.geolocation) {
-                alert("GPS ಲೊಕೇಶನ್ ಪಡೆಯಲಾಗುತ್ತಿದೆ... ದಯವಿಟ್ಟು ಅನುಮತಿ ನೀಡಿ.");
                 navigator.geolocation.getCurrentPosition(position => {
                     document.getElementById('custDist').value = "ಯಾದಗಿರಿ";
                     document.getElementById('custTaluk').value = "ಶಹಾಪುರ";
                     document.getElementById('custVillage').value = "ಶಹಾಪುರ ಮಾರುಕಟ್ಟೆ ಊರು";
                     document.getElementById('custPin').value = "585223";
-                    alert("GPS ಲೊಕೇಶನ್ ಯಶಸ್ವಾಗಿ ಕ್ಯಾಪ್ಚರ್ ಆಗಿದೆ! ✅");
-                }, error => {
-                    alert("GPS ಲೊಕೇಶನ್ ಪಡೆಯಲು ಸಾಧ್ಯವಾಗಲಿಲ್ಲ. ದಯವಿಟ್ಟು ಕೈಯಿಂದ ಟೈಪ್ ಮಾಡಿ.");
+                    alert("GPS ಲೊಕೇಶನ್ ಕ್ಯಾಪ್ಚರ್ ಆಗಿದೆ! ✅");
                 });
-            } else {
-                alert("ನಿಮ್ಮ ಬ್ರೌಸರ್‌ನಲ್ಲಿ GPS ಬೆಂಬಲವಿಲ್ಲ.");
             }
         }
 
@@ -561,7 +569,7 @@
             const pin = document.getElementById('custPin').value;
 
             if(!name || !phone || !village) {
-                alert("ದಯವಿಟ್ಟು ಹೆಸರು, ಮೊಬೈಲ್ ನಂಬರ್ ಮತ್ತು ಊರಿನ ಹೆಸರನ್ನು ಭರ್ತಿ ಮಾಡಿ!");
+                alert("ದಯವಿಟ್ಟು ಎಲ್ಲಾ ಅಗತ್ಯ ವಿವರಗಳನ್ನು ಭರ್ತಿ ಮಾಡಿ!");
                 return;
             }
 
@@ -573,15 +581,15 @@
         function submitOrderWithAddress(addressData) {
             const newOrder = {
                 id: Date.now(),
-                vendorCode: selectedProduct ? (selectedProduct.vendorCode || selectedProduct.shopId) : 'DEFAULT',
+                vendorCode: selectedProduct.vendorCode || selectedProduct.shopId || 'DEFAULT',
                 customerCode: customerCode,
-                productName: selectedProduct ? selectedProduct.name : 'Unknown Product',
-                price: selectedProduct ? (selectedProduct.newPrice * quantity) : 0,
+                productName: selectedProduct.name,
+                price: selectedProduct.newPrice * quantity,
                 size: selectedSize,
                 qty: quantity,
-                img: selectedProduct ? selectedProduct.img : '',
+                img: selectedProduct.img,
                 address: addressData,
-                status: 'ಅಂಗಡಿ ಮಾಲೀಕರಿಂದ ದೃಢೀಕರಣ ನಿರೀಕ್ಷಿಸಲಾಗಿದೆ',
+                status: 'ಆರ್ಡರ್ ಕನ್ಫರ್ಮ್ ಆಗಿದೆ',
                 orderTime: new Date().toLocaleString()
             };
 
@@ -590,10 +598,11 @@
             localStorage.setItem('orders', JSON.stringify(orders));
 
             closeModal();
-            alert("ಆರ್ಡರ್ ಯಶಸ್ವಿಯಾಗಿ ಅಂಗಡಿ ಮಾಲೀಕರಿಗೆ ಕಳುಹಿಸಲಾಗಿದೆ! ✅");
+            alert("ನಿಮ್ಮ ಆರ್ಡರನ್ನು ಕನ್ಫರ್ಮ್ ಮಾಡಿ ಅಂಗಡಿ ಮಾಲೀಕರಿಗೆ ಕಳುಹಿಸಲಾಗಿದೆ! ✅");
             switchTab('orders');
         }
 
+        // STEP 3: 4-STAGE ROADMAP TRACKING & CALL BUTTON
         function renderMyOrders() {
             const container = document.getElementById('myOrdersList');
             container.innerHTML = '';
@@ -601,19 +610,16 @@
             let myOrders = orders.filter(o => o.customerCode == customerCode);
 
             let savedAddr = JSON.parse(localStorage.getItem('savedCustomerAddress'));
-            let addrHtml = '';
             if (savedAddr) {
-                addrHtml = `
+                container.innerHTML += `
                     <div style="background: #f8f9fa; padding: 10px; border-radius: 6px; margin-bottom: 15px; border: 1px solid #ddd; font-size: 13px;">
-                        <strong>ವಿಳಾಸ:</strong> ${savedAddr.name} (${savedAddr.fatherName || ''}), ${savedAddr.village}, ${savedAddr.taluk} (ಜಿಲ್ಲೆ: ${savedAddr.district}) - ${savedAddr.pin}<br>
+                        <strong>ವಿಳಾಸ:</strong> ${savedAddr.name} (${savedAddr.fatherName || ''}), ${savedAddr.village}, ${savedAddr.taluk} - ${savedAddr.pin}<br>
                         <strong>ಮೊಬೈಲ್:</strong> ${savedAddr.phone}
-                        <button style="background: #2874f0; color: white; border: none; padding: 4px 8px; border-radius: 4px; font-size: 11px; float: right; cursor: pointer;" onclick="editAddress()">ಬದಲಾಯಿಸಿ (Change)</button>
+                        <button style="background: #2874f0; color: white; border: none; padding: 4px 8px; border-radius: 4px; font-size: 11px; float: right; cursor: pointer;" onclick="editAddress()">ಬದಲಾಯಿಸಿ</button>
                         <div style="clear: both;"></div>
                     </div>
                 `;
             }
-
-            container.innerHTML = addrHtml;
 
             if (myOrders.length === 0) {
                 container.innerHTML += '<p style="text-align: center; color: #878787; padding: 20px;">ಯಾವುದೇ ಆರ್ಡರ್‌ಗಳಿಲ್ಲ.</p>';
@@ -621,7 +627,12 @@
             }
 
             myOrders.forEach(o => {
-                let isDelivered = o.status.includes('ಡೆಲಿವರಿ ಆಗಿದೆ');
+                let status = o.status || '';
+                let step1 = true;
+                let step2 = status.includes('ಪ್ಯಾಕ್') || status.includes('ಡೆಲಿವರಿ') || status.includes('ಆಗಿದೆ');
+                let step3 = status.includes('ಡೆಲಿವರಿ ಬಾಯ್') || status.includes('ಡೆಲಿವರಿ ಆಗಿದೆ');
+                let step4 = status.includes('ಡೆಲಿವರಿ ಆಗಿದೆ');
+
                 container.innerHTML += `
                     <div style="border: 1px solid #e0e0e0; border-radius: 8px; padding: 12px; margin-bottom: 15px; background: #fff;">
                         <div style="display: flex; gap: 10px; margin-bottom: 10px;">
@@ -634,14 +645,14 @@
                         </div>
 
                         <div class="road-map">
-                            <div class="step-item"><div class="step-dot active"></div> ಆರ್ಡರ್ ಕನ್ಫರ್ಮ್ ಆಗಿದೆ</div>
-                            <div class="step-item"><div class="step-dot ${o.status.includes('ಪ್ಯಾಕ್') || o.status.includes('ಡೆಲಿವರಿ') ? 'active':''}"></div> ಅಂಗಡಿಯಿಂದ ಪ್ಯಾಕ್ ಮಾಡಲಾಗಿದೆ</div>
-                            <div class="step-item"><div class="step-dot ${o.status.includes('ಡೆಲಿವರಿ ಬಾಯ್') || o.status.includes('ಡೆಲಿವರಿ ಆಗಿದೆ') ? 'active':''}"></div> 3 ಗಂಟೆಯೊಳಗೆ ಡೆಲಿವರಿ ಆಗಲಿದೆ 🛵</div>
-                            <div class="step-item"><div class="step-dot ${isDelivered ? 'active':''}"></div> ${o.status}</div>
+                            <div class="step-item"><div class="step-dot ${step1?'active':''}"></div> ನಿಮ್ಮ ಆರ್ಡರ್ ಕನ್ಫರ್ಮ್ ಆಗಿದೆ. ಪ್ಯಾಕಿಂಗ್ ಆದ ತಕ್ಷಣ ಮಾಹಿತಿ ಸಿಗುತ್ತದೆ.</div>
+                            <div class="step-item"><div class="step-dot ${step2?'active':''}"></div> ಅಂಗಡಿ ಮಾಲೀಕರಿಂದ ಪ್ಯಾಕಿಂಗ್ ಮಾಡಿ ಕಳಿಸಲಾಗಿದೆ.</div>
+                            <div class="step-item"><div class="step-dot ${step3?'active':''}"></div> 3 ಗಂಟೆಯೊಳಗೆ ಡೆಲಿವರಿ ಆಗುತ್ತದೆ (ಡೆಲಿವರಿ ಬಾಯ್ ಪಿಕಪ್ ಮಾಡಿದ್ದಾರೆ).</div>
+                            <div class="step-item"><div class="step-dot ${step4?'active':''}"></div> ಡೆಲಿವರಿ ಸಕ್ಸಸ್‌ಫುಲ್ ಆಗಿದೆ! 🎉</div>
                         </div>
 
                         <a href="tel:${o.address.phone}" class="call-btn">📞 ಡೆಲಿವರಿ ಬಾಯ್ ಸಂಪರ್ಕಿಸಿ (Call)</a>
-                        ${isDelivered ? `<button style="background:#ff4757; color:white; border:none; padding:8px; width:100%; border-radius:4px; margin-top:8px; font-weight:bold;" onclick="returnOrder(${o.id})">🔄 ರಿಟರ್ನ್ ಮಾಡಿ (Return)</button>` : ''}
+                        ${step4 ? `<button style="background:#ff4757; color:white; border:none; padding:8px; width:100%; border-radius:4px; margin-top:8px; font-weight:bold;" onclick="returnOrder(${o.id})">🔄 ರಿಟರ್ನ್ ಮಾಡಿ (2 ದಿನದೊಳಗೆ)</button>` : ''}
                     </div>
                 `;
             });
