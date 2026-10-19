@@ -41,6 +41,24 @@
         header h1 {
             font-size: 18px;
             color: var(--primary-yellow);
+            cursor: pointer;
+        }
+
+        .header-right {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+
+        .my-orders-btn {
+            background: #232f3e;
+            color: white;
+            border: 1px solid #485769;
+            padding: 6px 12px;
+            border-radius: 4px;
+            font-size: 13px;
+            cursor: pointer;
+            font-weight: bold;
         }
 
         .screen {
@@ -144,7 +162,7 @@
             margin-top: 15px;
         }
 
-        /* Pop-up Modal */
+        /* Modal Popup */
         .modal-overlay {
             display: none;
             position: fixed;
@@ -205,7 +223,7 @@
             background-color: #f0f0f0;
         }
 
-        /* Order Details & Summary */
+        /* Address & Summary Screen */
         .card-box {
             padding: 16px;
             border-bottom: 8px solid #f0f0f0;
@@ -237,6 +255,7 @@
             cursor: pointer;
         }
 
+        /* Payment Screen */
         .payment-option {
             border: 1px solid #2e7d32;
             background: #f1f8e9;
@@ -245,7 +264,7 @@
             margin-bottom: 16px;
         }
 
-        /* Timeline Dots */
+        /* Timeline */
         .timeline {
             position: relative;
             padding: 20px 0 20px 30px;
@@ -283,10 +302,6 @@
             box-shadow: 0 0 0 3px rgba(46, 125, 50, 0.2);
         }
 
-        .timeline-step.active ~ .timeline-step .dot {
-            background: #ccc;
-        }
-
         .timeline-content h4 {
             font-size: 15px;
             color: #333;
@@ -295,33 +310,6 @@
         .timeline-content p {
             font-size: 13px;
             color: #666;
-            margin-top: 4px;
-        }
-
-        /* Admin Simulation Controls */
-        .admin-panel {
-            background: #fff8e1;
-            border: 1px solid #ffe082;
-            padding: 12px;
-            border-radius: 8px;
-            margin: 16px;
-        }
-
-        .admin-panel h3 {
-            font-size: 13px;
-            color: #856404;
-            margin-bottom: 8px;
-        }
-
-        .admin-btn {
-            background: #007bff;
-            color: white;
-            border: none;
-            padding: 6px 10px;
-            border-radius: 4px;
-            font-size: 12px;
-            cursor: pointer;
-            margin-right: 4px;
             margin-top: 4px;
         }
 
@@ -344,15 +332,33 @@
             margin-top: 8px;
             font-weight: bold;
         }
+
+        /* My Orders List Styling */
+        .order-item-card {
+            background: #fff;
+            border: 1px solid #ddd;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 12px;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .order-item-card:hover {
+            border-color: #007bff;
+            background: #f8f9fa;
+        }
     </style>
 </head>
 <body>
 
-    <!-- 1 ನೇ ಪುಟ: ಪ್ರಾಡಕ್ಟ್ ಪುಟ -->
+    <!-- Screen 1: Product Page -->
     <div id="screen-1" class="screen active">
         <header>
-            <h1>ಅಕ್ವಿಕ್ ಇ-ಶಾಪ್</h1>
-            <span>🛒 1</span>
+            <h1 onclick="switchScreen('screen-1')">ಅಕ್ವಿಕ್ ಇ-ಶಾಪ್</h1>
+            <div class="header-right">
+                <button class="my-orders-btn" onclick="openMyOrders()">📦 ನನ್ನ ಆರ್ಡರ್‌ಗಳು</button>
+                <span>🛒 1</span>
+            </div>
         </header>
         <div class="product-img-container">
             <img src="https://images.unsplash.com/photo-1602810318383-e386cc2a3ccf?w=600" alt="Shirt" class="product-img">
@@ -373,7 +379,7 @@
         </div>
     </div>
 
-    <!-- ಸೈಜ್ ಆಯ್ಕೆಯ ಪೋಪ್‌ಅಪ್ (Modal) -->
+    <!-- Modal: Select Variant/Size -->
     <div id="size-modal" class="modal-overlay">
         <div class="modal-content">
             <div class="modal-header">
@@ -398,10 +404,11 @@
         </div>
     </div>
 
-    <!-- 2 ನೇ ಪುಟ: ಆರ್ಡರ್ ಪ್ರಮಾಣ (Quantity) ಮತ್ತು ವಿಳಾಸ -->
+    <!-- Screen 2: Order Confirmation & Qty -->
     <div id="screen-2" class="screen">
         <header>
-            <h1>ಆರ್ಡರ್ ವಿವರಗಳು</h1>
+            <h1 onclick="switchScreen('screen-1')">ಅಕ್ವಿಕ್ ಇ-ಶಾಪ್</h1>
+            <button class="my-orders-btn" onclick="openMyOrders()">📦 ನನ್ನ ಆರ್ಡರ್‌ಗಳು</button>
         </header>
         <div class="card-box">
             <h4>ಡೆಲಿವರಿ ವಿಳಾಸ (Delivering to)</h4>
@@ -439,10 +446,11 @@
         </div>
     </div>
 
-    <!-- 3 ನೇ ಪುಟ: ಪಾವತಿ ಹಾಗೂ ಕ್ಯಾಶ್ ಆನ್ ಡೆಲಿವರಿ -->
+    <!-- Screen 3: Payment Choice -->
     <div id="screen-3" class="screen">
         <header>
-            <h1>3 ನೇ ಹಂತ: ಪಾವತಿ</h1>
+            <h1 onclick="switchScreen('screen-1')">ಅಕ್ವಿಕ್ ಇ-ಶಾಪ್</h1>
+            <button class="my-orders-btn" onclick="openMyOrders()">📦 ನನ್ನ ಆರ್ಡರ್‌ಗಳು</button>
         </header>
         <div class="card-box">
             <div class="payment-option">
@@ -461,10 +469,11 @@
         </div>
     </div>
 
-    <!-- 4 ನೇ ಪುಟ: 3 ಚುಕ್ಕಿಗಳ ಲೈವ್ ಆರ್ಡರ್ ಟ್ರ್ಯಾಕಿಂಗ್ -->
+    <!-- Screen 4: Order Success & Live Tracking Dots -->
     <div id="screen-4" class="screen">
         <header>
-            <h1>ಆರ್ಡರ್ ಟ್ರ್ಯಾಕಿಂಗ್ (Live Status)</h1>
+            <h1 onclick="switchScreen('screen-1')">ಅಕ್ವಿಕ್ ಇ-ಶಾಪ್</h1>
+            <button class="my-orders-btn" onclick="openMyOrders()">📦 ನನ್ನ ಆರ್ಡರ್‌ಗಳು</button>
         </header>
 
         <div style="padding: 16px; background: #e8f5e9; text-align: center;">
@@ -472,18 +481,9 @@
             <p style="font-size:13px; color:#555; margin-top:4px;">ಅಂದಾಜು ಡೆಲಿವರಿ: 2 ರಿಂದ 3 ಗಂಟೆಯ ಒಳಗೆ</p>
         </div>
 
-        <!-- ಸಿಮ್ಯುಲೇಶನ್ ಟೆಸ್ಟಿಂಗ್ ಕಂಟ್ರೋಲ್ -->
-        <div class="admin-panel">
-            <h3>⚙️ ಪರೀಕ್ಷಿಸಲು ಈ ಕೆಳಗಿನ ಬಟನ್‌ಗಳನ್ನು ಒತ್ತಿ:</h3>
-            <button class="admin-btn" onclick="setStep(1)">1. ಅಂಗಡಿ ಓನರ್ ಕನ್ಫರ್ಮ್</button>
-            <button class="admin-btn" onclick="setStep(2)">2. ಪ್ಯಾಕಿಂಗ್ ಪೂರ್ಣ</button>
-            <button class="admin-btn" onclick="setStep(3)">3. 2-3 ಗಂಟೆಯಲ್ಲಿ ಡೆಲಿವರಿ</button>
-            <button class="admin-btn" onclick="setStep(4)">4. ಡೆಲಿವರಿ ಸಕ್ಸಸ್‌ಫುಲ್</button>
-        </div>
-
-        <!-- 3 ಚುಕ್ಕಿಗಳ ಟೈಮ್‌ಲೈನ್ -->
+        <!-- 3-Dot Timeline Steps -->
         <ul class="timeline">
-            <!-- 1ನೇ ಚುಕ್ಕಿ -->
+            <!-- Step 1 -->
             <li class="timeline-step active" id="step-1">
                 <div class="dot"></div>
                 <div class="timeline-content">
@@ -492,7 +492,7 @@
                 </div>
             </li>
 
-            <!-- 2ನೇ ಚುಕ್ಕಿ -->
+            <!-- Step 2 -->
             <li class="timeline-step" id="step-2">
                 <div class="dot"></div>
                 <div class="timeline-content">
@@ -501,7 +501,7 @@
                 </div>
             </li>
 
-            <!-- 3ನೇ ಚುಕ್ಕಿ -->
+            <!-- Step 3 -->
             <li class="timeline-step" id="step-3">
                 <div class="dot"></div>
                 <div class="timeline-content">
@@ -511,13 +511,26 @@
             </li>
         </ul>
 
-        <!-- ರಿಟರ್ನ್ ಮತ್ತು ಕಾಲ್ ಬಟನ್ (ಡೆಲಿವರಿ ನಂತರ ಹಾಗೂ 2 ದಿನಗಳ ಕಾಲ ಮಾತ್ರ ಲಭ್ಯ) -->
+        <!-- Return Box -->
         <div id="return-container" class="return-box" style="margin: 16px;">
             <h4>🔄 ರಿಟರ್ನ್ ಆಪ್ಷನ್ (2 ದಿನಗಳ ಒಳಗೆ ಮಾತ್ರ):</h4>
             <p style="font-size:12px; color:#555;">ಉತ್ಪನ್ನದಲ್ಲಿ ಸಮಸ್ಯೆಯಿದ್ದರೆ ರಿಟರ್ನ್ ಮಾಡಬಹುದು.</p>
-            <p style="font-size:13px; font-weight:bold; margin-top:5px;">ಡೆಲಿವರಿ ಬಾಯ್ ಸಂಪರ್ಕ: 📞 9876543210</p>
-            <a href="tel:9876543210" class="call-btn">📞 ಡೆಲಿವರಿ ಬಾಯ್‌ಗೆ ಕರೆ ಮಾಡಿ</a>
-            <button class="admin-btn" style="background:#dc3545; margin-top:10px; display:block;" onclick="alert('ರಿಟರ್ನ್ ವಿನಂತಿ ಸಲ್ಲಿಸಲಾಗಿದೆ. ಡೆಲಿವರಿ ಬಾಯ್ ಸಂಪರ್ಕಿಸುವರು.')">ಉತ್ಪನ್ನ ರಿಟರ್ನ್ ಮಾಡಿ</button>
+            <p style="font-size:13px; font-weight:bold; margin-top:5px;">ಡೆಲಿವರಿ ಬಾಯ್ ಸಂಪರ್ಕ: 📞 8105010768</p>
+            <a href="tel:8105010768" class="call-btn">📞 ಡೆಲಿವರಿ ಬಾಯ್‌ಗೆ ಕರೆ ಮಾಡಿ</a>
+        </div>
+    </div>
+
+    <!-- Screen 5: My Orders List Screen -->
+    <div id="screen-my-orders" class="screen">
+        <header>
+            <h1 onclick="switchScreen('screen-1')">ಅಕ್ವಿಕ್ ಇ-ಶಾಪ್</h1>
+            <button class="my-orders-btn" onclick="switchScreen('screen-1')">← ಶಾಪಿಂಗ್‌ಗೆ ಮರಳಿ</button>
+        </header>
+        <div style="padding: 16px;">
+            <h2 style="font-size: 18px; margin-bottom: 12px;">ನಿಮ್ಮ ಎಲ್ಲಾ ಆರ್ಡರ್‌ಗಳು</h2>
+            <div id="orders-list-container">
+                <!-- Orders will dynamically populate here -->
+            </div>
         </div>
     </div>
 
@@ -525,7 +538,7 @@
         let selectedSize = 'M';
         let unitPrice = 442;
         let quantity = 1;
-        let orderTime = null;
+        let myOrders = []; // Array to store all user orders
 
         function openSizeModal() {
             document.getElementById('size-modal').classList.add('active');
@@ -572,63 +585,45 @@
         }
 
         function placeFinalOrder() {
-            orderTime = new Date().getTime();
+            let totalAmount = unitPrice * quantity;
+            let orderObj = {
+                id: 'ORD' + Math.floor(100000 + Math.random() * 900000),
+                title: 'ನೋಫಿಲ್ಟರ್ ಚೆಕ್ಡ್ ಕ್ಯಾಶುವಲ್ ಶರ್ಟ್',
+                size: selectedSize,
+                qty: quantity,
+                amount: totalAmount,
+                date: new Date().toLocaleDateString('kn-IN'),
+                status: 'ಆರ್ಡರ್ ಕನ್ಫರ್ಮ್ ಆಗಿದೆ'
+            };
+
+            myOrders.push(orderObj);
             switchScreen('screen-4');
-            setStep(1);
         }
 
-        // 3 ಚುಕ್ಕಿಗಳ ಸಿಮ್ಯುಲೇಶನ್ ಕಾರ್ಯನಿರ್ವಹಣೆ
-        function setStep(stepNum) {
-            const s1 = document.getElementById('step-1');
-            const s2 = document.getElementById('step-2');
-            const s3 = document.getElementById('step-3');
-            const retBox = document.getElementById('return-container');
+        function openMyOrders() {
+            let container = document.getElementById('orders-list-container');
+            container.innerHTML = '';
 
-            if (stepNum === 1) {
-                s1.className = "timeline-step active";
-                s2.className = "timeline-step";
-                s3.className = "timeline-step";
-                document.getElementById('step1-desc').innerText = "ನಿಮ್ಮ ಆರ್ಡರ್ ಕನ್ಫರ್ಮ್ ಆಗಿದೆ, ಅಂಗಡಿಯ ಮಾಲೀಕರಿಗೆ ಕಳಿಸಲಾಗಿದೆ.";
-                document.getElementById('step2-desc').innerText = "ಅಂಗಡಿಯ ಮಾಲೀಕರಿಂದ ಪ್ಯಾಕಿಂಗ್ ಕಾಯಲಾಗುತ್ತಿದೆ.";
-                document.getElementById('step3-desc').innerText = "ಡೆಲಿವರಿ ಬಾಯ್ ಪಿಕಪ್‌ಗಾಗಿ ಕಾಯಲಾಗುತ್ತಿದೆ.";
-                retBox.style.display = "none";
-            } 
-            else if (stepNum === 2) {
-                s1.className = "timeline-step active";
-                s2.className = "timeline-step active";
-                s3.className = "timeline-step";
-                document.getElementById('step2-desc').innerText = "ನಿಮ್ಮ ಆರ್ಡರ್ ಪ್ಯಾಕಿಂಗ್ ಆಗಿದೆ, ಡೆಲಿವರಿ ಬಾಯ್‌ಗೆ ಕಳಿಸಲಾಗಿದೆ.";
-                retBox.style.display = "none";
-            } 
-            else if (stepNum === 3) {
-                s1.className = "timeline-step active";
-                s2.className = "timeline-step active";
-                s3.className = "timeline-step active";
-                document.getElementById('step3-desc').innerText = "2 ರಿಂದ 3 ಗಂಟೆಯ ಒಳಗೆ ನಿಮ್ಮ ಡೆಲಿವರಿ ಆಗುತ್ತದೆ (ಡೆಲಿವರಿ ಬಾಯ್ ಹಾದಿಯಲ್ಲಿದ್ದಾರೆ).";
-                retBox.style.display = "none";
-            } 
-            else if (stepNum === 4) {
-                s1.className = "timeline-step active";
-                s2.className = "timeline-step active";
-                s3.className = "timeline-step active";
-                document.getElementById('step3-title').innerText = "ಚುಕ್ಕಿ 3: ಡೆಲಿವರಿ ಸಕ್ಸಸ್‌ಫುಲ್ ✔";
-                document.getElementById('step3-desc').innerText = "ಉತ್ಪನ್ನವನ್ನು ಯಶಸ್ವಿಯಾಗಿ ತಲುಪಿಸಲಾಗಿದೆ!";
-                
-                checkReturnEligibility();
-            }
-        }
-
-        // 2 ದಿನಗಳ ರಿಟರ್ನ್ ಗಡುವು ಪರಿಶೀಲನೆ (48 Hours Check)
-        function checkReturnEligibility() {
-            const retBox = document.getElementById('return-container');
-            const now = new Date().getTime();
-            const twoDaysInMs = 2 * 24 * 60 * 60 * 1000;
-
-            if (orderTime && (now - orderTime <= twoDaysInMs)) {
-                retBox.style.display = "block";
+            if (myOrders.length === 0) {
+                container.innerHTML = '<p style="color:#666; text-align:center; padding:20px;">ಯಾವುದೇ ಆರ್ಡರ್‌ಗಳು ಮಾಡಿಲ್ಲ.</p>';
             } else {
-                retBox.style.display = "none";
+                myOrders.forEach((ord, index) => {
+                    container.innerHTML += `
+                        <div class="order-item-card" onclick="viewOrderDetails(${index})">
+                            <strong>${ord.title}</strong><br>
+                            <span style="font-size:13px; color:#555;">ಆರ್ಡರ್ ಐಡಿ: ${ord.id} | ಸೈಜ್: ${ord.size} | ಪೀಸ್: ${ord.qty}</span><br>
+                            <span style="font-size:14px; font-weight:bold; color:#0F1111;">ಮೊತ್ತ: ₹${ord.amount}</span><br>
+                            <span style="font-size:12px; color:var(--green-success); font-weight:bold;">ಸ್ಥಿತಿ: ${ord.status} ➔ ರೂಟ್ ವೀಕ್ಷಿಸಿ</span>
+                        </div>
+                    `;
+                });
             }
+            switchScreen('screen-my-orders');
+        }
+
+        function viewOrderDetails(index) {
+            // Clicking specific order shows its route tracking
+            switchScreen('screen-4');
         }
     </script>
 </body>
