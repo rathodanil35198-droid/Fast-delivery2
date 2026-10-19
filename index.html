@@ -2,7 +2,7 @@
 <html lang="kn">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>ಅಕ್ವಿಕ್ ಇ-ಶಾಪ್ & ಲೈವ್ ಟ್ರ್ಯಾಕಿಂಗ್</title>
     <style>
         :root {
@@ -11,6 +11,7 @@
             --dark-bg: #131921;
             --light-gray: #f2f2f2;
             --green-success: #2e7d32;
+            --red-cancel: #d9534f;
         }
 
         * {
@@ -183,6 +184,8 @@
             border-top-right-radius: 16px;
             padding: 20px;
             animation: slideUp 0.3s ease-out;
+            max-height: 90vh;
+            overflow-y: auto;
         }
 
         @keyframes slideUp {
@@ -228,12 +231,24 @@
             border-bottom: 8px solid #f0f0f0;
         }
 
-        .address-box {
-            background: #f9f9f9;
-            border: 1px dashed #ccc;
-            padding: 12px;
-            border-radius: 8px;
-            margin-top: 8px;
+        .form-group {
+            margin-bottom: 12px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 13px;
+            font-weight: bold;
+            margin-bottom: 4px;
+            color: #333;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            font-size: 14px;
         }
 
         .qty-picker {
@@ -300,6 +315,10 @@
             box-shadow: 0 0 0 3px rgba(46, 125, 50, 0.2);
         }
 
+        .timeline-step.cancelled .dot {
+            background: var(--red-cancel) !important;
+        }
+
         .timeline-content h4 {
             font-size: 15px;
             color: #333;
@@ -311,24 +330,16 @@
             margin-top: 4px;
         }
 
-        .return-box {
-            background: #e3f2fd;
-            padding: 12px;
-            border-radius: 8px;
-            margin-top: 15px;
-            display: none;
-        }
-
-        .call-btn {
-            background: #28a745;
+        .cancel-order-btn {
+            background-color: var(--red-cancel);
             color: white;
-            padding: 8px 16px;
+            width: 100%;
+            padding: 12px;
             border-radius: 20px;
-            text-decoration: none;
-            display: inline-block;
-            font-size: 13px;
-            margin-top: 8px;
             font-weight: bold;
+            border: none;
+            cursor: pointer;
+            margin-top: 20px;
         }
 
         .order-item-card {
@@ -358,10 +369,10 @@
             </div>
         </header>
         <div class="product-img-container">
-            <img src="https://images.unsplash.com/photo-1602810318383-e386cc2a3ccf?w=600" alt="Shirt" class="product-img">
+            <img src="https://images.unsplash.com/photo-1602810318383-e386cc2a3ccf?w=600" alt="Shirt" class="product-img" id="main-product-img">
         </div>
         <div class="product-details-p1">
-            <div class="product-title">ನೋಫಿಲ್ಟರ್ ಚೆಕ್ಡ್ ಕ್ಯಾಶುವಲ್ ಶರ್ಟ್</div>
+            <div class="product-title" id="main-product-title">ನೋಫಿಲ್ಟರ್ ಚೆಕ್ಡ್ ಕ್ಯಾಶುವಲ್ ಶರ್ಟ್</div>
             <div class="price-tag">
                 ₹<span id="p1-price">442</span>
                 <span class="strike-price">₹1,899</span>
@@ -372,11 +383,57 @@
 
         <div class="btn-container">
             <button class="btn btn-cancel" onclick="alert('ಖರೀದಿ ರದ್ದುಗೊಳಿಸಲಾಗಿದೆ')">ಕ್ಯಾನ್ಸಲ್</button>
-            <button class="btn btn-buy" onclick="openSizeModal()">₹442 ಗೆ ಈಗಲೇ ಖರೀದಿಸಿ</button>
+            <button class="btn btn-buy" onclick="handleBuyClick()">₹442 ಗೆ ಈಗಲೇ ಖರೀದಿಸಿ</button>
         </div>
     </div>
 
-    <!-- Modal: Select Variant/Size -->
+    <!-- Modal 1: Registration / Login Form (First Time Only) -->
+    <div id="register-modal" class="modal-overlay">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>ಮೊದಲ ಬಾರಿ ನೋಂದಣಿ (Customer Details)</h3>
+                <button class="close-modal" onclick="closeRegisterModal()">&times;</button>
+            </div>
+            <p style="font-size: 12px; color: #666; margin-bottom: 15px;">ಶಾಪ್ ಓನರ್‌ಗೆ ಆರ್ಡರ್ ಕಳುಹಿಸಲು ದಯವಿಟ್ಟು ನಿಮ್ಮ ವಿವರಗಳನ್ನು ಭರ್ತಿ ಮಾಡಿ (ಒಮ್ಮೆ ಮಾತ್ರ ಕೇಳಲಾಗುತ್ತದೆ).</p>
+            <form id="customer-form" onsubmit="saveCustomerDetails(event)">
+                <div class="form-group">
+                    <label>ನಿಮ್ಮ ಹೆಸರು:</label>
+                    <input type="text" id="cust-name" required placeholder="ಉದಾ: ಅನಿಲ್ ರಾಥೋಡ್">
+                </div>
+                <div class="form-group">
+                    <label>ತಂದೆಯ ಹೆಸರು:</label>
+                    <input type="text" id="cust-father" required placeholder="ತಂದೆಯ ಹೆಸರು">
+                </div>
+                <div class="form-group">
+                    <label>ಮೊಬೈಲ್ ನಂಬರ್:</label>
+                    <input type="tel" id="cust-phone" required placeholder="10 ಅಂಕಿಗಳ ಮೊಬೈಲ್ ನಂಬರ್">
+                </div>
+                <div class="form-group">
+                    <label>ಜಿಲ್ಲೆಯ ಹೆಸರು:</label>
+                    <input type="text" id="cust-district" required placeholder="ಉದಾ: ಯಾದಗಿರಿ">
+                </div>
+                <div class="form-group">
+                    <label>ತಾಲೂಕಿನ ಹೆಸರು:</label>
+                    <input type="text" id="cust-taluk" required placeholder="ಉದಾ: ಶಹಾಪುರ">
+                </div>
+                <div class="form-group">
+                    <label>ಗ್ರಾಮೀಣ ಊರಿನ ಹೆಸರು:</label>
+                    <input type="text" id="cust-village" required placeholder="ಊರು / ವಾರ್ಡ್ ಹೆಸರು">
+                </div>
+                <div class="form-group">
+                    <label>ಪಿನ್ ಕೋಡ್ (Pin Code):</label>
+                    <input type="text" id="cust-pincode" required placeholder="585223">
+                </div>
+                <div class="form-group">
+                    <label>ಜಿಪಿಎಸ್ ಲೊಕೇಶನ್ (GPS Tracker):</label>
+                    <input type="text" id="cust-gps" readonly style="background:#e9ecef;" value="ಲೊಕೇಶನ್ ಪಡೆಯಲಾಗುತ್ತಿದೆ...">
+                </div>
+                <button type="submit" class="btn-primary">ವಿವರಗಳನ್ನು ಉಳಿಸಿ ಮುಂದುವರیಿರಿ</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal 2: Select Variant/Size -->
     <div id="size-modal" class="modal-overlay">
         <div class="modal-content">
             <div class="modal-header">
@@ -409,11 +466,8 @@
         </header>
         <div class="card-box">
             <h4>ಡೆಲಿವರಿ ವಿಳಾಸ (Delivering to)</h4>
-            <div class="address-box">
-                <strong>ಅನಿಲ್ ರಾಥೋಡ್</strong><br>
-                1/29 ಭೀಮರಾಯನಗುಡಿ, ಮಾರುತಿ ನಗರ, ಶಹಾಪುರ<br>
-                ಎಸ್‌ಬಿಐ ಬ್ಯಾಂಕ್ ಹತ್ತಿರ, ಯಾದಗಿರಿ, ಕರ್ನಾಟಕ<br>
-                📞 8105010768
+            <div class="address-box" id="display-saved-address">
+                <!-- Loaded dynamically -->
             </div>
         </div>
 
@@ -479,7 +533,7 @@
         </div>
 
         <!-- 3-Dot Timeline Steps -->
-        <ul class="timeline">
+        <ul class="timeline" id="tracking-timeline">
             <!-- Step 1 -->
             <li class="timeline-step active" id="step-1">
                 <div class="dot"></div>
@@ -508,12 +562,17 @@
             </li>
         </ul>
 
+        <!-- Cancel Order Section -->
+        <div style="padding: 16px;" id="cancel-section">
+            <button class="cancel-order-btn" onclick="cancelCurrentOrder()">ಆರ್ಡರ್ ಕ್ಯಾನ್ಸಲ್ ಮಾಡಿ (Cancel Order)</button>
+        </div>
+
         <!-- Return Box -->
-        <div id="return-container" class="return-box" style="margin: 16px;">
+        <div id="return-container" class="card-box" style="margin: 16px; display:none; background:#e3f2fd;">
             <h4>🔄 ರಿಟರ್ನ್ ಆಪ್ಷನ್ (2 ದಿನಗಳ ಒಳಗೆ ಮಾತ್ರ):</h4>
             <p style="font-size:12px; color:#555;">ಉತ್ಪನ್ನದಲ್ಲಿ ಸಮಸ್ಯೆಯಿದ್ದರೆ ರಿಟರ್ನ್ ಮಾಡಬಹುದು.</p>
             <p style="font-size:13px; font-weight:bold; margin-top:5px;">ಡೆಲಿವರಿ ಬಾಯ್ ಸಂಪರ್ಕ: 📞 8105010768</p>
-            <a href="tel:8105010768" class="call-btn">📞 ಡೆಲಿವರಿ ಬಾಯ್‌ಗೆ ಕರೆ ಮಾಡಿ</a>
+            <a href="tel:8105010768" style="background:#28a745; color:white; padding:8px 16px; border-radius:20px; text-decoration:none; display:inline-block; font-size:13px; margin-top:8px; font-weight:bold;">📞 ಡೆಲಿವರಿ ಬಾಯ್‌ಗೆ ಕರೆ ಮಾಡಿ</a>
         </div>
     </div>
 
@@ -536,6 +595,63 @@
         let unitPrice = 442;
         let quantity = 1;
         let myOrders = [];
+        let currentActiveOrderId = null;
+        let customerData = null;
+        let gpsCoordinates = "ಟಿಪ್ಪಣಿ ಇಲ್ಲ (GPS Off)";
+
+        // Check if customer details already exist in localStorage
+        window.onload = function() {
+            let saved = localStorage.getItem('ar_customer_profile');
+            if (saved) {
+                customerData = JSON.parse(saved);
+            }
+            captureGPS();
+        };
+
+        function captureGPS() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(function(position) {
+                    gpsCoordinates = `Lat: ${position.coords.latitude.toFixed(4)}, Lng: ${position.coords.longitude.toFixed(4)}`;
+                    let gpsField = document.getElementById('cust-gps');
+                    if(gpsField) gpsField.value = gpsCoordinates;
+                }, function(error) {
+                    gpsCoordinates = "ಜಿಪಿಎಸ್ ಲೊಕೇಶನ್ ಸಿಗಲಿಲ್ಲ";
+                    let gpsField = document.getElementById('cust-gps');
+                    if(gpsField) gpsField.value = gpsCoordinates;
+                });
+            }
+        }
+
+        function handleBuyClick() {
+            if (!customerData) {
+                // Open Registration/Login Modal if first time
+                document.getElementById('register-modal').classList.add('active');
+            } else {
+                openSizeModal();
+            }
+        }
+
+        function closeRegisterModal() {
+            document.getElementById('register-modal').classList.remove('active');
+        }
+
+        function saveCustomerDetails(event) {
+            event.preventDefault();
+            customerData = {
+                name: document.getElementById('cust-name').value,
+                father: document.getElementById('cust-father').value,
+                phone: document.getElementById('cust-phone').value,
+                district: document.getElementById('cust-district').value,
+                taluk: document.getElementById('cust-taluk').value,
+                village: document.getElementById('cust-village').value,
+                pincode: document.getElementById('cust-pincode').value,
+                gps: gpsCoordinates
+            };
+            // Save to localStorage so it never asks again
+            localStorage.setItem('ar_customer_profile', JSON.stringify(customerData));
+            closeRegisterModal();
+            openSizeModal();
+        }
 
         function openSizeModal() {
             document.getElementById('size-modal').classList.add('active');
@@ -560,6 +676,18 @@
         function goToScreen2() {
             closeSizeModal();
             document.getElementById('selected-size-display').innerText = selectedSize;
+            
+            // Populate address box
+            if (customerData) {
+                document.getElementById('display-saved-address').innerHTML = `
+                    <strong>${customerData.name} (ತಂದೆ: ${customerData.father})</strong><br>
+                    ಗ್ರಾಮ: ${customerData.village}, ತಾಲೂಕು: ${customerData.taluk}<br>
+                    ಜಿಲ್ಲೆ: ${customerData.district} - ${customerData.pincode}<br>
+                    📞 ${customerData.phone}<br>
+                    📍 GPS: <span style="font-size:11px; color:#007bff;">${customerData.gps}</span>
+                `;
+            }
+
             calculateTotal();
             switchScreen('screen-2');
         }
@@ -585,16 +713,77 @@
             let totalAmount = unitPrice * quantity;
             let orderObj = {
                 id: 'ORD' + Math.floor(100000 + Math.random() * 900000),
-                title: 'ನೋಫಿಲ್ಟರ್ ಚೆಕ್ಡ್ ಕ್ಯಾಶುವಲ್ ಶರ್ಟ್',
+                title: document.getElementById('main-product-title').innerText,
+                image: document.getElementById('main-product-img').src,
                 size: selectedSize,
                 qty: quantity,
                 amount: totalAmount,
+                customer: customerData,
                 date: new Date().toLocaleDateString('kn-IN'),
-                status: 'ಆರ್ಡರ್ ಕನ್ಫರ್ಮ್ ಆಗಿದೆ (ಎರಡು ದಿನ ಒಳಗೆ ಡೆಲಿವರಿ)'
+                status: 'ಆರ್ಡರ್ ಕನ್ಫರ್ಮ್ ಆಗಿದೆ (ಎರಡು ದಿನ ಒಳಗೆ ಡೆಲಿವರಿ)',
+                statusCode: 1
             };
 
             myOrders.push(orderObj);
+            currentActiveOrderId = orderObj.id;
+            loadTrackingView(orderObj);
             switchScreen('screen-4');
+        }
+
+        function loadTrackingView(ord) {
+            let cancelSec = document.getElementById('cancel-section');
+            let timeline = document.getElementById('tracking-timeline');
+            
+            if (ord.statusCode === 0) {
+                // Cancelled status
+                cancelSec.style.display = 'none';
+                timeline.innerHTML = `
+                    <li class="timeline-step cancelled">
+                        <div class="dot"></div>
+                        <div class="timeline-content">
+                            <h4>ಆರ್ಡರ್ ಕ್ಯಾನ್ಸಲ್ ಮಾಡಲಾಗಿದೆ ❌</h4>
+                            <p>ಈ ಆರ್ಡರ್ ಅನ್ನು ಗ್ರಾಹಕರು ರದ್ದುಗೊಳಿಸಿದ್ದಾರೆ. ಅಂಗಡಿ ಮತ್ತು ಡೆಲಿವರಿ ಬಾಯ್‌ಗೆ ತಿಳಿಸಲಾಗಿದೆ.</p>
+                        </div>
+                    </li>
+                `;
+            } else {
+                cancelSec.style.display = 'block';
+                timeline.innerHTML = `
+                    <li class="timeline-step active" id="step-1">
+                        <div class="dot"></div>
+                        <div class="timeline-content">
+                            <h4>ಚುಕ್ಕಿ 1: ಆರ್ಡರ್ ಕನ್ಫರ್ಮ್ ಆಗಿದೆ</h4>
+                            <p>ಅಂಗಡಿ ಮಾಲೀಕರಿಗೆ ನಿಮ್ಮ ಫೋಟೋ, ಸೈಜ್ ಮತ್ತು ಜಿಪಿಎಸ್ ಲೊಕೇಶನ್ ಕಳುಹಿಸಲಾಗಿದೆ. ಎರಡು ದಿನ ಒಳಗೆ ಡೆಲಿವರಿ ಆಗುತ್ತದೆ.</p>
+                        </div>
+                    </li>
+                    <li class="timeline-step" id="step-2">
+                        <div class="dot"></div>
+                        <div class="timeline-content">
+                            <h4>ಚುಕ್ಕಿ 2: ಪ್ಯಾಕಿಂಗ್ ಸ್ಥಿತಿ</h4>
+                            <p>ಶಾಪ್ ಓನರ್ ಪ್ಯಾಕಿಂಗ್ ಪರಿಶೀಲಿಸುತ್ತಿದ್ದಾರೆ.</p>
+                        </div>
+                    </li>
+                    <li class="timeline-step" id="step-3">
+                        <div class="dot"></div>
+                        <div class="timeline-content">
+                            <h4>ಚುಕ್ಕಿ 3: ಡೆಲಿವರಿ ಹಂತ</h4>
+                            <p>ಡೆಲಿವರಿ ಬಾಯ್ ಹಾದಿಯಲ್ಲಿದ್ದಾರೆ.</p>
+                        </div>
+                    </li>
+                `;
+            }
+        }
+
+        function cancelCurrentOrder() {
+            if (confirm("ಖಂಡಿತವಾಗಿಯೂ ಈ ಆರ್ಡರ್ ಕ್ಯಾನ್ಸಲ್ ಮಾಡಲು ಬಯಸುತ್ತೀರಾ?")) {
+                let ord = myOrders.find(o => o.id === currentActiveOrderId);
+                if (ord) {
+                    ord.status = 'ಆರ್ಡರ್ ಕ್ಯಾನ್ಸಲ್ ಮಾಡಲಾಗಿದೆ ❌';
+                    ord.statusCode = 0;
+                    loadTrackingView(ord);
+                    alert("ಆರ್ಡರ್ ಯಶಸ್ವಿಯಾಗಿ ರದ್ದುಗೊಂಡಿದೆ. ಅಂಗಡಿ ಮತ್ತು ಡೆಲಿವರಿ ಬಾಯ್‌ಗೆ ಮಾಹಿತಿ ತಲುಪಿದೆ.");
+                }
+            }
         }
 
         function openMyOrders() {
@@ -604,13 +793,13 @@
             if (myOrders.length === 0) {
                 container.innerHTML = '<p style="color:#666; text-align:center; padding:20px;">ಯಾವುದೇ ಆರ್ಡರ್‌ಗಳು ಮಾಡಿಲ್ಲ.</p>';
             } else {
-                myOrders.forEach((ord, index) => {
+                myOrders.forEach((ord) => {
                     container.innerHTML += `
-                        <div class="order-item-card" onclick="viewOrderDetails(${index})">
+                        <div class="order-item-card" onclick="viewOrder('${ord.id}')">
                             <strong>${ord.title}</strong><br>
-                            <span style="font-size:13px; color:#555;">ಆರ್ಡರ್ ಐಡಿ: ${ord.id} | ಸೈಜ್: ${ord.size} | ಪೀಸ್: ${ord.qty}</span><br>
+                            <span style="font-size:13px; color:#555;">ಐಡಿ: ${ord.id} | ಸೈಜ್: ${ord.size} | ಪೀಸ್: ${ord.qty}</span><br>
                             <span style="font-size:14px; font-weight:bold; color:#0F1111;">ಮೊತ್ತ: ₹${ord.amount}</span><br>
-                            <span style="font-size:12px; color:var(--green-success); font-weight:bold;">ಸ್ಥಿತಿ: ${ord.status} ➔ ರೂಟ್ ವೀಕ್ಷಿಸಿ</span>
+                            <span style="font-size:12px; color:${ord.statusCode === 0 ? 'var(--red-cancel)' : 'var(--green-success)'}; font-weight:bold;">ಸ್ಥಿತಿ: ${ord.status} ➔ ರೂಟ್ ವೀಕ್ಷಿಸಿ</span>
                         </div>
                     `;
                 });
@@ -618,8 +807,13 @@
             switchScreen('screen-my-orders');
         }
 
-        function viewOrderDetails(index) {
-            switchScreen('screen-4');
+        function viewOrder(orderId) {
+            let ord = myOrders.find(o => o.id === orderId);
+            if (ord) {
+                currentActiveOrderId = ord.id;
+                loadTrackingView(ord);
+                switchScreen('screen-4');
+            }
         }
     </script>
 </body>
