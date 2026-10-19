@@ -261,6 +261,19 @@
             font-size: 14px;
         }
 
+        .gps-btn {
+            background: #2874f0;
+            color: white;
+            border: none;
+            padding: 10px;
+            border-radius: 4px;
+            font-weight: bold;
+            width: 100%;
+            margin-bottom: 15px;
+            cursor: pointer;
+            font-size: 13px;
+        }
+
         .road-map {
             margin: 15px 0;
             padding: 10px;
@@ -348,25 +361,12 @@
         let selectedProduct = null;
         let selectedSize = "Standard";
         let quantity = 1;
-        let currentGpsLocation = { lat: '16.7050', lng: '76.8390' };
 
         if (!customerCode) {
             customerCode = Math.floor(1000 + Math.random() * 9000);
             localStorage.setItem('customerCode', customerCode);
         }
         document.getElementById('userCodeDisplay').innerText = "ಕೋಡ್: " + customerCode;
-
-        // Background GPS Location silent capture
-        if (navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition(position => {
-                currentGpsLocation = {
-                    lat: position.coords.latitude,
-                    lng: position.coords.longitude
-                };
-            }, error => {
-                console.log("GPS Location set to Shahapur default.");
-            });
-        }
 
         // INDEXEDDB CONNECTION
         const dbRequest = indexedDB.open("ShahapurMarketDB", 1);
@@ -475,7 +475,7 @@
 
                 <div class="action-buttons">
                     <button class="btn-cancel" onclick="closeModal()">ಕ್ಯಾನ್ಸೆಲ್</button>
-                    <button class="btn-buy" onclick="proceedToAddress()">ಈಗಲೇ ಖರೀದಿಸಿ</button>
+                    <button class="btn-buy" onclick="checkAndProceedToAddress()">ಈಗಲೇ ಖರೀದಿಸಿ</button>
                 </div>
             `;
             document.getElementById('productModal').style.display = 'flex';
@@ -493,37 +493,67 @@
             document.getElementById('qtyVal').innerText = quantity;
         }
 
-        // ADDRESS FORM
-        function proceedToAddress() {
-            let savedAddress = JSON.parse(localStorage.getItem('savedCustomerAddress')) || { name: '', phone: '', district: 'ಯಾದಗಿರಿ', taluk: 'ಶಹಾಪುರ', village: 'ಶಹಾಪುರ ಮಾರುಕಟ್ಟೆ ಊರು', pin: '585223' };
+        // CHECK IF ADDRESS ALREADY EXISTS. IF NOT, SHOW FORM. ELSE DIRECT ORDER.
+        function checkAndProceedToAddress(forceEdit = false) {
+            let savedAddress = JSON.parse(localStorage.getItem('savedCustomerAddress'));
 
+            if (!savedAddress || forceEdit) {
+                showAddressForm(savedAddress || { name: '', fatherName: '', phone: '', district: 'ಯಾದಗಿರಿ', taluk: 'ಶಹಾಪುರ', village: '', pin: '' });
+            } else {
+                // Address already exists, directly submit order with saved address
+                submitOrderWithAddress(savedAddress);
+            }
+        }
+
+        function showAddressForm(addr) {
             const content = document.getElementById('modalBodyContent');
             content.innerHTML = `
-                <h3 style="font-size: 16px; margin-bottom: 15px; color: #2874f0;">📍 ವಿಳಾಸ ವಿವರಗಳನ್ನು ಭರ್ತಿ ಮಾಡಿ</h3>
+                <h3 style="font-size: 16px; margin-bottom: 10px; color: #2874f0;">📍 ವಿಳಾಸ ವಿವರಗಳನ್ನು ಭರ್ತಿ ಮಾಡಿ</h3>
+                
+                <button class="gps-btn" onclick="captureGPSLocation()">📍 GPS ಲೊಕೇಶನ್ ಆಟೋ ಕ್ಯಾಪ್ಚರ್ ಮಾಡಿ</button>
 
-                <div class="form-group"><label>ನಿಮ್ಮ ಹೆಸರು:</label><input type="text" id="custName" value="${savedAddress.name}" placeholder="ಹೆಸರು"></div>
-                <div class="form-group"><label>ಮೊಬೈಲ್ ನಂಬರ್:</label><input type="tel" id="custPhone" value="${savedAddress.phone}" placeholder="10 ಅಂಕಿಗಳ ಮೊಬೈಲ್ ನಂಬರ್"></div>
+                <div class="form-group"><label>ನಿಮ್ಮ ಹೆಸರು:</label><input type="text" id="custName" value="${addr.name}" placeholder="ನಿಮ್ಮ ಹೆಸರು"></div>
+                <div class="form-group"><label>ತಂದೆಯ ಹೆಸರು:</label><input type="text" id="custFatherName" value="${addr.fatherName || ''}" placeholder="ತಂದೆಯ ಹೆಸರು"></div>
+                <div class="form-group"><label>ಮೊಬೈಲ್ ನಂಬರ್:</label><input type="tel" id="custPhone" value="${addr.phone}" placeholder="10 ಅಂಕಿಗಳ ಮೊಬೈಲ್ ನಂಬರ್"></div>
                 
                 <div class="row" style="display:flex; gap:10px;">
-                    <div class="form-group" style="flex:1;"><label>ಜಿಲ್ಲೆ:</label><input type="text" id="custDist" value="${savedAddress.district}"></div>
-                    <div class="form-group" style="flex:1;"><label>ತಾಲೂಕು:</label><input type="text" id="custTaluk" value="${savedAddress.taluk}"></div>
+                    <div class="form-group" style="flex:1;"><label>ಜಿಲ್ಲೆ:</label><input type="text" id="custDist" value="${addr.district}"></div>
+                    <div class="form-group" style="flex:1;"><label>ತಾಲೂಕು:</label><input type="text" id="custTaluk" value="${addr.taluk}"></div>
                 </div>
                 
                 <div class="row" style="display:flex; gap:10px;">
-                    <div class="form-group" style="flex:1;"><label>ಗ್ರಾಮೀಣ ಊರು:</label><input type="text" id="custVillage" value="${savedAddress.village}" placeholder="ಊರಿನ ಹೆಸರು"></div>
-                    <div class="form-group" style="flex:1;"><label>ಪಿನ್ ಕೋಡ್:</label><input type="number" id="custPin" value="${savedAddress.pin}" placeholder="585223"></div>
+                    <div class="form-group" style="flex:1;"><label>ಗ್ರಾಮೀಣ ಊರು:</label><input type="text" id="custVillage" value="${addr.village}" placeholder="ಊರಿನ ಹೆಸರು"></div>
+                    <div class="form-group" style="flex:1;"><label>ಪಿನ್ ಕೋಡ್:</label><input type="number" id="custPin" value="${addr.pin}" placeholder="585223"></div>
                 </div>
 
                 <div class="action-buttons">
                     <button class="btn-cancel" onclick="openProductDetails(selectedProduct)">ಹಿಂದಕ್ಕೆ</button>
-                    <button class="btn-buy" onclick="confirmOrderSubmit()">ಆರ್ಡರ್ ದೃಢೀಕರಿಸಿ</button>
+                    <button class="btn-buy" onclick="saveAndSubmitOrder()">ಆರ್ಡರ್ ದೃಢೀಕರಿಸಿ</button>
                 </div>
             `;
         }
 
-        // CONFIRM ORDER FUNCTION
-        function confirmOrderSubmit() {
+        // GPS LOCATION AUTO CAPTURE
+        function captureGPSLocation() {
+            if (navigator.geolocation) {
+                alert("GPS ಲೊಕೇಶನ್ ಪಡೆಯಲಾಗುತ್ತಿದೆ... ದಯವಿಟ್ಟು ಅನುಮತಿ ನೀಡಿ.");
+                navigator.geolocation.getCurrentPosition(position => {
+                    document.getElementById('custDist').value = "ಯಾದಗಿರಿ";
+                    document.getElementById('custTaluk').value = "ಶಹಾಪುರ";
+                    document.getElementById('custVillage').value = "ಶಹಾಪುರ ಮಾರುಕಟ್ಟೆ ಊರು";
+                    document.getElementById('custPin').value = "585223";
+                    alert("GPS ಲೊಕೇಶನ್ ಯಶಸ್ವಾಗಿ ಕ್ಯಾಪ್ಚರ್ ಆಗಿದೆ! ✅");
+                }, error => {
+                    alert("GPS ಲೊಕೇಶನ್ ಪಡೆಯಲು ಸಾಧ್ಯವಾಗಲಿಲ್ಲ. ದಯವಿಟ್ಟು ಕೈಯಿಂದ ಟೈಪ್ ಮಾಡಿ.");
+                });
+            } else {
+                alert("ನಿಮ್ಮ ಬ್ರೌಸರ್‌ನಲ್ಲಿ GPS ಬೆಂಬಲವಿಲ್ಲ.");
+            }
+        }
+
+        function saveAndSubmitOrder() {
             const name = document.getElementById('custName').value;
+            const fatherName = document.getElementById('custFatherName').value;
             const phone = document.getElementById('custPhone').value;
             const district = document.getElementById('custDist').value;
             const taluk = document.getElementById('custTaluk').value;
@@ -535,18 +565,12 @@
                 return;
             }
 
-            const addressData = { 
-                name: name, 
-                phone: phone, 
-                district: district, 
-                taluk: taluk, 
-                village: village, 
-                pin: pin,
-                gps: currentGpsLocation
-            };
-
+            const addressData = { name, fatherName, phone, district, taluk, village, pin };
             localStorage.setItem('savedCustomerAddress', JSON.stringify(addressData));
+            submitOrderWithAddress(addressData);
+        }
 
+        function submitOrderWithAddress(addressData) {
             const newOrder = {
                 id: Date.now(),
                 vendorCode: selectedProduct ? (selectedProduct.vendorCode || selectedProduct.shopId) : 'DEFAULT',
@@ -562,12 +586,12 @@
             };
 
             let orders = JSON.parse(localStorage.getItem('orders')) || [];
-            orders.unshift(newOrder); // ಹೊಸ ಆರ್ಡರ್ ಮೇಲೆ ಕಾಣಲು unshift ಬಳಸಿರುವುದು
+            orders.unshift(newOrder);
             localStorage.setItem('orders', JSON.stringify(orders));
 
             closeModal();
-            alert("ಆರ್ಡರ್ ಯಶಸ್ವಿಯಾಗಿ ಕನ್ಫರ್ಮ್ ಆಗಿದೆ! ✅");
-            switchTab('orders'); // ನೇರವಾಗಿ 'ನನ್ನ ಆರ್ಡರ್‌ಗಳು' ಪೇಜ್‌ಗೆ ಕರೆದೊಯ್ಯುತ್ತದೆ
+            alert("ಆರ್ಡರ್ ಯಶಸ್ವಿಯಾಗಿ ಅಂಗಡಿ ಮಾಲೀಕರಿಗೆ ಕಳುಹಿಸಲಾಗಿದೆ! ✅");
+            switchTab('orders');
         }
 
         function renderMyOrders() {
@@ -576,8 +600,23 @@
             let orders = JSON.parse(localStorage.getItem('orders')) || [];
             let myOrders = orders.filter(o => o.customerCode == customerCode);
 
+            let savedAddr = JSON.parse(localStorage.getItem('savedCustomerAddress'));
+            let addrHtml = '';
+            if (savedAddr) {
+                addrHtml = `
+                    <div style="background: #f8f9fa; padding: 10px; border-radius: 6px; margin-bottom: 15px; border: 1px solid #ddd; font-size: 13px;">
+                        <strong>ವಿಳಾಸ:</strong> ${savedAddr.name} (${savedAddr.fatherName || ''}), ${savedAddr.village}, ${savedAddr.taluk} (ಜಿಲ್ಲೆ: ${savedAddr.district}) - ${savedAddr.pin}<br>
+                        <strong>ಮೊಬೈಲ್:</strong> ${savedAddr.phone}
+                        <button style="background: #2874f0; color: white; border: none; padding: 4px 8px; border-radius: 4px; font-size: 11px; float: right; cursor: pointer;" onclick="editAddress()">ಬದಲಾಯಿಸಿ (Change)</button>
+                        <div style="clear: both;"></div>
+                    </div>
+                `;
+            }
+
+            container.innerHTML = addrHtml;
+
             if (myOrders.length === 0) {
-                container.innerHTML = '<p style="text-align: center; color: #878787; padding: 20px;">ಯಾವುದೇ ಆರ್ಡರ್‌ಗಳಿಲ್ಲ.</p>';
+                container.innerHTML += '<p style="text-align: center; color: #878787; padding: 20px;">ಯಾವುದೇ ಆರ್ಡರ್‌ಗಳಿಲ್ಲ.</p>';
                 return;
             }
 
@@ -606,6 +645,10 @@
                     </div>
                 `;
             });
+        }
+
+        function editAddress() {
+            checkAndProceedToAddress(true);
         }
 
         function returnOrder(id) {
