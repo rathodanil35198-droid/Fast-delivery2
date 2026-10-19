@@ -223,7 +223,6 @@
             background-color: #f0f0f0;
         }
 
-        /* Address & Summary Screen */
         .card-box {
             padding: 16px;
             border-bottom: 8px solid #f0f0f0;
@@ -255,7 +254,6 @@
             cursor: pointer;
         }
 
-        /* Payment Screen */
         .payment-option {
             border: 1px solid #2e7d32;
             background: #f1f8e9;
@@ -333,7 +331,6 @@
             font-weight: bold;
         }
 
-        /* My Orders List Styling */
         .order-item-card {
             background: #fff;
             border: 1px solid #ddd;
@@ -478,7 +475,7 @@
 
         <div style="padding: 16px; background: #e8f5e9; text-align: center;">
             <h2 style="color: var(--green-success); font-size:18px;">🎉 ಧನ್ಯವಾದಗಳು! ನಿಮ್ಮ ಆರ್ಡರ್ ಸ್ವೀಕರಿಸಲಾಗಿದೆ</h2>
-            <p style="font-size:13px; color:#555; margin-top:4px;">ಅಂದಾಜು ಡೆಲಿವರಿ: 2 ರಿಂದ 3 ಗಂಟೆಯ ಒಳಗೆ</p>
+            <p style="font-size:13px; color:#555; margin-top:4px;">ಎರಡು ದಿನ ಒಳಗೆ ನಿಮಗೆ ಡೆಲಿವರಿ ಆಗುತ್ತದೆ</p>
         </div>
 
         <!-- 3-Dot Timeline Steps -->
@@ -488,7 +485,7 @@
                 <div class="dot"></div>
                 <div class="timeline-content">
                     <h4 id="step1-title">ಚುಕ್ಕಿ 1: ಆರ್ಡರ್ ಕನ್ಫರ್ಮ್ ಆಗಿದೆ</h4>
-                    <p id="step1-desc">ನಿಮ್ಮ ಆರ್ಡರ್ ಕನ್ಫರ್ಮ್ ಆಗಿದೆ, ಅಂಗಡಿಯ ಮಾಲೀಕರಿಗೆ ಕಳಿಸಲಾಗಿದೆ.</p>
+                    <p id="step1-desc">ನಿಮ್ಮ ಆರ್ಡರ್ ಕನ್ಫರ್ಮ್ ಆಗಿದೆ, ಅಂಗಡಿಯ ಮಾಲೀಕರಿಗೆ ಕಳಿಸಲಾಗಿದೆ. ಎರಡು ದಿನ ಒಳಗೆ ನಿಮಗೆ ಡೆಲಿವರಿ ಆಗುತ್ತದೆ.</p>
                 </div>
             </li>
 
@@ -538,7 +535,7 @@
         let selectedSize = 'M';
         let unitPrice = 442;
         let quantity = 1;
-        let myOrders = []; // Array to store all user orders
+        let myOrders = [];
 
         function openSizeModal() {
             document.getElementById('size-modal').classList.add('active');
@@ -593,7 +590,7 @@
                 qty: quantity,
                 amount: totalAmount,
                 date: new Date().toLocaleDateString('kn-IN'),
-                status: 'ಆರ್ಡರ್ ಕನ್ಫರ್ಮ್ ಆಗಿದೆ'
+                status: 'ಆರ್ಡರ್ ಕನ್ಫರ್ಮ್ ಆಗಿದೆ (ಎರಡು ದಿನ ಒಳಗೆ ಡೆಲಿವರಿ)'
             };
 
             myOrders.push(orderObj);
@@ -622,7 +619,6 @@
         }
 
         function viewOrderDetails(index) {
-            // Clicking specific order shows its route tracking
             switchScreen('screen-4');
         }
     </script>
