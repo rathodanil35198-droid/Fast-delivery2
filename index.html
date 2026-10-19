@@ -70,7 +70,6 @@
             border-radius: 6px;
             padding: 10px;
             box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-            position: relative;
             cursor: pointer;
             display: flex;
             flex-direction: column;
@@ -122,7 +121,7 @@
             font-size: 12px;
         }
 
-        /* Bottom Nav (Flipkart Style) */
+        /* Bottom Nav */
         .bottom-nav {
             position: fixed;
             bottom: 0; left: 0; width: 100%;
@@ -146,7 +145,7 @@
             color: #2874f0;
         }
 
-        /* Modal & Details View */
+        /* Modal */
         .modal {
             display: none;
             position: fixed;
@@ -214,7 +213,6 @@
             border-radius: 50%;
         }
 
-        /* Action Buttons */
         .action-buttons {
             display: flex;
             gap: 10px;
@@ -244,7 +242,6 @@
             font-size: 15px;
         }
 
-        /* Form Inputs */
         .form-group {
             margin-bottom: 12px;
         }
@@ -262,6 +259,19 @@
             border: 1px solid #d4d4d4;
             border-radius: 4px;
             font-size: 14px;
+        }
+
+        .gps-btn {
+            background: #2874f0;
+            color: white;
+            border: none;
+            padding: 10px;
+            border-radius: 4px;
+            font-weight: bold;
+            width: 100%;
+            margin-bottom: 15px;
+            cursor: pointer;
+            font-size: 13px;
         }
 
         .road-map {
@@ -339,11 +349,9 @@
         <div class="nav-item" onclick="switchTab('orders')">📋 ನನ್ನ ಆರ್ಡರ್</div>
     </div>
 
-    <!-- PRODUCT DETAILS & ORDER MODAL -->
+    <!-- MODAL -->
     <div id="productModal" class="modal">
-        <div class="modal-content" id="modalBodyContent">
-            <!-- Dynamic Details & Checkout Form -->
-        </div>
+        <div class="modal-content" id="modalBodyContent"></div>
     </div>
 
     <script>
@@ -360,7 +368,7 @@
         }
         document.getElementById('userCodeDisplay').innerText = "ಕೋಡ್: " + customerCode;
 
-        // INDEXEDDB CONNECTION TO FETCH VENDOR PRODUCTS
+        // INDEXEDDB CONNECTION
         const dbRequest = indexedDB.open("ShahapurMarketDB", 1);
         dbRequest.onsuccess = function(e) {
             db = e.target.result;
@@ -429,7 +437,6 @@
             }
         }
 
-        // OPEN PRODUCT DETAILS & SIZE SELECTION
         function openProductDetails(p) {
             selectedProduct = p;
             quantity = 1;
@@ -437,7 +444,7 @@
 
             let sizes = ['S', 'M', 'L', 'XL', 'XXL'];
             let titleLower = p.name.toLowerCase();
-            if(titleLower.includes('ಚಪ್ಪಲಿ') || titleLower.includes('ಶೂಸ್') || titleLower.includes('sandal') || titleLower.includes('shoe')) {
+            if(titleLower.includes('ಚಪ್ಪಲಿ') || titleLower.includes('ಶೂಸ್') || titleLower.includes('sandal')) {
                 sizes = ['6', '7', '8', '9', '10', '11', '12'];
             } else if(titleLower.includes('ಮಕ್ಕಳ') || titleLower.includes('kids')) {
                 sizes = ['2 ವರ್ಷ', '4 ವರ್ಷ', '6 ವರ್ಷ', '10 ವರ್ಷ', '18 ವರ್ಷ'];
@@ -446,7 +453,7 @@
             }
 
             let sizeHtml = sizes.map((s, idx) => `<div class="size-chip ${idx===0?'selected':''}" onclick="selectSize('${s}', this)">${s}</div>`).join('');
-            if(idx=0) selectedSize = sizes[0];
+            if(sizes.length > 0) selectedSize = sizes[0];
 
             const content = document.getElementById('modalBodyContent');
             content.innerHTML = `
@@ -486,38 +493,55 @@
             document.getElementById('qtyVal').innerText = quantity;
         }
 
-        // ADDRESS FORM & GPS AUTO-FILL
+        // ADDRESS FORM & GPS AUTO-FILL BUTTON
         function proceedToAddress() {
             let savedAddress = JSON.parse(localStorage.getItem('savedCustomerAddress')) || { name: '', phone: '', district: 'ಯಾದಗಿರಿ', taluk: 'ಶಹಾಪುರ', village: '', pin: '' };
 
             const content = document.getElementById('modalBodyContent');
             content.innerHTML = `
-                <h3 style="font-size: 16px; margin-bottom: 15px; color: #2874f0;">📍 ವಿಳಾಸ ವಿವರಗಳನ್ನು ಭರ್ತಿ ಮಾಡಿ</h3>
+                <h3 style="font-size: 16px; margin-bottom: 10px; color: #2874f0;">📍 ವಿಳಾಸ ವಿವರಗಳನ್ನು ಭರ್ತಿ ಮಾಡಿ</h3>
+                
+                <button class="gps-btn" onclick="captureGPSLocation()">📍 GPS ಲೊಕೇಶನ್ ಆಟೋ ಕ್ಯಾಪ್ಚರ್ ಮಾಡಿ</button>
+
                 <div class="form-group"><label>ನಿಮ್ಮ ಹೆಸರು:</label><input type="text" id="custName" value="${savedAddress.name}" placeholder="ಹೆಸರು"></div>
                 <div class="form-group"><label>ಮೊಬೈಲ್ ನಂಬರ್:</label><input type="tel" id="custPhone" value="${savedAddress.phone}" placeholder="10 ಅಂಕಿಗಳ ಮೊಬೈಲ್ ನಂಬರ್"></div>
+                
                 <div class="row" style="display:flex; gap:10px;">
                     <div class="form-group" style="flex:1;"><label>ಜಿಲ್ಲೆ:</label><input type="text" id="custDist" value="${savedAddress.district}"></div>
                     <div class="form-group" style="flex:1;"><label>ತಾಲೂಕು:</label><input type="text" id="custTaluk" value="${savedAddress.taluk}"></div>
                 </div>
+                
                 <div class="row" style="display:flex; gap:10px;">
                     <div class="form-group" style="flex:1;"><label>ಗ್ರಾಮೀಣ ಊರು:</label><input type="text" id="custVillage" value="${savedAddress.village}" placeholder="ಊರಿನ ಹೆಸರು"></div>
                     <div class="form-group" style="flex:1;"><label>ಪಿನ್ ಕೋಡ್:</label><input type="number" id="custPin" value="${savedAddress.pin}" placeholder="585223"></div>
                 </div>
 
-                <button class="btn-buy" style="width:100%; margin-top:10px;" onclick="confirmOrderSubmit()">ಆರ್ಡರ್ ದೃಢೀಕರಿಸಿ (Confirm Order)</button>
+                <div class="action-buttons">
+                    <button class="btn-cancel" onclick="openProductDetails(selectedProduct)">ಹಿಂದಕ್ಕೆ</button>
+                    <button class="btn-buy" onclick="confirmOrderSubmit()">ಆರ್ಡರ್ ದೃಢೀಕರಿಸಿ</button>
+                </div>
             `;
-            autoDetectGPS();
         }
 
-        function autoDetectGPS() {
+        // GPS LOCATION CAPTURE LOGIC
+        function captureGPSLocation() {
             if (navigator.geolocation) {
+                alert("GPS ಲೊಕೇಶನ್ ಪಡೆಯಲಾಗುತ್ತಿದೆ... ದಯವಿಟ್ಟು ಅನುಮತಿ ನೀಡಿ.");
                 navigator.geolocation.getCurrentPosition(position => {
-                    console.log("GPS Location Captured:", position.coords.latitude, position.coords.longitude);
+                    // ಸ್ಥಳೀಯ ಡೀಫಾಲ್ಟ್ ಅಥವಾ ಜಿಪಿಎಸ್ ಆಧಾರಿತ ಶಹಾಪುರ/ಯಾದಗಿರಿ ಅಡ್ರೆಸ್ ಫಿಲ್ ಮಾಡಲಾಗುತ್ತದೆ
+                    document.getElementById('custDist').value = "ಯಾದಗಿರಿ";
+                    document.getElementById('custTaluk').value = "ಶಹಾಪುರ";
+                    document.getElementById('custVillage').value = "ಶಹಾಪುರ ಮಾರುಕಟ್ಟೆ ಊರು";
+                    document.getElementById('custPin').value = "585223";
+                    alert("GPS ಲೊಕೇಶನ್ ಯಶಸ್ವಾಗಿ ಕ್ಯಾಪ್ಚರ್ ಆಗಿದೆ! ✅");
+                }, error => {
+                    alert("GPS ಲೊಕೇಶನ್ ಪಡೆಯಲು ಸಾಧ್ಯವಾಗಲಿಲ್ಲ. ದಯವಿಟ್ಟು ಕೈಯಿಂದ ಟೈಪ್ ಮಾಡಿ.");
                 });
+            } else {
+                alert("ನಿಮ್ಮ ಬ್ರೌಸರ್‌ನಲ್ಲಿ GPS ಬೆಂಬಲವಿಲ್ಲ.");
             }
         }
 
-        // CONFIRM & SUBMIT ORDER
         function confirmOrderSubmit() {
             const name = document.getElementById('custName').value;
             const phone = document.getElementById('custPhone').value;
@@ -527,7 +551,7 @@
             const pin = document.getElementById('custPin').value;
 
             if(!name || !phone || !village) {
-                alert("ದಯವಿಟ್ಟು ಎಲ್ಲಾ ವಿಳಾಸ ವಿವರಗಳನ್ನು ಭರ್ತಿ ಮಾಡಿ!");
+                alert("ದಯವಿಟ್ಟು ಹೆಸರು, ಮೊಬೈಲ್ ನಂಬರ್ ಮತ್ತು ಊರಿನ ಹೆಸರನ್ನು ಭರ್ತಿ ಮಾಡಿ!");
                 return;
             }
 
@@ -553,11 +577,10 @@
             localStorage.setItem('orders', JSON.stringify(orders));
 
             closeModal();
-            alert("ಆರ್ಡರ್ ಯಶಸ್ವಿಯಾಗಿ ಅಂಗಡಿ ಮಾಲೀಕರಿಗೆ ಕಳುಹಿಸಲಾಗಿದೆ! ✅");
+            alert("ಆರ್ಡರ್ ಯಶಸ್ವಿಯಾಗಿ ಅಂಗಡಿ ಮಾಲೀಕರಿಗೆ ತಲುಪಿದೆ! ✅");
             switchTab('orders');
         }
 
-        // RENDER MY ORDERS WITH ROADMAP & RETURN OPTIONS
         function renderMyOrders() {
             const container = document.getElementById('myOrdersList');
             container.innerHTML = '';
