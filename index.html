@@ -432,8 +432,7 @@
         function openProductDetails(p) {
             selectedProduct = p;
             quantity = 1;
-            selectedSize = "Standard";
-
+            
             let sizes = ['S', 'M', 'L', 'XL', 'XXL'];
             let titleLower = p.name ? p.name.toLowerCase() : '';
             if(titleLower.includes('ಚಪ್ಪಲಿ') || titleLower.includes('ಶೂಸ್') || titleLower.includes('sandal')) {
@@ -444,8 +443,9 @@
                 sizes = ['28', '30', '32', '34', '36', '38'];
             }
 
+            selectedSize = sizes[0];
+
             let sizeHtml = sizes.map((s, idx) => `<div class="size-chip ${idx===0?'selected':''}" onclick="selectSize('${s}', this)">${s}</div>`).join('');
-            if(sizes.length > 0) selectedSize = sizes[0];
 
             const content = document.getElementById('modalBodyContent');
             content.innerHTML = `
