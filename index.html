@@ -22,7 +22,7 @@
             <div id="modal-icon" class="text-4xl">🎉</div>
             <h3 id="modal-title" class="text-lg font-bold text-gray-800">ಯಶಸ್ವಿ!</h3>
             <p id="modal-message" class="text-xs text-gray-600"></p>
-            <div id="modal-buttons" class="flex flex-col gap-2 pt-2">
+            <div id="modal-buttons" class="flex gap-2 pt-2">
                 <button onclick="closeModal()" class="w-full bg-indigo-600 text-white py-2 rounded-xl font-bold text-xs">ಸರಿ (OK)</button>
             </div>
         </div>
@@ -70,7 +70,7 @@
             
             <!-- ಟ್ಯಾಬ್ ಬಟನ್‌ಗಳು -->
             <div class="flex gap-2 mb-2">
-                <button onclick="switchCustomerTab('browse')" id="tab-browse" class="flex-1 bg-indigo-600 text-white py-2 rounded-xl text-xs font-bold">🛍️ ವಸ್ತುಗಳು</button>
+                <button onclick="switchCustomerTab('browse')" id="tab-browse" class="flex-1 bg-indigo-600 text-white py-2 rounded-xl text-xs font-bold">🛍️ ವಸ್ತುಗಳು (Browse)</button>
                 <button onclick="switchCustomerTab('orders')" id="tab-orders" class="flex-1 bg-gray-200 text-gray-700 py-2 rounded-xl text-xs font-bold">📦 ನನ್ನ ಆರ್ಡರ್‌ಗಳು</button>
             </div>
 
@@ -86,7 +86,7 @@
             <!-- ನನ್ನ ಆರ್ಡರ್‌ಗಳು & ಟ್ರ್ಯಾಕಿಂಗ್ ಸೆಕ್ಷನ್ -->
             <div id="cust-orders-section" class="space-y-3 hidden">
                 <div class="bg-white p-4 rounded-xl shadow space-y-2">
-                    <h3 class="font-bold text-sm text-gray-800 border-b pb-1">📦 ನನ್ನ ಆರ್ಡರ್‌ಗಳು</h3>
+                    <h3 class="font-bold text-sm text-gray-800 border-b pb-1">📦 ನನ್ನ ಆರ್ಡರ್‌ಗಳು (My Orders)</h3>
                     <div id="customer-orders-list" class="text-xs text-gray-600">ಯಾವುದೇ ಆರ್ಡರ್‌ಗಳಿಲ್ಲ.</div>
                 </div>
             </div>
@@ -188,7 +188,7 @@
                         <img src="${p.backPhoto}" onclick="zoomImage('${p.backPhoto}')" class="w-32 h-36 object-cover rounded-xl border shadow cursor-pointer">
                     </div>
                     <div>
-                        <h4 class="font-bold text-gray-800 text-sm">${p.name} (<span class="text-red-600">ಸೈಜ್: ${p.size || 'M'}</span>)</h4>
+                        <h4 class="font-bold text-gray-800 text-sm">${p.name} (<span class="text-red-600">ಸೈಜ್: ${p.size}</span>)</h4>
                         <p class="text-[11px] text-gray-500">ಅಂಗಡಿ: ${p.vendorShop}</p>
                         <p class="text-[11px] text-indigo-600">ಬಣ್ಣ: ${p.colors} | ಸ್ಟಾಕ್: ${p.stock}</p>
                         <div class="flex items-center gap-2 mt-1">
@@ -215,14 +215,14 @@
                 <div class="text-left space-y-3 text-xs">
                     <div class="bg-gray-50 p-2 rounded border space-y-1">
                         <p class="font-bold text-gray-800"><b>ವಿಳಾಸ:</b> ${currentCustomer.name}</p>
-                        <p class="text-gray-600">${currentCustomer.city}, ${currentCustomer.taluk} ತಾಲೂಕು, ${currentCustomer.district} ಜಿಲ್ಲೆ - ${currentCustomer.pincode}</p>
+                        <p class="text-gray-600">1/29 Bheemrav Gudi Maruti Nagar, ${currentCustomer.city}, Near SBI Branch, ${currentCustomer.taluk} Taluk, ${currentCustomer.district} District, Karnataka - ${currentCustomer.pincode}</p>
                         <p class="text-gray-600"><b>ಫೋನ್:</b> ${currentCustomer.phone}</p>
                     </div>
 
                     <div class="flex gap-3 items-center border-b pb-2">
                         <img src="${p.frontPhoto}" class="w-16 h-16 object-cover rounded-lg border">
                         <div>
-                            <p class="font-bold text-gray-800">${p.name} (<span class="text-red-600">ಸೈಜ್: ${p.size || 'M'}</span>)</p>
+                            <p class="font-bold text-gray-800">${p.name} (<span class="text-red-600">ಸೈಜ್: ${p.size}</span>)</p>
                             <p class="text-green-600 font-bold">₹${p.discPrice}</p>
                         </div>
                     </div>
@@ -245,7 +245,7 @@
                         </select>
                     </div>
 
-                    <button onclick="confirmOrderPopup(${p.id})" class="w-full bg-yellow-400 text-black py-2.5 rounded-xl font-bold text-xs shadow hover:bg-yellow-500">ಮುಂದುವರಿಸಿ (Continue)</button>
+                    <button onclick="confirmOrderPopup(${p.id})" class="w-full bg-yellow-400 text-black py-2.5 rounded-xl font-bold text-xs shadow hover:bg-yellow-500">Continue (ಆರ್ಡರ್ ಮಾಡಿ)</button>
                 </div>
             `;
             showModal("ಆರ್ಡರ್ ವಿವರಗಳು", html, "🛒", "");
@@ -268,11 +268,11 @@
 
             let confirmHtml = `
                 <div class="text-left space-y-3 text-xs">
-                    <p class="font-bold text-gray-800 text-sm">ಆರ್ಡರ್ ದೃಢೀಕರಿಸಿ</p>
+                    <p class="font-bold text-gray-800 text-sm">ಕ್ಯಾಶ್ ಆನ್ ಡೆಲಿವರಿ ಆರ್ಡರ್ ದೃಢೀಕರಿಸಿ</p>
                     <p class="text-gray-600">ನೀವು ಆರ್ಡರ್ ಡೆಲಿವರಿ ಪಡೆಯುವಾಗ ನಗದು ಅಥವಾ UPI ಮೂಲಕ ಪಾವತಿಸಿ.</p>
                     <div class="bg-gray-50 p-2 rounded border space-y-1">
-                        <p><b>ಒಟ್ಟು ಮೊತ್ತ:</b> ₹${totalAmount} (${paymentMode})</p>
-                        <p><b>ವಸ್ತು:</b> ${p.name} (ಸೈಜ್: ${p.size || 'M'}) x${qty}</p>
+                        <p><b>ಮೊತ್ತ:</b> ₹${totalAmount} (${paymentMode})</p>
+                        <p><b>ವಸ್ತು:</b> ${p.name} (ಸೈಜ್: ${p.size}) x${qty}</p>
                     </div>
                     <div class="flex gap-2 pt-2">
                         <button onclick="closeModal()" class="flex-1 bg-gray-200 text-gray-800 py-2.5 rounded-xl font-bold">ರದ್ದುಗೊಳಿಸಿ</button>
@@ -295,8 +295,8 @@
                 taluk: currentCustomer.taluk,
                 city: currentCustomer.city,
                 pincode: currentCustomer.pincode,
-                address: `${currentCustomer.city}, ${currentCustomer.taluk} ತಾಲೂಕು, ${currentCustomer.district} ಜಿಲ್ಲೆ - ${currentCustomer.pincode}`,
-                items: [{ ...p, quantity: qty, size: p.size || 'M' }],
+                address: `1/29 Bheemrav Gudi Maruti Nagar, ${currentCustomer.city}, Near SBI Branch, ${currentCustomer.taluk} Taluk, ${currentCustomer.district} District, Karnataka - ${currentCustomer.pincode}`,
+                items: [{ ...p, quantity: qty }],
                 totalAmount: totalAmount,
                 paymentMethod: paymentMode,
                 status: 'ಆರ್ಡರ್ ಸ್ವೀಕರಿಸಲಾಗಿದೆ - ಪ್ಯಾಕಿಂಗ್ ನಡೆಯುತ್ತಿದೆ',
@@ -313,10 +313,10 @@
             savedOrders.push(newOrder);
             localStorage.setItem('market_orders', JSON.stringify(savedOrders));
 
-            showModal("ಯಶಸ್ವಿ!", `
+            showModal("Thanks for shopping!", `
                 <div class="text-center space-y-2">
                     <div class="text-green-600 text-5xl font-bold">✅</div>
-                    <p class="font-bold text-sm text-gray-800">ಆರ್ಡರ್ ಯಶಸ್ವಿಯಾಗಿ ಸಲ್ಲಿಸಲಾಗಿದೆ!</p>
+                    <p class="font-bold text-sm text-gray-800">Thanks for shopping with us!</p>
                     <p class="text-xs text-green-700 font-semibold">ನೀವು ಉಳಿಸಿದ ಮೊತ್ತ: ₹${(p.origPrice - p.discPrice) * qty}</p>
                     <p class="text-xs text-gray-600">ಒಟ್ಟು ಮೊತ್ತ: ₹${totalAmount} (${paymentMode})</p>
                     <button onclick="closeModal(); switchCustomerTab('orders');" class="w-full bg-indigo-600 text-white py-2.5 rounded-xl font-bold text-xs mt-2">ನನ್ನ ಆರ್ಡರ್‌ಗಳು ನೋಡಿ</button>
@@ -329,7 +329,7 @@
             let savedOrders = JSON.parse(localStorage.getItem('market_orders')) || [];
             let myOrders = savedOrders.filter(o => o.phone === currentCustomer.phone);
 
-            // ಹೊಸ ಆರ್ಡರ್‌ಗಳು ಮೇಲ್ಭಾಗದಲ್ಲಿ, ಕ್ಯಾನ್ಸಲ್ ಅಥವಾ ಡೆಲಿವರಿ ಆದ ಹಳೆಯ ಆರ್ಡರ್‌ಗಳು ಕೆಳಭಾಗದಲ್ಲಿ (ಲಾಕ್ ಆಗಿ) ಕಾಣುವಂತೆ ವಿಂಗಡಿಸುವುದು[span_2](start_span)[span_2](end_span)
+            // ಹೊಸ ಆರ್ಡರ್‌ಗಳು ಮೊದಲು (ಮೇಲ್ಭಾಗದಲ್ಲಿ), ಹಳೆಯದು ಅಥವಾ ಡೆಲಿವರಿ ಆದದ್ದು ಅಥವಾ ಕ್ಯಾನ್ಸಲ್ ಆದದ್ದು ಕೆಳಭಾಗದಲ್ಲಿ (ಲಾಕ್ ಆಗಿ) ಕಾಣುವಂತೆ ವಿಂಗಡಿಸುವುದು
             myOrders.sort((a, b) => {
                 if (a.isCancelled !== b.isCancelled) return a.isCancelled ? 1 : -1;
                 if (a.delivered !== b.delivered) return a.delivered ? 1 : -1;
@@ -351,7 +351,7 @@
                         <div class="flex gap-2 items-center">
                             <img src="${i.frontPhoto}" class="w-12 h-12 object-cover rounded border">
                             <div>
-                                <p class="font-bold text-xs">${i.name} (<span class="text-red-600">ಸೈಜ್: ${i.size \vert{}\vert{} 'M'}</span>) x${i.quantity}</p>
+                                <p class="font-bold text-xs">${i.name} (<span class="text-red-600">ಸೈಜ್: ${i.size}</span>) x${i.quantity}</p>
                                 <p class="text-[11px] text-green-600 font-bold">₹${i.discPrice * i.quantity}</p>
                             </div>
                         </div>
@@ -439,7 +439,7 @@
                             <div class="flex gap-2 items-center border-b pb-1">
                                 <img src="${i.frontPhoto}" class="w-12 h-12 object-cover rounded border">
                                 <div class="flex-1">
-                                    <p class="font-bold">${i.name} (<span class="text-red-600">ಸೈಜ್: ${i.size \vert{}\vert{} 'M'}</span>) x${i.quantity}</p>
+                                    <p class="font-bold">${i.name} (<span class="text-red-600">ಸೈಜ್: ${i.size}</span>) x${i.quantity}</p>
                                     <p class="text-green-600 font-bold">₹${i.discPrice * i.quantity}</p>
                                 </div>
                             </div>
@@ -449,15 +449,12 @@
                     <div class="border-t pt-2 text-[11px] text-gray-600 space-y-1">
                         <p><b>ಗ್ರಾಹಕರ ಹೆಸರು:</b> ${o.customerName} (📞 ${o.phone})</p>
                         <p><b>ಪೂರ್ಣ ವಿಳಾಸ:</b> ${o.address}</p>
+                        <p><b>ಜಿಲ್ಲೆ/ತಾಲೂಕು:</b> ${o.district} ಜಿಲ್ಲೆ, ${o.taluk} ತಾಲೂಕು, ${o.city}</p>
+                        <p><b>ಪಿನ್ ಕೋಡ್:</b> ${o.pincode}</p>
                     </div>
                 </div>
             `;
-            
-            // ಇಲ್ಲಿ ನೀವು ಕೇಳಿದಂತೆ ಕ್ಯಾನ್ಸಲೇಶನ್ ಮತ್ತು ಇತರ ಬಟನ್‌ಗಳ ಕೆಳಗೆ 'ಸರಿ (OK)' ಬಟನ್ ಬರುವಂತೆ ಜೋಡಿಸಲಾಗಿದೆ
-            let buttonsHtml = `
-                <button onclick="closeModal()" class="w-full bg-indigo-600 text-white py-2 rounded-xl font-bold text-xs">ಸರಿ (OK)</button>
-            `;
-            showModal("ಆರ್ಡರ್ ಟ್ರ್ಯಾಕಿಂಗ್ ವಿವರ", html, "📦", buttonsHtml);
+            showModal("ಆರ್ಡರ್ ಟ್ರ್ಯಾಕಿಂಗ್ ವಿವರ", html, "📦", '<button onclick="closeModal()" class="w-full bg-indigo-600 text-white py-2 rounded-xl font-bold text-xs">ಸರಿ (OK)</button>');
         }
 
         function cancelCustomerOrder(id) {
