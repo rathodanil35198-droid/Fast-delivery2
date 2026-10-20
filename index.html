@@ -59,12 +59,12 @@
 
     <!-- ಆರ್ಡರ್ ಕನ್ಫರ್ಮೇಷನ್ ಪಾಪ್‌ಅಪ್ -->
     <div id="order-confirm-modal" class="fixed inset-0 bg-black bg-opacity-60 z-50 hidden flex items-center justify-center p-4">
-        <div class="bg-white rounded-2xl p-5 max-w-sm w-full space-y-3 shadow-2xl">
+        <div class="bg-white rounded-2xl p-5 max-w-sm w-full space-y-3">
             <h3 class="font-bold text-sm text-gray-800 border-b pb-1">ಕ್ಯಾಶ್ ಆನ್ ಡೆಲಿವರಿ ಆರ್ಡರ್ ದೃಢೀಕರಿಸಿ</h3>
-            <p class="text-xs text-gray-600">ನೀವು ಆರ್ಡರ್ ಡೆಲಿವರಿ ಪಡೆಯುವಾಗ ನಗದು ಅಥವಾ UPI ಮೂಲಕ ಪಾವತಿಸಿ. ಓಪನ್ ಡೆಲಿವರಿ ಸೌಲಭ್ಯ ಲಭ್ಯವಿದೆ.</p>
+            <p class="text-xs text-gray-600">ನೀವು ಆರ್ಡರ್ ಡೆಲಿವರಿ ಪಡೆಯುವಾಗ ನಗದು ಅಥವಾ UPI ಮೂಲಕ ಪಾವತಿಸಿ[span_0](start_span)[span_0](end_span). ಓಪನ್ ಡೆಲಿವರಿ ಸೌಲಭ್ಯ ಲಭ್ಯವಿದೆ.</p>
             <div class="flex gap-2 pt-2">
                 <button onclick="closeOrderConfirm()" class="flex-1 bg-gray-200 text-gray-800 py-2 rounded-xl text-xs font-bold">ರದ್ದುಗೊಳಿಸಿ</button>
-                <button onclick="confirmFinalOrder()" class="flex-1 bg-amber-400 hover:bg-amber-500 text-gray-900 py-2 rounded-xl text-xs font-bold shadow">ಆರ್ಡರ್ ದೃಢೀಕರಿಸಿ</button>
+                <button onclick="confirmFinalOrder()" class="flex-1 bg-amber-400 text-gray-900 py-2 rounded-xl text-xs font-bold">ಆರ್ಡರ್ ದೃಢೀಕರಿಸಿ</button>
             </div>
         </div>
     </div>
@@ -179,8 +179,8 @@
                         </select>
                     </div>
 
-                    <button type="button" onclick="proceedToOrderConfirm()" class="w-full bg-amber-400 hover:bg-amber-500 text-gray-900 py-3 rounded-xl font-bold text-xs shadow-lg cursor-pointer">🚀 ಆರ್ಡರ್ ಮುಂದುವರಿಸಿ (Continue)</button>
-                    <button type="button" onclick="closeCart()" class="w-full bg-gray-200 text-gray-700 py-2 rounded-xl font-bold text-xs cursor-pointer">ಕ್ಯಾನ್ಸಲ್ ಮಾಡಿ</button>
+                    <button onclick="proceedToOrderConfirm()" class="w-full bg-amber-400 hover:bg-amber-500 text-gray-900 py-3 rounded-xl font-bold text-xs shadow-lg">🚀 ಆರ್ಡರ್ ಮುಂದುವರಿಸಿ (Continue)</button>
+                    <button onclick="closeCart()" class="w-full bg-gray-200 text-gray-700 py-2 rounded-xl font-bold text-xs">ಕ್ಯಾನ್ಸಲ್ ಮಾಡಿ</button>
                 </div>
             </div>
         </div>
@@ -241,7 +241,7 @@
                             <span class="text-xs font-bold text-green-600">₹${p.discPrice}</span>
                             <span class="text-[10px] text-gray-400 line-through">₹${p.origPrice}</span>
                         </div>
-                        <button type="button" onclick="event.stopPropagation(); openProductDetail(${p.id})" class="w-full bg-amber-400 hover:bg-amber-500 text-gray-900 py-1.5 rounded-xl text-[11px] font-bold shadow">ಈಗ ಖರೀದಿಸಿ / ಆಯ್ಕೆ</button>
+                        <button onclick="event.stopPropagation(); openProductDetail(${p.id})" class="w-full bg-amber-400 hover:bg-amber-500 text-gray-900 py-1.5 rounded-xl text-[11px] font-bold shadow">ಈಗ ಖರೀದಿಸಿ / ಆಯ್ಕೆ</button>
                     </div>
                 </div>
             `).join('');
@@ -267,7 +267,7 @@
                 let shoeNums = [5, 6, 7, 8, 9, 10, 11, 12];
                 selectedSizeForProduct = '7 No';
                 sizeContainer.innerHTML = shoeNums.map((num, idx) => `
-                    <button type="button" onclick="selectSizeOption('${num} No')" id="sz-opt-${num}" class="px-3 py-1 border rounded text-xs font-bold ${idx === 2 ? 'bg-indigo-600 text-white' : 'bg-gray-100 text-gray-800'}">${num} No</button>
+                    <button onclick="selectSizeOption('${num} No')" id="sz-opt-${num}" class="px-3 py-1 border rounded text-xs font-bold ${idx === 2 ? 'bg-indigo-600 text-white' : 'bg-gray-100 text-gray-800'}">${num} No</button>
                 `).join('');
             } else if (p.category === 'Gifts') {
                 sizeLabel.innerText = "ಗಿಫ್ಟ್ ಅಳತೆ (ಉದ್ದ ಹಾಗೂ ಅಗಲ):";
@@ -282,7 +282,7 @@
                 let sizes = ['XS', 'S', 'M', 'L', 'XL', 'XXL'];
                 selectedSizeForProduct = 'M';
                 sizeContainer.innerHTML = sizes.map((sz, idx) => `
-                    <button type="button" onclick="selectSizeOption('${sz}')" id="sz-opt-${sz}" class="px-3 py-1 border rounded text-xs font-bold ${idx === 2 ? 'bg-indigo-600 text-white' : 'bg-gray-100 text-gray-800'}">${sz}</button>
+                    <button onclick="selectSizeOption('${sz}')" id="sz-opt-${sz}" class="px-3 py-1 border rounded text-xs font-bold ${idx === 2 ? 'bg-indigo-600 text-white' : 'bg-gray-100 text-gray-800'}">${sz}</button>
                 `).join('');
             }
 
@@ -379,11 +379,11 @@
                             </div>
                             <div class="flex items-center gap-2">
                                 <div class="flex items-center border rounded bg-gray-50">
-                                    <button type="button" onclick="changeQty(${index}, -1)" class="px-2 py-0.5 font-bold text-gray-700">-</button>
+                                    <button onclick="changeQty(${index}, -1)" class="px-2 py-0.5 font-bold text-gray-700">-</button>
                                     <span class="px-2 text-xs font-bold">${item.quantity}</span>
-                                    <button type="button" onclick="changeQty(${index}, 1)" class="px-2 py-0.5 font-bold text-gray-700">+</button>
+                                    <button onclick="changeQty(${index}, 1)" class="px-2 py-0.5 font-bold text-gray-700">+</button>
                                 </div>
-                                <button type="button" onclick="removeFromCart(${index})" class="text-red-500 font-bold px-1.5">✕</button>
+                                <button onclick="removeFromCart(${index})" class="text-red-500 font-bold px-1.5">✕</button>
                             </div>
                         </div>
                     `;
@@ -464,8 +464,7 @@
                 address: `${city}, ${taluk} ತಾಲೂಕು, ${district} ಜಿಲ್ಲೆ - ${pincode}`,
                 paymentMethod: paymentMethod,
                 paymentSuccess: paymentMethod === 'Cash on Delivery' ? false : true,
-                statusStep: 1,
-                statusText: '1. ನಿಮ್ಮ ಆರ್ಡರ್ ಕನ್ಫರ್ಮ್ ಆಗಿದೆ - 2 ದಿನಗಳ ಒಳಗೆ ತಲುಪುತ್ತದೆ',
+                status: '1. ನಿಮ್ಮ ಆರ್ಡರ್ ಕನ್ಫರ್ಮ್ ಆಗಿದೆ - 2 ದಿನಗಳ ಒಳಗೆ ತಲುಪುತ್ತದೆ',
                 acceptedByVendor: null,
                 packingReady: false,
                 delivered: false,
@@ -495,68 +494,40 @@
             if (allOrders.length === 0) {
                 list.innerHTML = "ಯಾವುದೇ ಆರ್ಡರ್‌ಗಳಿಲ್ಲ.";
             } else {
-                list.innerHTML = allOrders.map(o => {
-                    let step = o.statusStep || 1;
-                    return `
-                        <div class="border p-3 rounded-xl bg-gray-50 space-y-3 shadow-sm">
-                            <div class="flex justify-between items-center border-b pb-1">
-                                <span class="font-bold text-indigo-700 text-xs">ಆರ್ಡರ್ ID: ${o.id}</span>
-                                <span class="text-[10px] bg-indigo-100 text-indigo-800 px-2 py-0.5 rounded font-bold">${o.paymentMethod}</span>
-                            </div>
-
-                            ${o.items.map(i => `
-                                <div class="flex gap-2 items-center">
-                                    <img src="${i.frontPhoto}" class="w-10 h-10 object-cover rounded border">
-                                    <div>
-                                        <p class="font-bold text-xs">${i.name} (<span class="text-red-600">${i.size}</span>) x${i.quantity}</p>
-                                        <p class="text-[10px] text-green-600 font-bold">₹${i.discPrice * i.quantity}</p>
-                                    </div>
-                                </div>
-                            `).join('')}
-
-                            <!-- 4 ಹಂತದ ಸುಂದರವಾದ ಚುಕ್ಕೆಗಳು (Dots & Progress Tracker) -->
-                            <div class="bg-indigo-50 p-3 rounded-xl space-y-2">
-                                <p class="text-[11px] font-bold text-indigo-900">📍 ಲೈವ್ ರೂಟ್ ಟ್ರ್ಯಾಕರ್ / ಸ್ಟೇಟಸ್:</p>
-                                <div class="flex justify-between items-center px-2 relative">
-                                    <!-- ಪ್ರೋಗ್ರೆಸ್ ಲೈನ್ -->
-                                    <div class="absolute left-6 right-6 top-3 h-1 bg-gray-300 z-0"></div>
-                                    
-                                    <!-- ಹಂತ 1 -->
-                                    <div class="flex flex-col items-center z-10">
-                                        <div class="w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold ${step >= 1 ? 'bg-green-600 text-white' : 'bg-gray-300 text-gray-700'}">✓</div>
-                                        <span class="text-[9px] font-bold mt-1 text-center">ಕನ್ಫರ್ಮ್</span>
-                                    </div>
-                                    <!-- ಹಂತ 2 -->
-                                    <div class="flex flex-col items-center z-10">
-                                        <div class="w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold ${step >= 2 ? 'bg-green-600 text-white' : 'bg-gray-300 text-gray-700'}">2</div>
-                                        <span class="text-[9px] font-bold mt-1 text-center">ಪ್ಯಾಕಿಂಗ್</span>
-                                    </div>
-                                    <!-- ಹಂತ 3 -->
-                                    <div class="flex flex-col items-center z-10">
-                                        <div class="w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold ${step >= 3 ? 'bg-green-600 text-white' : 'bg-gray-300 text-gray-700'}">3</div>
-                                        <span class="text-[9px] font-bold mt-1 text-center">ಡೆಲಿವರಿ ಬಾಯ್</span>
-                                    </div>
-                                    <!-- ಹಂತ 4 -->
-                                    <div class="flex flex-col items-center z-10">
-                                        <div class="w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold ${step >= 4 ? 'bg-green-600 text-white' : 'bg-gray-300 text-gray-700'}">4</div>
-                                        <span class="text-[9px] font-bold mt-1 text-center">ತಲುಪಿದೆ</span>
-                                    </div>
-                                </div>
-                                <p class="text-[11px] font-bold text-teal-800 text-center pt-1">${o.statusText || o.status}</p>
-                            </div>
-
-                            <div class="flex gap-2">
-                                <a href="tel:${o.phone}" class="flex-1 bg-teal-600 hover:bg-teal-700 text-white text-center py-2 rounded-lg font-bold text-xs shadow">📞 ಡೆಲಿವರಿ ಬಾಯ್ / ಅಂಗಡಿಗೆ ಕಾಲ್ ಮಾಡಿ</a>
-                            </div>
-
-                            ${o.returned ? `
-                                <p class="text-[11px] text-red-600 font-bold text-center">🔄 ರಿಟರ್ನ್ ವಿನಂತಿ ಸಲ್ಲಿಸಲಾಗಿದೆ (ರೂ. 50 ಕಡಿತಗೊಂಡು 2-3 ಗಂಟೆಗಳಲ್ಲಿ ಅಮೌಂಟ್ ಬರುತ್ತದೆ)</p>
-                            ` : `
-                                <button type="button" onclick="openReturnModal(${o.id})" class="w-full bg-red-500 hover:bg-red-600 text-white py-1.5 rounded-lg font-bold text-xs shadow">🔄 ರಿಟರ್ನ್ / ಎಕ್ಸ್‌ಚೇಂಜ್ ಮಾಡಿ (2 ದಿನಗಳ ಒಳಗೆ)</button>
-                            `}
+                list.innerHTML = allOrders.map(o => `
+                    <div class="border p-3 rounded-xl bg-gray-50 space-y-2">
+                        <div class="flex justify-between items-center border-b pb-1">
+                            <span class="font-bold text-indigo-700 text-xs">ಆರ್ಡರ್ ID: ${o.id}</span>
+                            <span class="text-[10px] bg-indigo-100 text-indigo-800 px-2 py-0.5 rounded font-bold">${o.paymentMethod}</span>
                         </div>
-                    `;
-                }).join('');
+
+                        ${o.items.map(i => `
+                            <div class="flex gap-2 items-center">
+                                <img src="${i.frontPhoto}" class="w-10 h-10 object-cover rounded border">
+                                <div>
+                                    <p class="font-bold text-xs">${i.name} (<span class="text-red-600">${i.size}</span>) x${i.quantity}</p>
+                                    <p class="text-[10px] text-green-600 font-bold">₹${i.discPrice * i.quantity}</p>
+                                    <p class="text-[10px] text-blue-600 font-bold">ಅಂಗಡಿ ಕಾಲ್: <a href="tel:${i.vendorPhone || '9353444070'}" class="underline">📞 ಸಂಪರ್ಕಿಸಿ</a></p>
+                                </div>
+                            </div>
+                        `).join('')}
+
+                        <div class="bg-indigo-50 p-2 rounded-lg text-[11px] text-indigo-900 font-bold">
+                            📍 ಲೈವ್ ರೂಟ್ ಟ್ರ್ಯಾಕರ್ / ಸ್ಟೇಟಸ್:<br>
+                            <span class="text-teal-700">${o.status}</span>
+                        </div>
+
+                        <div class="flex gap-2">
+                            <a href="tel:${o.phone}" class="flex-1 bg-teal-600 text-white text-center py-1.5 rounded-lg font-bold text-[11px]">📞 ಡೆಲಿವರಿ ಬಾಯ್ / ಅಂಗಡಿಗೆ ಕಾಲ್ ಮಾಡಿ</a>
+                        </div>
+
+                        ${o.returned ? `
+                            <p class="text-[11px] text-red-600 font-bold">🔄 ರಿಟರ್ನ್ ವಿನಂತಿ ಸಲ್ಲಿಸಲಾಗಿದೆ (ರೂ. 50 ಕಡಿತಗೊಂಡು 2-3 ಗಂಟೆಗಳಲ್ಲಿ ಅಮೌಂಟ್ ಬರುತ್ತದೆ)</p>
+                        ` : `
+                            <button onclick="openReturnModal(${o.id})" class="w-full bg-red-500 text-white py-1.5 rounded-lg font-bold text-[11px]">🔄 ರಿಟರ್ನ್ / ಎಕ್ಸ್‌ಚೇಂಜ್ ಮಾಡಿ (2 ದಿನಗಳ ಒಳಗೆ)</button>
+                        `}
+                    </div>
+                `).join('');
             }
             document.getElementById('orders-drawer').classList.remove('hidden');
         }
@@ -590,8 +561,7 @@
             if (o) {
                 o.returned = true;
                 o.returnReason = reason;
-                o.statusStep = 4;
-                o.statusText = '🔄 ರಿಟರ್ನ್ ವಿನಂತಿ ಸ್ವೀಕರಿಸಲಾಗಿದೆ (ರೂ. 50 ಕಡಿತಗೊಂಡು ಪಿಕಪ್ ಆದ ಮೇಲೆ 2-3 ಗಂಟೆಯಲ್ಲಿ ರಿಫಂಡ್)';
+                o.status = '🔄 ರಿಟರ್ನ್ ವಿನಂತಿ ಸ್ವೀಕರಿಸಲಾಗಿದೆ (ರೂ. 50 ಕಡಿತಗೊಂಡು ಪಿಕಪ್ ಆದ ಮೇಲೆ 2-3 ಗಂಟೆಯಲ್ಲಿ ರಿಫಂಡ್)';
                 if (photoFile) {
                     let reader = new FileReader();
                     reader.onload = function(e) {
