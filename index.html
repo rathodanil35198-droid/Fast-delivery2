@@ -39,12 +39,9 @@
 
     <main class="container mx-auto p-4 max-w-md">
 
-        <!-- ೧. ಗ್ರಾಹಕರ ನೋಂದಣಿ / ಲಾಗಿನ್ ಪೇಜ್ (ಖರೀದಿಸುವಾಗ ಮಾತ್ರ ಬರುತ್ತದೆ) -->
-        <div id="auth-screen" class="bg-white p-6 rounded-2xl shadow-lg space-y-4 hidden page-section">
-            <div class="flex justify-between items-center border-b pb-2">
-                <h2 class="text-xl font-bold text-gray-800">ಗ್ರಾಹಕರ ವಿವರ & ವಿಳಾಸ</h2>
-                <button onclick="goBackToBrowse()" class="text-xs text-indigo-600 font-bold underline">← ವಾಪಸ್ ಹೋಗಿ</button>
-            </div>
+        <!-- ೧. ಗ್ರಾಹಕರ ನೋಂದಣಿ ಪೇಜ್ -->
+        <div id="auth-screen" class="bg-white p-6 rounded-2xl shadow-lg space-y-4 page-section">
+            <h2 class="text-xl font-bold text-gray-800 border-b pb-2">ಗ್ರಾಹಕರ ನೋಂದಣಿ</h2>
             
             <div class="space-y-3 text-xs">
                 <div>
@@ -63,17 +60,13 @@
                     <input type="text" id="reg-city" placeholder="ಊರು / ಗ್ರಾಮ" class="p-2 border rounded-lg text-sm" value="ಶಹಾಪುರ">
                     <input type="text" id="reg-pincode" placeholder="ಪಿನ್ ಕೋಡ್" maxlength="6" class="p-2 border rounded-lg text-sm" value="585223">
                 </div>
-                <div>
-                    <label class="block font-medium text-gray-700">ಪೂರ್ಣ ವಿಳಾಸ (Address)</label>
-                    <textarea id="reg-address" placeholder="ಮನೆ ನಂಬರ್, ಬೀದಿ, ಊರು ಇತ್ಯಾದಿ" class="w-full p-2 border rounded-lg text-sm mt-1 h-16">1/29 Bheemrav Gudi Maruti Nagar, Near SBI Branch</textarea>
-                </div>
 
-                <button onclick="registerAndContinueOrder()" class="w-full bg-indigo-600 text-white py-2.5 rounded-xl font-bold text-sm shadow">ವಿಳಾಸ ಸೇವ್ ಮಾಡಿ ಮುಂದುವರಿಸಿ</button>
+                <button onclick="registerCustomer()" class="w-full bg-indigo-600 text-white py-2.5 rounded-xl font-bold text-sm shadow">ಖಾತೆ ಸೃಷ್ಟಿಸಿ & ಶಾಪಿಂಗ್ ಮಾಡಿ</button>
             </div>
         </div>
 
-        <!-- ೨. ಗ್ರಾಹಕರ ಮುಖ್ಯ ಮುಖಪುಟ (ಎಲ್ಲರಿಗೂ ಮೊದಲು ಕಾಣುವುದು) -->
-        <div id="dashboard-customer" class="space-y-4 page-section">
+        <!-- ೨. ಗ್ರಾಹಕರ ಡ್ಯಾಶ್‌ಬೋರ್ಡ್ -->
+        <div id="dashboard-customer" class="space-y-4 hidden page-section">
             
             <!-- ಟ್ಯಾಬ್ ಬಟನ್‌ಗಳು -->
             <div class="flex gap-2 mb-2">
@@ -105,7 +98,6 @@
     <script>
         let currentCustomer = JSON.parse(localStorage.getItem('currentCustomer')) || null;
         let products = JSON.parse(localStorage.getItem('market_products')) || [];
-        let pendingProductId = null; // ಯಾವ ವಸ್ತುವನ್ನು ಖರೀದಿಸಲು ಕ್ಲಿಕ್ ಮಾಡಲಾಗಿತ್ತು ಎಂಬುದನ್ನು ನೆನಪಿಡಲು
 
         function showModal(title, message, icon = '🎉', buttonsHtml = '<button onclick="closeModal()" class="w-full bg-indigo-600 text-white py-2 rounded-xl font-bold text-xs">ಸರಿ (OK)</button>') {
             document.getElementById('modal-title').innerText = title;
@@ -117,7 +109,6 @@
 
         function closeModal() {
             document.getElementById('custom-modal').classList.add('hidden');
-            initApp();
         }
 
         function zoomImage(src) {
@@ -136,13 +127,6 @@
                 document.getElementById('tab-browse').className = "flex-1 bg-indigo-600 text-white py-2 rounded-xl text-xs font-bold";
                 document.getElementById('tab-orders').className = "flex-1 bg-gray-200 text-gray-700 py-2 rounded-xl text-xs font-bold";
             } else {
-                // ಆರ್ಡರ್ ಟ್ಯಾಬ್ ನೋಡುವಾಗ ಲಾಗಿನ್ ಆಗಿಲ್ಲದಿದ್ದರೆ ಮೊದಲು ಅಡ್ರೆಸ್/ಲಾಗಿನ್ ಕೇಳುವುದು
-                if (!currentCustomer) {
-                    pendingProductId = null;
-                    document.getElementById('auth-screen').classList.remove('hidden');
-                    document.getElementById('dashboard-customer').classList.add('hidden');
-                    return;
-                }
                 document.getElementById('cust-browse-section').classList.add('hidden');
                 document.getElementById('cust-orders-section').classList.remove('hidden');
                 document.getElementById('tab-orders').className = "flex-1 bg-indigo-600 text-white py-2 rounded-xl text-xs font-bold";
@@ -151,61 +135,44 @@
             }
         }
 
-        function initApp() {
-            // ಮೊದಲಿಗೆ ಎಲ್ಲರಿಗೂ ಮುಖಪುಟ (ವಸ್ತುಗಳು) ನೇರವಾಗಿ ಕಾಣಿಸುತ್ತದೆ
-            document.getElementById('auth-screen').classList.add('hidden');
-            document.getElementById('dashboard-customer').classList.remove('hidden');
-            
-            if (currentCustomer) {
+        function checkLogin() {
+            if (!currentCustomer) {
+                document.getElementById('auth-screen').classList.remove('hidden');
+                document.getElementById('dashboard-customer').classList.add('hidden');
+                document.getElementById('user-info').classList.add('hidden');
+            } else {
+                document.getElementById('auth-screen').classList.add('hidden');
+                document.getElementById('dashboard-customer').classList.remove('hidden');
                 document.getElementById('user-info').classList.remove('hidden');
                 document.getElementById('logged-user-name').innerText = `${currentCustomer.name} (ಗ್ರಾಹಕರು)`;
-            } else {
-                document.getElementById('user-info').classList.add('hidden');
+                renderCustomerProducts(products);
+                renderCustomerOrders();
             }
-            renderCustomerProducts(products);
         }
 
-        function goBackToBrowse() {
-            document.getElementById('auth-screen').classList.add('hidden');
-            document.getElementById('dashboard-customer').classList.remove('hidden');
-        }
-
-        function registerAndContinueOrder() {
+        function registerCustomer() {
             let name = document.getElementById('reg-name').value;
             let phone = document.getElementById('reg-phone').value;
             let district = document.getElementById('reg-district').value;
             let taluk = document.getElementById('reg-taluk').value;
             let city = document.getElementById('reg-city').value;
             let pincode = document.getElementById('reg-pincode').value;
-            let address = document.getElementById('reg-address').value;
 
             if (!name || !phone || phone.length < 10) {
                 alert('ದಯವಿಟ್ಟು ಸರಿಯಾದ ಹೆಸರು ಮತ್ತು ಮೊಬೈಲ್ ನಂಬರ್ ಹಾಕಿ!');
                 return;
             }
 
-            currentCustomer = { name, phone, district, taluk, city, pincode, address };
+            currentCustomer = { name, phone, district, taluk, city, pincode };
             localStorage.setItem('currentCustomer', JSON.stringify(currentCustomer));
-            
-            document.getElementById('auth-screen').classList.add('hidden');
-            document.getElementById('dashboard-customer').classList.remove('hidden');
-            document.getElementById('user-info').classList.remove('hidden');
-            document.getElementById('logged-user-name').innerText = `${currentCustomer.name} (ಗ್ರಾಹಕರು)`;
-
-            // ಒಂದು ವೇಳೆ ವಸ್ತುವನ್ನು ಖರೀದಿಸಲು ಕ್ಲಿಕ್ ಮಾಡಿ ಅಡ್ರೆಸ್ ಕೇಳಿದ್ದರೆ, ಈಗ ನೇರವಾಗಿ ಖರೀದಿ ಪಾಪ್‌ಅಪ್ ಓಪನ್ ಆಗುತ್ತದೆ
-            if (pendingProductId) {
-                let pid = pendingProductId;
-                pendingProductId = null;
-                openBuyModal(pid);
-            } else {
-                renderCustomerProducts(products);
-            }
+            showModal("ಯಶಸ್ವಿ!", "ನಿಮ್ಮ ಖಾತೆ ಸೃಷ್ಟಿಯಾಗಿದೆ!", "🎉");
+            checkLogin();
         }
 
         function logout() {
             localStorage.removeItem('currentCustomer');
             currentCustomer = null;
-            initApp();
+            checkLogin();
         }
 
         function renderCustomerProducts(list) {
@@ -229,7 +196,7 @@
                             <span class="text-green-600 font-bold text-sm">₹${p.discPrice}</span>
                         </div>
                     </div>
-                    <button onclick="handleBuyClick(${p.id})" class="w-full bg-yellow-400 text-black py-2.5 rounded-xl font-bold text-xs shadow hover:bg-yellow-500">₹${p.discPrice} ಗೆ ಖರೀದಿಸಿ</button>
+                    <button onclick="openBuyModal(${p.id})" class="w-full bg-yellow-400 text-black py-2.5 rounded-xl font-bold text-xs shadow hover:bg-yellow-500">₹${p.discPrice} ಗೆ ಖರೀದಿಸಿ</button>
                 </div>
             `).join('');
         }
@@ -240,17 +207,6 @@
             renderCustomerProducts(filtered);
         }
 
-        function handleBuyClick(id) {
-            // ಮೊದಲಿಗೆ ಗ್ರಾಹಕರ ಅಡ್ರೆಸ್ ಸೇವ್ ಆಗಿದೆಯಾ ಪರಿಶೀಲಿಸುವುದು. ಇಲ್ಲದಿದ್ದರೆ ಅಡ್ರೆಸ್/ಲಾಗಿನ್ ಪೇಜ್ ತೋರಿಸುವುದು.
-            if (!currentCustomer) {
-                pendingProductId = id;
-                document.getElementById('dashboard-customer').classList.add('hidden');
-                document.getElementById('auth-screen').classList.remove('hidden');
-                return;
-            }
-            openBuyModal(id);
-        }
-
         function openBuyModal(id) {
             let p = products.find(x => x.id === id);
             if (!p) return;
@@ -258,23 +214,9 @@
             let html = `
                 <div class="text-left space-y-3 text-xs">
                     <div class="bg-gray-50 p-2 rounded border space-y-1">
-                        <div class="flex justify-between items-center">
-                            <p class="font-bold text-gray-800"><b>ವಿಳಾಸ:</b> ${currentCustomer.name}</p>
-                            <button onclick="openAddressEdit()" class="text-blue-600 underline font-bold text-[11px]">ಅಡ್ರೆಸ್ ಬದಲಾಯಿಸಿ (Change)</button>
-                        </div>
-                        <p id="display-customer-address" class="text-gray-600">${currentCustomer.address}, ${currentCustomer.city}, ${currentCustomer.taluk} ತಾಲೂಕು, ${currentCustomer.district} ಜಿಲ್ಲೆ - ${currentCustomer.pincode}</p>
+                        <p class="font-bold text-gray-800"><b>ವಿಳಾಸ:</b> ${currentCustomer.name}</p>
+                        <p class="text-gray-600">${currentCustomer.city}, ${currentCustomer.taluk} ತಾಲೂಕು, ${currentCustomer.district} ಜಿಲ್ಲೆ - ${currentCustomer.pincode}</p>
                         <p class="text-gray-600"><b>ಫೋನ್:</b> ${currentCustomer.phone}</p>
-                    </div>
-
-                    <!-- ಅಡ್ರೆಸ್ ಎಡಿಟ್ ಮಾಡುವ ಬಾಕ್ಸ್ (Default Hidden) -->
-                    <div id="address-edit-box" class="hidden bg-indigo-50 p-2 rounded border space-y-2">
-                        <p class="font-bold text-indigo-700">ವಿಳಾಸ ಬದಲಾಯಿಸಿ:</p>
-                        <input type="text" id="edit-address" value="${currentCustomer.address}" class="w-full p-1.5 border rounded text-xs" placeholder="ವಿಳಾಸ">
-                        <div class="grid grid-cols-2 gap-1">
-                            <input type="text" id="edit-city" value="${currentCustomer.city}" class="p-1 border rounded text-xs" placeholder="ಊರು">
-                            <input type="text" id="edit-pincode" value="${currentCustomer.pincode}" class="p-1 border rounded text-xs" placeholder="ಪಿನ್ ಕೋಡ್">
-                        </div>
-                        <button onclick="saveNewAddress()" class="bg-green-600 text-white px-3 py-1 rounded font-bold text-xs w-full">ಅಡ್ರೆಸ್ ಸೇವ್ ಮಾಡಿ</button>
                     </div>
 
                     <div class="flex gap-3 items-center border-b pb-2">
@@ -309,26 +251,6 @@
             showModal("ಆರ್ಡರ್ ವಿವರಗಳು", html, "🛒", "");
         }
 
-        function openAddressEdit() {
-            let box = document.getElementById('address-edit-box');
-            box.classList.toggle('hidden');
-        }
-
-        function saveNewAddress() {
-            let newAddr = document.getElementById('edit-address').value;
-            let newCity = document.getElementById('edit-city').value;
-            let newPin = document.getElementById('edit-pincode').value;
-
-            currentCustomer.address = newAddr;
-            currentCustomer.city = newCity;
-            currentCustomer.pincode = newPin;
-            localStorage.setItem('currentCustomer', JSON.stringify(currentCustomer));
-
-            document.getElementById('display-customer-address').innerText = `${newAddr}, ${newCity} ತಾಲೂಕು, ${currentCustomer.taluk} ಜಿಲ್ಲೆ - ${newPin}`;
-            document.getElementById('address-edit-box').classList.add('hidden');
-            alert('ವಿಳಾಸ ಯಶಸ್ವಿಯಾಗಿ ಬದಲಾಯಿಸಲಾಗಿದೆ!');
-        }
-
         function changeQty(val) {
             let qtyEl = document.getElementById('order-qty');
             let q = Number(qtyEl.innerText) + val;
@@ -342,7 +264,7 @@
             let paymentMode = document.getElementById('modal-payment-mode').value;
             let totalAmount = (p.discPrice * qty) + (paymentMode === 'COD' ? 10 : 0);
 
-            document.getElementById('custom-modal').classList.add('hidden');
+            closeModal();
 
             let confirmHtml = `
                 <div class="text-left space-y-3 text-xs">
@@ -373,7 +295,7 @@
                 taluk: currentCustomer.taluk,
                 city: currentCustomer.city,
                 pincode: currentCustomer.pincode,
-                address: `${currentCustomer.address}, ${currentCustomer.city}, ${currentCustomer.taluk} ತಾಲೂಕು, ${currentCustomer.district} ಜಿಲ್ಲೆ - ${currentCustomer.pincode}`,
+                address: `${currentCustomer.city}, ${currentCustomer.taluk} ತಾಲೂಕು, ${currentCustomer.district} ಜಿಲ್ಲೆ - ${currentCustomer.pincode}`,
                 items: [{ ...p, quantity: qty, size: p.size || 'M' }],
                 totalAmount: totalAmount,
                 paymentMethod: paymentMode,
@@ -391,7 +313,6 @@
             savedOrders.push(newOrder);
             localStorage.setItem('market_orders', JSON.stringify(savedOrders));
 
-            // ಆರ್ಡರ್ ಯಶಸ್ವಿಯಾದ ನಂತರ ಮುಖಪುಟಕ್ಕೆ (ವಸ್ತುಗಳ ಪುಟಕ್ಕೆ) ಮರಳಿ ಕಳುಹಿಸುವುದು
             showModal("ಯಶಸ್ವಿ!", `
                 <div class="text-center space-y-2">
                     <div class="text-green-600 text-5xl font-bold">✅</div>
@@ -408,6 +329,7 @@
             let savedOrders = JSON.parse(localStorage.getItem('market_orders')) || [];
             let myOrders = savedOrders.filter(o => o.phone === currentCustomer.phone);
 
+            // ಹೊಸ ಆರ್ಡರ್‌ಗಳು ಮೇಲ್ಭಾಗದಲ್ಲಿ, ಕ್ಯಾನ್ಸಲ್ ಅಥವಾ ಡೆಲಿವರಿ ಆದ ಹಳೆಯ ಆರ್ಡರ್‌ಗಳು ಕೆಳಭಾಗದಲ್ಲಿ (ಲಾಕ್ ಆಗಿ) ಕಾಣುವಂತೆ ವಿಂಗಡಿಸುವುದು[span_2](start_span)[span_2](end_span)
             myOrders.sort((a, b) => {
                 if (a.isCancelled !== b.isCancelled) return a.isCancelled ? 1 : -1;
                 if (a.delivered !== b.delivered) return a.delivered ? 1 : -1;
@@ -531,8 +453,9 @@
                 </div>
             `;
             
+            // ಇಲ್ಲಿ ನೀವು ಕೇಳಿದಂತೆ ಕ್ಯಾನ್ಸಲೇಶನ್ ಮತ್ತು ಇತರ ಬಟನ್‌ಗಳ ಕೆಳಗೆ 'ಸರಿ (OK)' ಬಟನ್ ಬರುವಂತೆ ಜೋಡಿಸಲಾಗಿದೆ
             let buttonsHtml = `
-                <button onclick="document.getElementById('custom-modal').classList.add('hidden')" class="w-full bg-indigo-600 text-white py-2 rounded-xl font-bold text-xs">ಸರಿ (OK)</button>
+                <button onclick="closeModal()" class="w-full bg-indigo-600 text-white py-2 rounded-xl font-bold text-xs">ಸರಿ (OK)</button>
             `;
             showModal("ಆರ್ಡರ್ ಟ್ರ್ಯಾಕಿಂಗ್ ವಿವರ", html, "📦", buttonsHtml);
         }
@@ -546,25 +469,13 @@
                 o.cancelTime = timeStr;
                 o.status = `ಕ್ಯಾನ್ಸಲ್ ಮಾಡಲಾಗಿದೆ (${timeStr}) - ಅಂಗಡಿ ಮತ್ತು ಡೆಲಿವರಿ ಬಾಯ್‌ಗೆ ತಿಳಿಸಲಾಗಿದೆ`;
                 localStorage.setItem('market_orders', JSON.stringify(savedOrders));
-                document.getElementById('custom-modal').classList.add('hidden');
+                closeModal();
                 showModal("ಯಶಸ್ವಿ!", "ನಿಮ್ಮ ಆರ್ಡರ್ ಕ್ಯಾನ್ಸಲ್ ಮಾಡಲಾಗಿದೆ! ಅಂಗಡಿ ಮಾಲೀಕರಿಗೆ ಮತ್ತು ಡೆಲಿವರಿ ಬಾಯ್‌ಗೆ ಸಂದೇಶ ಕಳುಹಿಸಲಾಗಿದೆ.", "❌");
                 renderCustomerOrders();
             }
         }
 
-        // ಮೊಬೈಲ್ ಬ್ಯಾಕ್ ಬಟನ್ ಒತ್ತಿದಾಗ ಪೇಜ್ ಸಂಪೂರ್ಣವಾಗಿ ಮಾಯವಾಗದೆ, ಹಿಂದಿನ ಸೆಕ್ಷನ್‌ಗೆ ಅಥವಾ ಮುಖಪುಟಕ್ಕೆ ಮರಳುವಂತೆ ನಿರ್ವಹಿಸುವುದು
-        window.addEventListener('popstate', function(event) {
-            let authScreen = document.getElementById('auth-screen');
-            let modal = document.getElementById('custom-modal');
-            
-            if (!modal.classList.contains('hidden')) {
-                modal.classList.add('hidden');
-            } else if (!authScreen.classList.contains('hidden')) {
-                goBackToBrowse();
-            }
-        });
-
-        initApp();
+        checkLogin();
     </script>
 </body>
 </html>
