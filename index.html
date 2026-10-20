@@ -3,15 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>ಅಕ್ವಿಕ್ ಇ-ಶಾಪ್ & ಲೈವ್ ಟ್ರ್ಯಾಕಿಂಗ್</title>
+    <title>ಅಕ್ವಿಕ್ ಇ-ಶಾಪ್ - ಗ್ರಾಹಕರ ಆ್ಯಪ್</title>
     <style>
         :root {
             --primary-yellow: #ffd814;
-            --hover-yellow: #f7ca00;
             --dark-bg: #131921;
             --light-gray: #f2f2f2;
             --green-success: #2e7d32;
-            --red-cancel: #d9534f;
         }
 
         * {
@@ -40,780 +38,128 @@
         }
 
         header h1 {
-            font-size: 18px;
-            color: var(--primary-yellow);
-            cursor: pointer;
-        }
-
-        .header-right {
-            display: flex;
-            gap: 12px;
-            align-items: center;
-        }
-
-        .my-orders-btn {
-            background: #232f3e;
-            color: white;
-            border: 1px solid #485769;
-            padding: 6px 12px;
-            border-radius: 4px;
-            font-size: 13px;
-            cursor: pointer;
-            font-weight: bold;
-        }
-
-        .screen {
-            display: none;
-            max-width: 500px;
-            margin: 0 auto;
-            background: white;
-            min-height: 100vh;
-            box-shadow: 0 0 10px rgba(0,0,0,0.1);
-            position: relative;
-        }
-
-        .screen.active {
-            display: block;
-        }
-
-        .product-img-container {
-            position: relative;
-            width: 100%;
-            background: #f9f9f9;
-        }
-
-        .product-img {
-            width: 100%;
-            display: block;
-            max-height: 400px;
-            object-fit: contain;
-        }
-
-        .product-details-p1 {
-            padding: 16px;
-        }
-
-        .product-title {
-            font-size: 18px;
-            font-weight: 600;
-            margin-bottom: 8px;
-        }
-
-        .price-tag {
-            font-size: 22px;
-            font-weight: 700;
-            color: #0F1111;
-            margin-bottom: 12px;
-        }
-
-        .strike-price {
-            text-decoration: line-through;
-            color: #565959;
-            font-size: 14px;
-            margin-left: 8px;
-        }
-
-        .discount-tag {
-            color: #CC0C39;
-            font-size: 14px;
-            font-weight: 600;
-            margin-left: 8px;
-        }
-
-        .btn-container {
-            display: flex;
-            gap: 10px;
-            padding: 12px 16px;
-            background: white;
-            border-top: 1px solid #ddd;
-            position: sticky;
-            bottom: 0;
-        }
-
-        .btn {
-            flex: 1;
-            padding: 14px;
-            border-radius: 24px;
-            font-size: 15px;
-            font-weight: bold;
-            border: none;
-            cursor: pointer;
-            text-align: center;
-        }
-
-        .btn-buy {
-            background-color: var(--primary-yellow);
-            color: #111;
-        }
-
-        .btn-cancel {
-            background-color: #e7e7e7;
-            color: #333;
-        }
-
-        .btn-primary {
-            background-color: var(--primary-yellow);
-            width: 100%;
-            padding: 14px;
-            border-radius: 24px;
             font-size: 16px;
-            font-weight: bold;
-            border: none;
-            cursor: pointer;
-            margin-top: 15px;
-        }
-
-        /* Modal Popup */
-        .modal-overlay {
-            display: none;
-            position: fixed;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background: rgba(0,0,0,0.6);
-            z-index: 200;
-            justify-content: flex-end;
-            flex-direction: column;
-        }
-
-        .modal-overlay.active {
-            display: flex;
-        }
-
-        .modal-content {
-            background: white;
-            border-top-left-radius: 16px;
-            border-top-right-radius: 16px;
-            padding: 20px;
-            animation: slideUp 0.3s ease-out;
-            max-height: 90vh;
-            overflow-y: auto;
-        }
-
-        @keyframes slideUp {
-            from { transform: translateY(100%); }
-            to { transform: translateY(0); }
-        }
-
-        .modal-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 16px;
-        }
-
-        .close-modal {
-            font-size: 24px;
-            cursor: pointer;
-            border: none;
-            background: none;
-        }
-
-        .size-chips {
-            display: flex;
-            gap: 12px;
-            margin: 15px 0;
-        }
-
-        .size-chip {
-            padding: 10px 20px;
-            border: 1px solid #ccc;
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: bold;
-        }
-
-        .size-chip.selected {
-            border: 2px solid #111;
-            background-color: #f0f0f0;
+            color: var(--primary-yellow);
         }
 
         .card-box {
             padding: 16px;
-            border-bottom: 8px solid #f0f0f0;
-        }
-
-        .form-group {
-            margin-bottom: 12px;
-        }
-
-        .form-group label {
-            display: block;
-            font-size: 13px;
-            font-weight: bold;
-            margin-bottom: 4px;
-            color: #333;
-        }
-
-        .form-group input {
-            width: 100%;
-            padding: 10px;
-            border: 1px solid #ccc;
-            border-radius: 6px;
-            font-size: 14px;
-        }
-
-        .qty-picker {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            margin-top: 10px;
-        }
-
-        .qty-btn {
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
-            border: 1px solid #ccc;
-            background: #fff;
-            font-size: 18px;
-            font-weight: bold;
-            cursor: pointer;
-        }
-
-        .payment-option {
-            border: 1px solid #2e7d32;
-            background: #f1f8e9;
-            padding: 16px;
+            background: white;
+            margin: 10px;
             border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .cust-product-card {
+            background: #fff;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 12px;
             margin-bottom: 16px;
         }
 
-        /* Timeline */
-        .timeline {
-            position: relative;
-            padding: 20px 0 20px 30px;
-            list-style: none;
+        .product-full-img {
+            width: 100%;
+            max-height: 350px;
+            object-fit: contain;
+            background: #fafafa;
+            border-radius: 6px;
+            display: block;
+            margin-bottom: 10px;
         }
 
-        .timeline::before {
-            content: '';
-            position: absolute;
-            left: 10px;
-            top: 25px;
-            bottom: 25px;
-            width: 3px;
-            background: #e0e0e0;
-        }
-
-        .timeline-step {
-            position: relative;
-            margin-bottom: 30px;
-        }
-
-        .timeline-step .dot {
-            position: absolute;
-            left: -26px;
-            top: 2px;
-            width: 15px;
-            height: 15px;
-            border-radius: 50%;
-            background: #ccc;
-            border: 2px solid white;
-        }
-
-        .timeline-step.active .dot {
-            background: var(--green-success);
-            box-shadow: 0 0 0 3px rgba(46, 125, 50, 0.2);
-        }
-
-        .timeline-step.cancelled .dot {
-            background: var(--red-cancel) !important;
-        }
-
-        .timeline-content h4 {
-            font-size: 15px;
-            color: #333;
-        }
-
-        .timeline-content p {
-            font-size: 13px;
-            color: #666;
-            margin-top: 4px;
-        }
-
-        .cancel-order-btn {
-            background-color: var(--red-cancel);
-            color: white;
+        .btn-buy-now {
+            background-color: var(--primary-yellow);
+            color: #111;
             width: 100%;
             padding: 12px;
             border-radius: 20px;
+            font-size: 15px;
             font-weight: bold;
             border: none;
             cursor: pointer;
-            margin-top: 20px;
+            margin-top: 8px;
         }
 
-        .order-item-card {
-            background: #fff;
-            border: 1px solid #ddd;
+        .order-card {
+            background: #e8f5e9;
+            border: 1px solid #c8e6c9;
             padding: 12px;
             border-radius: 8px;
-            margin-bottom: 12px;
-            cursor: pointer;
-            transition: 0.2s;
-        }
-        .order-item-card:hover {
-            border-color: #007bff;
-            background: #f8f9fa;
+            margin-bottom: 10px;
         }
     </style>
 </head>
 <body>
 
-    <!-- Screen 1: Product Page -->
-    <div id="screen-1" class="screen active">
-        <header>
-            <h1 onclick="switchScreen('screen-1')">ಅಕ್ವಿಕ್ ಇ-ಶಾಪ್</h1>
-            <div class="header-right">
-                <button class="my-orders-btn" onclick="openMyOrders()">📦 ನನ್ನ ಆರ್ಡರ್‌ಗಳು</button>
-                <span>🛒 1</span>
-            </div>
-        </header>
-        <div class="product-img-container">
-            <img src="https://images.unsplash.com/photo-1602810318383-e386cc2a3ccf?w=600" alt="Shirt" class="product-img" id="main-product-img">
-        </div>
-        <div class="product-details-p1">
-            <div class="product-title" id="main-product-title">ನೋಫಿಲ್ಟರ್ ಚೆಕ್ಡ್ ಕ್ಯಾಶುವಲ್ ಶರ್ಟ್</div>
-            <div class="price-tag">
-                ₹<span id="p1-price">442</span>
-                <span class="strike-price">₹1,899</span>
-                <span class="discount-tag">76% OFF</span>
-            </div>
-            <p style="color: #007600; font-size: 14px; font-weight: bold;">ಉಚಿತ ಡೆಲಿವರಿ ಲಭ್ಯವಿದೆ</p>
+    <header>
+        <h1>🛒 ಅಕ್ವಿಕ್ ಇ-ಶಾಪ್ (ಗ್ರಾಹಕರು)</h1>
+    </header>
+
+    <div style="padding: 16px;">
+        <h2 style="font-size: 18px; margin-bottom: 12px;">ಉಪಲಬ್ಧ ವಸ್ತುಗಳು (ಶಾಪಿಂಗ್)</h2>
+        <div id="customer-products-container">
+            <p style="text-align:center; color:#666;">ವಸ್ತುಗಳನ್ನು ಲೋಡ್ ಮಾಡಲಾಗುತ್ತಿದೆ...</p>
         </div>
 
-        <div class="btn-container">
-            <button class="btn btn-cancel" onclick="alert('ಖರೀದಿ ರದ್ದುಗೊಳಿಸಲಾಗಿದೆ')">ಕ್ಯಾನ್ಸಲ್</button>
-            <button class="btn btn-buy" onclick="handleBuyClick()">₹442 ಗೆ ಈಗಲೇ ಖರೀದಿಸಿ</button>
-        </div>
-    </div>
+        <hr style="margin: 20px 0;">
 
-    <!-- Modal 1: Registration / Login Form (First Time Only) -->
-    <div id="register-modal" class="modal-overlay">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3>ಮೊದಲ ಬಾರಿ ನೋಂದಣಿ (Customer Details)</h3>
-                <button class="close-modal" onclick="closeRegisterModal()">&times;</button>
-            </div>
-            <p style="font-size: 12px; color: #666; margin-bottom: 15px;">ಶಾಪ್ ಓನರ್‌ಗೆ ಆರ್ಡರ್ ಕಳುಹಿಸಲು ದಯವಿಟ್ಟು ನಿಮ್ಮ ವಿವರಗಳನ್ನು ಭರ್ತಿ ಮಾಡಿ (ಒಮ್ಮೆ ಮಾತ್ರ ಕೇಳಲಾಗುತ್ತದೆ).</p>
-            <form id="customer-form" onsubmit="saveCustomerDetails(event)">
-                <div class="form-group">
-                    <label>ನಿಮ್ಮ ಹೆಸರು:</label>
-                    <input type="text" id="cust-name" required placeholder="ಉದಾ: ಅನಿಲ್ ರಾಥೋಡ್">
-                </div>
-                <div class="form-group">
-                    <label>ತಂದೆಯ ಹೆಸರು:</label>
-                    <input type="text" id="cust-father" required placeholder="ತಂದೆಯ ಹೆಸರು">
-                </div>
-                <div class="form-group">
-                    <label>ಮೊಬೈಲ್ ನಂಬರ್:</label>
-                    <input type="tel" id="cust-phone" required placeholder="10 ಅಂಕಿಗಳ ಮೊಬೈಲ್ ನಂಬರ್">
-                </div>
-                <div class="form-group">
-                    <label>ಜಿಲ್ಲೆಯ ಹೆಸರು:</label>
-                    <input type="text" id="cust-district" required placeholder="ಉದಾ: ಯಾದಗಿರಿ">
-                </div>
-                <div class="form-group">
-                    <label>ತಾಲೂಕಿನ ಹೆಸರು:</label>
-                    <input type="text" id="cust-taluk" required placeholder="ಉದಾ: ಶಹಾಪುರ">
-                </div>
-                <div class="form-group">
-                    <label>ಗ್ರಾಮೀಣ ಊರಿನ ಹೆಸರು:</label>
-                    <input type="text" id="cust-village" required placeholder="ಊರು / ವಾರ್ಡ್ ಹೆಸರು">
-                </div>
-                <div class="form-group">
-                    <label>ಪಿನ್ ಕೋಡ್ (Pin Code):</label>
-                    <input type="text" id="cust-pincode" required placeholder="585223">
-                </div>
-                <div class="form-group">
-                    <label>ಜಿಪಿಎಸ್ ಲೊಕೇಶನ್ (GPS Tracker):</label>
-                    <input type="text" id="cust-gps" readonly style="background:#e9ecef;" value="ಲೊಕೇಶನ್ ಪಡೆಯಲಾಗುತ್ತಿದೆ...">
-                </div>
-                <button type="submit" class="btn-primary">ವಿವರಗಳನ್ನು ಉಳಿಸಿ ಮುಂದುವರیಿರಿ</button>
-            </form>
-        </div>
-    </div>
-
-    <!-- Modal 2: Select Variant/Size -->
-    <div id="size-modal" class="modal-overlay">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3>ವ್ಯಾರಿಯೆಂಟ್ ಆಯ್ಕೆಮಾಡಿ (Select Variant)</h3>
-                <button class="close-modal" onclick="closeSizeModal()">&times;</button>
-            </div>
-            <div style="display:flex; gap: 12px; align-items: center;">
-                <img src="https://images.unsplash.com/photo-1602810318383-e386cc2a3ccf?w=100" style="width:60px; height:60px; border-radius:6px; object-fit:cover;">
-                <div>
-                    <h4>ನೋಫಿಲ್ಟರ್ ಶರ್ಟ್</h4>
-                    <p style="font-weight:bold;">₹442</p>
-                </div>
-            </div>
-            <div style="margin-top: 15px;">
-                <p style="font-size: 14px; font-weight: bold; color: #555;">ಸೈಜ್ (Size) ಆಯ್ಕೆ ಮಾಡಿ:</p>
-                <div class="size-chips">
-                    <div class="size-chip selected" onclick="selectSize('M', this)">M</div>
-                    <div class="size-chip" onclick="selectSize('XL', this)">XL</div>
-                </div>
-            </div>
-            <button class="btn-primary" onclick="goToScreen2()">ಕನ್ಫರ್ಮ್ ಮಾಡಿ (Continue)</button>
-        </div>
-    </div>
-
-    <!-- Screen 2: Order Confirmation & Qty -->
-    <div id="screen-2" class="screen">
-        <header>
-            <h1 onclick="switchScreen('screen-1')">ಅಕ್ವಿಕ್ ಇ-ಶಾಪ್</h1>
-            <button class="my-orders-btn" onclick="openMyOrders()">📦 ನನ್ನ ಆರ್ಡರ್‌ಗಳು</button>
-        </header>
-        <div class="card-box">
-            <h4>ಡೆಲಿವರಿ ವಿಳಾಸ (Delivering to)</h4>
-            <div class="address-box" id="display-saved-address">
-                <!-- Loaded dynamically -->
-            </div>
-        </div>
-
-        <div class="card-box" style="display:flex; gap:12px;">
-            <img src="https://images.unsplash.com/photo-1602810318383-e386cc2a3ccf?w=150" style="width:80px; height:90px; border-radius:6px; object-fit:cover;">
-            <div style="flex:1;">
-                <h4>ನೋಫಿಲ್ಟರ್ ಚೆಕ್ಡ್ ಕ್ಯಾಶುವಲ್ ಶರ್ಟ್</h4>
-                <p style="font-size:13px; color:#555;">ಸೈಜ್: <span id="selected-size-display">M</span></p>
-                <p style="font-weight:bold; margin-top:4px;">₹<span id="unit-price">442</span></p>
-                
-                <div class="qty-picker">
-                    <span>ಪ್ರಮಾಣ (Qty):</span>
-                    <button class="qty-btn" onclick="updateQty(-1)">-</button>
-                    <span id="qty-count" style="font-weight:bold;">1</span>
-                    <button class="qty-btn" onclick="updateQty(1)">+</button>
-                </div>
-            </div>
-        </div>
-
-        <div class="card-box">
-            <div style="display:flex; justify-content:space-between; margin-bottom:8px;">
-                <span>ಒಟ್ಟು ಮೊತ್ತ:</span>
-                <strong>₹<span id="total-price">442</span></strong>
-            </div>
-            <p style="color:var(--green-success); font-size:13px;">✔ ₹1,447 ಉಳಿತಾಯವಾಗಿದೆ!</p>
-            <button class="btn-primary" onclick="goToScreen3()">ಕನ್ಫರ್ಮ್ ಮಾಡಿ (Proceed)</button>
-        </div>
-    </div>
-
-    <!-- Screen 3: Payment Choice -->
-    <div id="screen-3" class="screen">
-        <header>
-            <h1 onclick="switchScreen('screen-1')">ಅಕ್ವಿಕ್ ಇ-ಶಾಪ್</h1>
-            <button class="my-orders-btn" onclick="openMyOrders()">📦 ನನ್ನ ಆರ್ಡರ್‌ಗಳು</button>
-        </header>
-        <div class="card-box">
-            <div class="payment-option">
-                <h3>📦 Cash on Delivery (ಕ್ಯಾಶ್ ಆನ್ ಡೆಲಿವರಿ)</h3>
-                <p style="font-size:13px; color:#555; margin-top:6px;">
-                    ಓಪನ್ ಡೆಲಿವರಿ ಲಭ್ಯವಿದೆ. ವಸ್ತು ಬಂದಾಗ ಪರಿಶೀಲಿಸಿ ಹಣ ನೀಡಿ.
-                </p>
-            </div>
-
-            <div style="display:flex; justify-content:space-between; font-weight:bold; font-size:18px; margin: 20px 0;">
-                <span>ಪಾವತಿಸಬೇಕಾದ ಒಟ್ಟು ಮೊತ್ತ:</span>
-                <span>₹<span id="final-pay-amount">442</span></span>
-            </div>
-
-            <button class="btn-primary" onclick="placeFinalOrder()">ಆರ್ಡರ್ ಮಾಡಿ (Place Order)</button>
-        </div>
-    </div>
-
-    <!-- Screen 4: Order Success & Live Tracking Dots -->
-    <div id="screen-4" class="screen">
-        <header>
-            <h1 onclick="switchScreen('screen-1')">ಅಕ್ವಿಕ್ ಇ-ಶಾಪ್</h1>
-            <button class="my-orders-btn" onclick="openMyOrders()">📦 ನನ್ನ ಆರ್ಡರ್‌ಗಳು</button>
-        </header>
-
-        <div style="padding: 16px; background: #e8f5e9; text-align: center;">
-            <h2 style="color: var(--green-success); font-size:18px;">🎉 ಧನ್ಯವಾದಗಳು! ನಿಮ್ಮ ಆರ್ಡರ್ ಸ್ವೀಕರಿಸಲಾಗಿದೆ</h2>
-            <p style="font-size:13px; color:#555; margin-top:4px;">ಎರಡು ದಿನ ಒಳಗೆ ನಿಮಗೆ ಡೆಲಿವರಿ ಆಗುತ್ತದೆ</p>
-        </div>
-
-        <!-- 3-Dot Timeline Steps -->
-        <ul class="timeline" id="tracking-timeline">
-            <!-- Step 1 -->
-            <li class="timeline-step active" id="step-1">
-                <div class="dot"></div>
-                <div class="timeline-content">
-                    <h4 id="step1-title">ಚುಕ್ಕಿ 1: ಆರ್ಡರ್ ಕನ್ಫರ್ಮ್ ಆಗಿದೆ</h4>
-                    <p id="step1-desc">ನಿಮ್ಮ ಆರ್ಡರ್ ಕನ್ಫರ್ಮ್ ಆಗಿದೆ, ಅಂಗಡಿಯ ಮಾಲೀಕರಿಗೆ ಕಳಿಸಲಾಗಿದೆ. ಎರಡು ದಿನ ಒಳಗೆ ನಿಮಗೆ ಡೆಲಿವರಿ ಆಗುತ್ತದೆ.</p>
-                </div>
-            </li>
-
-            <!-- Step 2 -->
-            <li class="timeline-step" id="step-2">
-                <div class="dot"></div>
-                <div class="timeline-content">
-                    <h4 id="step2-title">ಚುಕ್ಕಿ 2: ಪ್ಯಾಕಿಂಗ್ ಸ್ಥಿತಿ</h4>
-                    <p id="step2-desc">ಅಂಗಡಿಯ ಮಾಲೀಕರಿಂದ ಪ್ಯಾಕಿಂಗ್ ಕಾಯಲಾಗುತ್ತಿದೆ.</p>
-                </div>
-            </li>
-
-            <!-- Step 3 -->
-            <li class="timeline-step" id="step-3">
-                <div class="dot"></div>
-                <div class="timeline-content">
-                    <h4 id="step3-title">ಚುಕ್ಕಿ 3: ಡೆಲಿವರಿ ಹಂತ</h4>
-                    <p id="step3-desc">ಡೆಲಿವರಿ ಬಾಯ್ ಪಿಕಪ್‌ಗಾಗಿ ಕಾಯಲಾಗುತ್ತಿದೆ.</p>
-                </div>
-            </li>
-        </ul>
-
-        <!-- Cancel Order Section -->
-        <div style="padding: 16px;" id="cancel-section">
-            <button class="cancel-order-btn" onclick="cancelCurrentOrder()">ಆರ್ಡರ್ ಕ್ಯಾನ್ಸಲ್ ಮಾಡಿ (Cancel Order)</button>
-        </div>
-
-        <!-- Return Box -->
-        <div id="return-container" class="card-box" style="margin: 16px; display:none; background:#e3f2fd;">
-            <h4>🔄 ರಿಟರ್ನ್ ಆಪ್ಷನ್ (2 ದಿನಗಳ ಒಳಗೆ ಮಾತ್ರ):</h4>
-            <p style="font-size:12px; color:#555;">ಉತ್ಪನ್ನದಲ್ಲಿ ಸಮಸ್ಯೆಯಿದ್ದರೆ ರಿಟರ್ನ್ ಮಾಡಬಹುದು.</p>
-            <p style="font-size:13px; font-weight:bold; margin-top:5px;">ಡೆಲಿವರಿ ಬಾಯ್ ಸಂಪರ್ಕ: 📞 8105010768</p>
-            <a href="tel:8105010768" style="background:#28a745; color:white; padding:8px 16px; border-radius:20px; text-decoration:none; display:inline-block; font-size:13px; margin-top:8px; font-weight:bold;">📞 ಡೆಲಿವರಿ ಬಾಯ್‌ಗೆ ಕರೆ ಮಾಡಿ</a>
-        </div>
-    </div>
-
-    <!-- Screen 5: My Orders List Screen -->
-    <div id="screen-my-orders" class="screen">
-        <header>
-            <h1 onclick="switchScreen('screen-1')">ಅಕ್ವಿಕ್ ಇ-ಶಾಪ್</h1>
-            <button class="my-orders-btn" onclick="switchScreen('screen-1')">← ಶಾಪಿಂಗ್‌ಗೆ ಮರಳಿ</button>
-        </header>
-        <div style="padding: 16px;">
-            <h2 style="font-size: 18px; margin-bottom: 12px;">ನಿಮ್ಮ ಎಲ್ಲಾ ಆರ್ಡರ್‌ಗಳು</h2>
-            <div id="orders-list-container">
-                <!-- Orders will dynamically populate here -->
-            </div>
+        <h2 style="font-size: 18px; margin-bottom: 12px;">📦 ನನ್ನ ಆರ್ಡರ್‌ಗಳ ಸ್ಥಿತಿ (Status)</h2>
+        <div id="customer-orders-list">
+            <p style="color:#666; font-size:13px;">ಯಾವುದೇ ಆರ್ಡರ್‌ಗಳಿಲ್ಲ.</p>
         </div>
     </div>
 
     <script>
-        let selectedSize = 'M';
-        let unitPrice = 442;
-        let quantity = 1;
-        let myOrders = [];
-        let currentActiveOrderId = null;
-        let customerData = null;
-        let gpsCoordinates = "ಟಿಪ್ಪಣಿ ಇಲ್ಲ (GPS Off)";
+        let shopProducts = JSON.parse(localStorage.getItem('ar_shop_products')) || [];
+        let allOrders = JSON.parse(localStorage.getItem('ar_all_orders')) || [];
 
-        // Check if customer details already exist in localStorage
         window.onload = function() {
-            let saved = localStorage.getItem('ar_customer_profile');
-            if (saved) {
-                customerData = JSON.parse(saved);
-            }
-            captureGPS();
+            renderCustomerData();
         };
 
-        function captureGPS() {
-            if (navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition(function(position) {
-                    gpsCoordinates = `Lat: ${position.coords.latitude.toFixed(4)}, Lng: ${position.coords.longitude.toFixed(4)}`;
-                    let gpsField = document.getElementById('cust-gps');
-                    if(gpsField) gpsField.value = gpsCoordinates;
-                }, function(error) {
-                    gpsCoordinates = "ಜಿಪಿಎಸ್ ಲೊಕೇಶನ್ ಸಿಗಲಿಲ್ಲ";
-                    let gpsField = document.getElementById('cust-gps');
-                    if(gpsField) gpsField.value = gpsCoordinates;
-                });
-            }
+        function renderCustomerData() {
+            // Render Products
+            let cCont = document.getElementById('customer-products-container');
+            cCont.innerHTML = shopProducts.length === 0 ? '<p style="text-align:center; color:#666;">ಯಾವುದೇ ವಸ್ತುಗಳು ಲಭ್ಯವಿಲ್ಲ.</p>' : '';
+            shopProducts.forEach(p => {
+                cCont.innerHTML += `
+                    <div class="cust-product-card">
+                        <img src="${p.frontImg}" class="product-full-img">
+                        <h2 style="font-size:16px;">${p.name} (${p.size})</h2>
+                        <p style="font-size:18px; font-weight:bold; margin:6px 0;">₹${p.currPrice} <span style="text-decoration:line-through; color:#777; font-size:13px;">₹${p.oldPrice}</span></p>
+                        <p style="font-size:12px; color:#555; margin-bottom:8px;">ಪೀಸ್: ${p.pieces}</p>
+                        <button class="btn-buy-now" onclick="placeOrder('${p.name}', '${p.currPrice}')">ಈಗಲೇ ಖರೀದಿಸಿ</button>
+                    </div>
+                `;
+            });
+
+            // Render Orders
+            let cOrders = document.getElementById('customer-orders-list');
+            cOrders.innerHTML = allOrders.length === 0 ? '<p style="color:#666; font-size:13px;">ಯಾವುದೇ ಆರ್ಡರ್‌ಗಳಿಲ್ಲ.</p>' : '';
+            allOrders.forEach(ord => {
+                cOrders.innerHTML += `
+                    <div class="order-card">
+                        <strong>${ord.title}</strong> (₹${ord.amount})<br>
+                        ಸ್ಥಿತಿ: <span style="color:green; font-weight:bold;">${ord.status}</span><br>
+                        ಪೇಮೆಂಟ್: <span style="color:#d9534f; font-weight:bold;">${ord.paymentStatus}</span>
+                    </div>
+                `;
+            });
         }
 
-        function handleBuyClick() {
-            if (!customerData) {
-                // Open Registration/Login Modal if first time
-                document.getElementById('register-modal').classList.add('active');
-            } else {
-                openSizeModal();
-            }
-        }
-
-        function closeRegisterModal() {
-            document.getElementById('register-modal').classList.remove('active');
-        }
-
-        function saveCustomerDetails(event) {
-            event.preventDefault();
-            customerData = {
-                name: document.getElementById('cust-name').value,
-                father: document.getElementById('cust-father').value,
-                phone: document.getElementById('cust-phone').value,
-                district: document.getElementById('cust-district').value,
-                taluk: document.getElementById('cust-taluk').value,
-                village: document.getElementById('cust-village').value,
-                pincode: document.getElementById('cust-pincode').value,
-                gps: gpsCoordinates
+        function placeOrder(title, amount) {
+            let newOrd = {
+                id: 'ORD' + Math.floor(1000 + Math.random() * 9000),
+                title, amount,
+                customerName: 'ಅನಿಲ್ ರಾಥೋಡ್ (ಶಹಾಪುರ)',
+                status: 'ಆರ್ಡರ್ ಸ್ವೀಕರಿಸಲಾಗಿದೆ',
+                paymentStatus: 'ಪೇಮೆಂಟ್ ಪೆಂಡಿಂಗ್'
             };
-            // Save to localStorage so it never asks again
-            localStorage.setItem('ar_customer_profile', JSON.stringify(customerData));
-            closeRegisterModal();
-            openSizeModal();
-        }
-
-        function openSizeModal() {
-            document.getElementById('size-modal').classList.add('active');
-        }
-
-        function closeSizeModal() {
-            document.getElementById('size-modal').classList.remove('active');
-        }
-
-        function selectSize(size, element) {
-            selectedSize = size;
-            document.querySelectorAll('.size-chip').forEach(el => el.classList.remove('selected'));
-            element.classList.add('selected');
-        }
-
-        function switchScreen(screenId) {
-            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-            document.getElementById(screenId).classList.add('active');
-            window.scrollTo(0,0);
-        }
-
-        function goToScreen2() {
-            closeSizeModal();
-            document.getElementById('selected-size-display').innerText = selectedSize;
-            
-            // Populate address box
-            if (customerData) {
-                document.getElementById('display-saved-address').innerHTML = `
-                    <strong>${customerData.name} (ತಂದೆ: ${customerData.father})</strong><br>
-                    ಗ್ರಾಮ: ${customerData.village}, ತಾಲೂಕು: ${customerData.taluk}<br>
-                    ಜಿಲ್ಲೆ: ${customerData.district} - ${customerData.pincode}<br>
-                    📞 ${customerData.phone}<br>
-                    📍 GPS: <span style="font-size:11px; color:#007bff;">${customerData.gps}</span>
-                `;
-            }
-
-            calculateTotal();
-            switchScreen('screen-2');
-        }
-
-        function updateQty(change) {
-            quantity += change;
-            if (quantity < 1) quantity = 1;
-            document.getElementById('qty-count').innerText = quantity;
-            calculateTotal();
-        }
-
-        function calculateTotal() {
-            let total = unitPrice * quantity;
-            document.getElementById('total-price').innerText = total;
-            document.getElementById('final-pay-amount').innerText = total;
-        }
-
-        function goToScreen3() {
-            switchScreen('screen-3');
-        }
-
-        function placeFinalOrder() {
-            let totalAmount = unitPrice * quantity;
-            let orderObj = {
-                id: 'ORD' + Math.floor(100000 + Math.random() * 900000),
-                title: document.getElementById('main-product-title').innerText,
-                image: document.getElementById('main-product-img').src,
-                size: selectedSize,
-                qty: quantity,
-                amount: totalAmount,
-                customer: customerData,
-                date: new Date().toLocaleDateString('kn-IN'),
-                status: 'ಆರ್ಡರ್ ಕನ್ಫರ್ಮ್ ಆಗಿದೆ (ಎರಡು ದಿನ ಒಳಗೆ ಡೆಲಿವರಿ)',
-                statusCode: 1
-            };
-
-            myOrders.push(orderObj);
-            currentActiveOrderId = orderObj.id;
-            loadTrackingView(orderObj);
-            switchScreen('screen-4');
-        }
-
-        function loadTrackingView(ord) {
-            let cancelSec = document.getElementById('cancel-section');
-            let timeline = document.getElementById('tracking-timeline');
-            
-            if (ord.statusCode === 0) {
-                // Cancelled status
-                cancelSec.style.display = 'none';
-                timeline.innerHTML = `
-                    <li class="timeline-step cancelled">
-                        <div class="dot"></div>
-                        <div class="timeline-content">
-                            <h4>ಆರ್ಡರ್ ಕ್ಯಾನ್ಸಲ್ ಮಾಡಲಾಗಿದೆ ❌</h4>
-                            <p>ಈ ಆರ್ಡರ್ ಅನ್ನು ಗ್ರಾಹಕರು ರದ್ದುಗೊಳಿಸಿದ್ದಾರೆ. ಅಂಗಡಿ ಮತ್ತು ಡೆಲಿವರಿ ಬಾಯ್‌ಗೆ ತಿಳಿಸಲಾಗಿದೆ.</p>
-                        </div>
-                    </li>
-                `;
-            } else {
-                cancelSec.style.display = 'block';
-                timeline.innerHTML = `
-                    <li class="timeline-step active" id="step-1">
-                        <div class="dot"></div>
-                        <div class="timeline-content">
-                            <h4>ಚುಕ್ಕಿ 1: ಆರ್ಡರ್ ಕನ್ಫರ್ಮ್ ಆಗಿದೆ</h4>
-                            <p>ಅಂಗಡಿ ಮಾಲೀಕರಿಗೆ ನಿಮ್ಮ ಫೋಟೋ, ಸೈಜ್ ಮತ್ತು ಜಿಪಿಎಸ್ ಲೊಕೇಶನ್ ಕಳುಹಿಸಲಾಗಿದೆ. ಎರಡು ದಿನ ಒಳಗೆ ಡೆಲಿವರಿ ಆಗುತ್ತದೆ.</p>
-                        </div>
-                    </li>
-                    <li class="timeline-step" id="step-2">
-                        <div class="dot"></div>
-                        <div class="timeline-content">
-                            <h4>ಚುಕ್ಕಿ 2: ಪ್ಯಾಕಿಂಗ್ ಸ್ಥಿತಿ</h4>
-                            <p>ಶಾಪ್ ಓನರ್ ಪ್ಯಾಕಿಂಗ್ ಪರಿಶೀಲಿಸುತ್ತಿದ್ದಾರೆ.</p>
-                        </div>
-                    </li>
-                    <li class="timeline-step" id="step-3">
-                        <div class="dot"></div>
-                        <div class="timeline-content">
-                            <h4>ಚುಕ್ಕಿ 3: ಡೆಲಿವರಿ ಹಂತ</h4>
-                            <p>ಡೆಲಿವರಿ ಬಾಯ್ ಹಾದಿಯಲ್ಲಿದ್ದಾರೆ.</p>
-                        </div>
-                    </li>
-                `;
-            }
-        }
-
-        function cancelCurrentOrder() {
-            if (confirm("ಖಂಡಿತವಾಗಿಯೂ ಈ ಆರ್ಡರ್ ಕ್ಯಾನ್ಸಲ್ ಮಾಡಲು ಬಯಸುತ್ತೀರಾ?")) {
-                let ord = myOrders.find(o => o.id === currentActiveOrderId);
-                if (ord) {
-                    ord.status = 'ಆರ್ಡರ್ ಕ್ಯಾನ್ಸಲ್ ಮಾಡಲಾಗಿದೆ ❌';
-                    ord.statusCode = 0;
-                    loadTrackingView(ord);
-                    alert("ಆರ್ಡರ್ ಯಶಸ್ವಿಯಾಗಿ ರದ್ದುಗೊಂಡಿದೆ. ಅಂಗಡಿ ಮತ್ತು ಡೆಲಿವರಿ ಬಾಯ್‌ಗೆ ಮಾಹಿತಿ ತಲುಪಿದೆ.");
-                }
-            }
-        }
-
-        function openMyOrders() {
-            let container = document.getElementById('orders-list-container');
-            container.innerHTML = '';
-
-            if (myOrders.length === 0) {
-                container.innerHTML = '<p style="color:#666; text-align:center; padding:20px;">ಯಾವುದೇ ಆರ್ಡರ್‌ಗಳು ಮಾಡಿಲ್ಲ.</p>';
-            } else {
-                myOrders.forEach((ord) => {
-                    container.innerHTML += `
-                        <div class="order-item-card" onclick="viewOrder('${ord.id}')">
-                            <strong>${ord.title}</strong><br>
-                            <span style="font-size:13px; color:#555;">ಐಡಿ: ${ord.id} | ಸೈಜ್: ${ord.size} | ಪೀಸ್: ${ord.qty}</span><br>
-                            <span style="font-size:14px; font-weight:bold; color:#0F1111;">ಮೊತ್ತ: ₹${ord.amount}</span><br>
-                            <span style="font-size:12px; color:${ord.statusCode === 0 ? 'var(--red-cancel)' : 'var(--green-success)'}; font-weight:bold;">ಸ್ಥಿತಿ: ${ord.status} ➔ ರೂಟ್ ವೀಕ್ಷಿಸಿ</span>
-                        </div>
-                    `;
-                });
-            }
-            switchScreen('screen-my-orders');
-        }
-
-        function viewOrder(orderId) {
-            let ord = myOrders.find(o => o.id === orderId);
-            if (ord) {
-                currentActiveOrderId = ord.id;
-                loadTrackingView(ord);
-                switchScreen('screen-4');
-            }
+            allOrders.unshift(newOrd);
+            localStorage.setItem('ar_all_orders', JSON.stringify(allOrders));
+            renderCustomerData();
+            alert("ಆರ್ಡರ್ ಯಶಸ್ವಿಯಾಗಿ ಅಂಗಡಿ ಮಾಲೀಕರಿಗೆ ಕಳುಹಿಸಲಾಗಿದೆ!");
         }
     </script>
 </body>
