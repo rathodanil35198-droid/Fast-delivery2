@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ಶಹಾಪುರ ಮಾರ್ಕೆಟ್ - ಅಂಗಡಿ ಮಾಲೀಕರ ಆಪ್</title>
+    <title>ಶಹಾಪುರ ಮಾರ್ಕೆಟ್ - ಗ್ರಾಹಕರ ಆಪ್</title>
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-gray-100 font-sans">
@@ -16,19 +16,21 @@
         </div>
     </div>
 
-    <!-- ಸಕ್ಸಸ್ ಪಾಪ್‌ಅಪ್ -->
-    <div id="custom-modal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden flex items-center justify-center p-4">
+    <!-- ಸಕ್ಸಸ್ / ಆರ್ಡರ್ ವಿವರಗಳ ಪಾಪ್‌ಅಪ್ -->
+    <div id="custom-modal" class="fixed inset-0 bg-black bg-opacity-60 z-50 hidden flex items-center justify-center p-4">
         <div class="bg-white p-6 rounded-2xl shadow-2xl max-w-sm w-full text-center space-y-3">
             <div id="modal-icon" class="text-4xl">🎉</div>
             <h3 id="modal-title" class="text-lg font-bold text-gray-800">ಯಶಸ್ವಿ!</h3>
             <p id="modal-message" class="text-xs text-gray-600"></p>
-            <button onclick="closeModal()" class="w-full bg-indigo-600 text-white py-2 rounded-xl font-bold text-xs">ಸರಿ (OK)</button>
+            <div id="modal-buttons" class="flex flex-col gap-2 pt-2">
+                <button onclick="closeModal()" class="w-full bg-indigo-600 text-white py-2 rounded-xl font-bold text-xs">ಸರಿ (OK)</button>
+            </div>
         </div>
     </div>
 
     <!-- ಹೆಡರ್ -->
     <header class="bg-indigo-700 text-white p-4 shadow-md flex justify-between items-center sticky top-0 z-40">
-        <h1 class="text-sm font-bold">🏪 ಶಹಾಪುರ ಮಾರ್ಕೆಟ್ (ಅಂಗಡಿ ಮಾಲೀಕರು)</h1>
+        <h1 class="text-sm font-bold">🛒 ಶಹಾಪುರ ಮಾರ್ಕೆಟ್ (ಗ್ರಾಹಕರು)</h1>
         <div id="user-info" class="text-xs hidden items-center gap-2">
             <span id="logged-user-name" class="font-semibold"></span>
             <button onclick="logout()" class="bg-red-500 px-2 py-1 rounded">ಲಾಗ್‌ಔಟ್</button>
@@ -37,38 +39,22 @@
 
     <main class="container mx-auto p-4 max-w-md">
 
-        <!-- ೧. ನೋಂದಣಿ ಅಥವಾ ಲಾಗಿನ್ ಪೇಜ್ -->
-        <div id="auth-screen" class="bg-white p-6 rounded-2xl shadow-lg space-y-4 page-section">
-            <h2 class="text-xl font-bold text-gray-800 border-b pb-2">ಅಂಗಡಿ ಮಾಲೀಕರ ನೋಂದಣಿ</h2>
+        <!-- ೧. ಗ್ರಾಹಕರ ನೋಂದಣಿ / ಲಾಗಿನ್ ಪೇಜ್ (ಖರೀದಿಸುವಾಗ ಮಾತ್ರ ಬರುತ್ತದೆ) -->
+        <div id="auth-screen" class="bg-white p-6 rounded-2xl shadow-lg space-y-4 hidden page-section">
+            <div class="flex justify-between items-center border-b pb-2">
+                <h2 class="text-xl font-bold text-gray-800">ಗ್ರಾಹಕರ ವಿವರ & ವಿಳಾಸ</h2>
+                <button onclick="goBackToBrowse()" class="text-xs text-indigo-600 font-bold underline">← ವಾಪಸ್ ಹೋಗಿ</button>
+            </div>
             
-            <div class="space-y-3">
+            <div class="space-y-3 text-xs">
                 <div>
-                    <label class="block text-xs font-medium text-gray-700">ನಿಮ್ಮ ಹೆಸರು</label>
-                    <input type="text" id="reg-name" placeholder="ಮಾಲೀಕರ ಹೆಸರು ನಮೂದಿಸಿ" class="w-full p-2 border rounded-lg text-sm mt-1">
+                    <label class="block font-medium text-gray-700">ನಿಮ್ಮ ಹೆಸರು</label>
+                    <input type="text" id="reg-name" placeholder="ನಿಮ್ಮ ಹೆಸರು ನಮೂದಿಸಿ" class="w-full p-2 border rounded-lg text-sm mt-1">
                 </div>
                 <div>
-                    <label class="block text-xs font-medium text-gray-700">ಮೊಬೈಲ್ ನಂಬರ್</label>
+                    <label class="block font-medium text-gray-700">ಮೊಬೈಲ್ ನಂಬರ್</label>
                     <input type="tel" id="reg-phone" placeholder="10 ಅಂಕಿಯ ಮೊಬೈಲ್ ನಂಬರ್" maxlength="10" class="w-full p-2 border rounded-lg text-sm mt-1">
                 </div>
-                <div>
-                    <label class="block text-xs font-medium text-gray-700">ಅಂಗಡಿಯ ಹೆಸರು</label>
-                    <input type="text" id="reg-shopname" placeholder="ಉದಾ: ಶ್ರೀ ಸಾಯಿ ಬಟ್ಟೆ ಅಂಗಡಿ" class="w-full p-2 border rounded-lg text-sm mt-1">
-                </div>
-                <div>
-                    <label class="block text-xs font-medium text-gray-700">ಅಂಗಡಿಯ ವಿಧ (Shop Category)</label>
-                    <select id="reg-category" class="w-full p-2 border rounded-lg text-sm mt-1">
-                        <option value="Clothing">ಬಟ್ಟೆ ಅಂಗಡಿ (Clothing)</option>
-                        <option value="Footwear">ಶೂಸ್ & ಚಪ್ಪಲಿ ಅಂಗಡಿ (Footwear)</option>
-                        <option value="Gifts">ಗಿಫ್ಟ್ ಅಂಗಡಿ (Gift Shop)</option>
-                        <option value="General">ಜನರಲ್ ಸ್ಟೋರ್ / ಇತರೆ</option>
-                    </select>
-                </div>
-
-                <div>
-                    <label class="block text-xs font-medium text-gray-700 mb-1">ಅಂಗಡಿಯ ಮುಂಭಾಗದ ಫೋಟೋ (Shop Photo)</label>
-                    <input type="file" id="reg-shopphoto" accept="image/*" capture="environment" class="w-full p-1 border rounded-lg text-xs">
-                </div>
-
                 <div class="grid grid-cols-2 gap-2">
                     <input type="text" id="reg-district" placeholder="ಜಿಲ್ಲೆ" class="p-2 border rounded-lg text-sm" value="ಯಾದಗಿರಿ">
                     <input type="text" id="reg-taluk" placeholder="ತಾಲೂಕು" class="p-2 border rounded-lg text-sm" value="ಶಹಾಪುರ">
@@ -78,66 +64,37 @@
                     <input type="text" id="reg-pincode" placeholder="ಪಿನ್ ಕೋಡ್" maxlength="6" class="p-2 border rounded-lg text-sm" value="585223">
                 </div>
                 <div>
-                    <button onclick="getLocation()" class="w-full bg-teal-600 text-white py-2 rounded-xl text-xs font-bold mb-2">📍 ಜಿಪಿಎಸ್ ಲೊಕೇಶನ್ ಟ್ರ್ಯಾಕ್ ಮಾಡಿ</button>
-                    <p id="loc-status" class="text-[11px] text-gray-500 text-center">ಲೊಕೇಶನ್ ಸಿಕ್ಕಿಲ್ಲ</p>
+                    <label class="block font-medium text-gray-700">ಪೂರ್ಣ ವಿಳಾಸ (Address)</label>
+                    <textarea id="reg-address" placeholder="ಮನೆ ನಂಬರ್, ಬೀದಿ, ಊರು ಇತ್ಯಾದಿ" class="w-full p-2 border rounded-lg text-sm mt-1 h-16">1/29 Bheemrav Gudi Maruti Nagar, Near SBI Branch</textarea>
                 </div>
 
-                <button onclick="registerVendor()" class="w-full bg-indigo-600 text-white py-2.5 rounded-xl font-bold text-sm shadow">ಖಾತೆ ಸೃಷ್ಟಿಸಿ & ಮುಂದುವರಿಸಿ</button>
+                <button onclick="registerAndContinueOrder()" class="w-full bg-indigo-600 text-white py-2.5 rounded-xl font-bold text-sm shadow">ವಿಳಾಸ ಸೇವ್ ಮಾಡಿ ಮುಂದುವರಿಸಿ</button>
             </div>
         </div>
 
-        <!-- ೨. ಅಂಗಡಿ ಮಾಲೀಕರ ಮುಖ್ಯ ಡ್ಯಾಶ್‌ಬೋರ್ಡ್ -->
-        <div id="dashboard-vendor" class="space-y-4 hidden page-section">
+        <!-- ೨. ಗ್ರಾಹಕರ ಮುಖ್ಯ ಮುಖಪುಟ (ಎಲ್ಲರಿಗೂ ಮೊದಲು ಕಾಣುವುದು) -->
+        <div id="dashboard-customer" class="space-y-4 page-section">
             
             <!-- ಟ್ಯಾಬ್ ಬಟನ್‌ಗಳು -->
             <div class="flex gap-2 mb-2">
-                <button onclick="switchVendorTab('upload')" id="tab-upload" class="flex-1 bg-indigo-600 text-white py-2 rounded-xl text-xs font-bold">📸 ಫೋಟೋ ಅಪ್ಲೋಡ್ ಮಾಡಿ</button>
-                <button onclick="switchVendorTab('orders')" id="tab-orders" class="flex-1 bg-gray-200 text-gray-700 py-2 rounded-xl text-xs font-bold">📦 ಹೊಸ ಆರ್ಡರ್‌ಗಳು ನೋಡಿ</button>
+                <button onclick="switchCustomerTab('browse')" id="tab-browse" class="flex-1 bg-indigo-600 text-white py-2 rounded-xl text-xs font-bold">🛍️ ವಸ್ತುಗಳು</button>
+                <button onclick="switchCustomerTab('orders')" id="tab-orders" class="flex-1 bg-gray-200 text-gray-700 py-2 rounded-xl text-xs font-bold">📦 ನನ್ನ ಆರ್ಡರ್‌ಗಳು</button>
             </div>
 
-            <!-- ಸೆಕ್ಷನ್ 1: ಫೋಟೋ ಅಪ್ಲೋಡ್ -->
-            <div id="vendor-upload-section" class="space-y-4">
+            <!-- ವಸ್ತುವನ್ನು ಬ್ರೌಸ್ ಮಾಡುವ ಸೆಕ್ಷನ್ -->
+            <div id="cust-browse-section" class="space-y-3">
                 <div class="bg-white p-4 rounded-xl shadow space-y-3">
-                    <h3 class="font-bold text-base text-gray-800 border-b pb-1">➕ ಹೊಸ ವಸ್ತುವಿನ ವಿವರ ಮತ್ತು ಫೋಟೋ ಅಪ್ಲೋಡ್</h3>
-                    
-                    <input type="text" id="v-p-name" placeholder="ವಸ್ತುವಿನ ಹೆಸರು (ಉದಾ: ಜೀನ್ಸ್ ಪ್ಯಾಂಟ್ / ಶೂ / ಗಿಫ್ಟ್)" class="w-full p-2 border rounded-lg text-sm">
-                    
-                    <div class="grid grid-cols-2 gap-2">
-                        <input type="number" id="v-p-orig" placeholder="ಹಿಂದಿನ ಬೆಲೆ (₹)" class="p-2 border rounded-lg text-sm">
-                        <input type="number" id="v-p-disc" placeholder="ಡಿಸ್ಕೌಂಟ್ ಬೆಲೆ (₹)" class="p-2 border rounded-lg text-sm">
-                    </div>
-
-                    <div class="grid grid-cols-2 gap-2">
-                        <input type="text" id="v-p-colors" placeholder="ಬಣ್ಣಗಳು (ಉದಾ: Red, Blue)" class="p-2 border rounded-lg text-xs">
-                        <input type="number" id="v-p-stock" placeholder="ಸ್ಟಾಕ್ (ಎಷ್ಟು ಪೀಸ್)" class="p-2 border rounded-lg text-xs">
-                    </div>
-
-                    <!-- ಅಂಗಡಿ ವರ್ಗಕ್ಕೆ ತಕ್ಕಂತೆ ಡೈನಾಮಿಕ್ ಅಳತೆಗಳು -->
-                    <div id="dynamic-size-section" class="space-y-1"></div>
-
-                    <div>
-                        <label class="block text-xs text-gray-600 mb-1">ಮುಂಭಾಗದ ಫೋಟೋ (Front Camera)</label>
-                        <input type="file" id="v-p-front" accept="image/*" capture="environment" class="w-full p-1 border rounded-lg text-xs">
-                    </div>
-                    <div>
-                        <label class="block text-xs text-gray-600 mb-1">ಹಿಂಭಾಗದ ಫೋಟೋ (Back Camera)</label>
-                        <input type="file" id="v-p-back" accept="image/*" capture="environment" class="w-full p-1 border rounded-lg text-xs">
-                    </div>
-
-                    <button onclick="addVendorProduct()" class="w-full bg-indigo-600 text-white py-2.5 rounded-xl font-bold text-xs shadow">ವಸ್ತು ಅಪ್‌ಲೋಡ್ ಮಾಡಿ</button>
-                </div>
-
-                <div class="bg-white p-4 rounded-xl shadow space-y-3">
-                    <h3 class="font-bold text-sm text-gray-800 border-b pb-1">🖼️ ನೀವು ಅಪ್‌ಲೋಡ್ ಮಾಡಿದ ವಸ್ತುಗಳು (ಸ್ಟಾಕ್ / ಡಿಲೀಟ್)</h3>
-                    <div id="vendor-my-products" class="space-y-2 text-xs text-gray-600">ಯಾವುದೇ ವಸ್ತುಗಳಿಲ್ಲ.</div>
+                    <h3 class="font-bold text-base text-gray-800">🛍️ ಲಭ್ಯವಿರುವ ವಸ್ತುಗಳು</h3>
+                    <input type="text" id="search-box" oninput="searchProducts()" placeholder="ವಸ್ತು ಅಥವಾ ಅಂಗಡಿ ಹೆಸರು ಹುಡುಕಿ..." class="w-full p-2 border rounded-lg text-sm">
+                    <div id="customer-product-list" class="space-y-4 max-h-[500px] overflow-y-auto"></div>
                 </div>
             </div>
 
-            <!-- ಸೆಕ್ಷನ್ 2: ಹೊಸ ಆರ್ಡರ್‌ಗಳು ಮತ್ತು ಡೆಲಿವರಿ ಮ್ಯಾನೇಜ್‌ಮೆಂಟ್ -->
-            <div id="vendor-orders-section" class="space-y-4 hidden">
-                <div class="bg-white p-4 rounded-xl shadow space-y-3">
-                    <h3 class="font-bold text-sm text-gray-800 border-b pb-1">📦 ಗ್ರಾಹಕರ ಹೊಸ ಆರ್ಡರ್‌ಗಳು ಹಾಗೂ ಡೆಲಿವರಿ ಸ್ಟೇಟಸ್</h3>
-                    <div id="vendor-orders-list" class="text-xs text-gray-600">ಯಾವುದೇ ಹೊಸ ಆರ್ಡರ್‌ಗಳಿಲ್ಲ.</div>
+            <!-- ನನ್ನ ಆರ್ಡರ್‌ಗಳು & ಟ್ರ್ಯಾಕಿಂಗ್ ಸೆಕ್ಷನ್ -->
+            <div id="cust-orders-section" class="space-y-3 hidden">
+                <div class="bg-white p-4 rounded-xl shadow space-y-2">
+                    <h3 class="font-bold text-sm text-gray-800 border-b pb-1">📦 ನನ್ನ ಆರ್ಡರ್‌ಗಳು</h3>
+                    <div id="customer-orders-list" class="text-xs text-gray-600">ಯಾವುದೇ ಆರ್ಡರ್‌ಗಳಿಲ್ಲ.</div>
                 </div>
             </div>
 
@@ -146,40 +103,21 @@
     </main>
 
     <script>
-        let currentVendor = JSON.parse(localStorage.getItem('currentVendor')) || null;
+        let currentCustomer = JSON.parse(localStorage.getItem('currentCustomer')) || null;
         let products = JSON.parse(localStorage.getItem('market_products')) || [];
-        let selectedProductSize = 'M';
-        let gpsLocation = { lat: '', lng: '' };
+        let pendingProductId = null; // ಯಾವ ವಸ್ತುವನ್ನು ಖರೀದಿಸಲು ಕ್ಲಿಕ್ ಮಾಡಲಾಗಿತ್ತು ಎಂಬುದನ್ನು ನೆನಪಿಡಲು
 
-        function playSiren() {
-            try {
-                let audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-                let osc = audioCtx.createOscillator();
-                let gain = audioCtx.createGain();
-                osc.type = 'sine';
-                osc.frequency.setValueAtTime(880, audioCtx.currentTime);
-                osc.frequency.exponentialRampToValueAtTime(440, audioCtx.currentTime + 0.5);
-                gain.gain.setValueAtTime(1, audioCtx.currentTime);
-                gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.5);
-                osc.connect(gain);
-                gain.connect(audioCtx.destination);
-                osc.start();
-                osc.stop(audioCtx.currentTime + 0.5);
-            } catch (e) {
-                console.log("Audio not supported");
-            }
-        }
-
-        function showModal(title, message, icon = '🎉') {
+        function showModal(title, message, icon = '🎉', buttonsHtml = '<button onclick="closeModal()" class="w-full bg-indigo-600 text-white py-2 rounded-xl font-bold text-xs">ಸರಿ (OK)</button>') {
             document.getElementById('modal-title').innerText = title;
-            document.getElementById('modal-message').innerText = message;
+            document.getElementById('modal-message').innerHTML = message;
             document.getElementById('modal-icon').innerText = icon;
+            document.getElementById('modal-buttons').innerHTML = buttonsHtml;
             document.getElementById('custom-modal').classList.remove('hidden');
         }
 
         function closeModal() {
             document.getElementById('custom-modal').classList.add('hidden');
-            checkLogin();
+            initApp();
         }
 
         function zoomImage(src) {
@@ -191,391 +129,442 @@
             document.getElementById('image-modal').classList.add('hidden');
         }
 
-        function getLocation() {
-            if (navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition(position => {
-                    gpsLocation.lat = position.coords.latitude;
-                    gpsLocation.lng = position.coords.longitude;
-                    let statEl = document.getElementById('loc-status');
-                    statEl.innerText = `ಲೊಕೇಶನ್ ಸಿಕ್ಕಿದೆ (Lat: ${gpsLocation.lat.toFixed(2)}, Lng: ${gpsLocation.lng.toFixed(2)})`;
-                    statEl.className = "text-[11px] text-green-600 text-center font-bold";
-                }, error => {
-                    alert('ಲೊಕೇಶನ್ ಪಡೆಯಲು ಸಾಧ್ಯವಾಗಿಲ್ಲ. ಜಿಪಿಎಸ್ ಆನ್ ಮಾಡಿ.');
-                });
-            } else {
-                alert('ನಿಮ್ಮ ಬ್ರೌಸರ್ ಜಿಪಿಎಸ್ ಸಪೋರ್ಟ್ ಮಾಡುವುದಿಲ್ಲ.');
-            }
-        }
-
-        function renderSizeOptionsForCategory(category) {
-            let container = document.getElementById('dynamic-size-section');
-            if (!container) return;
-
-            if (category === 'Clothing') {
-                container.innerHTML = `
-                    <label class="block text-xs text-gray-600 mb-1">ಲಭ್ಯವಿರುವ ಸೈಜ್‌ಗಳು (Clothing Sizes):</label>
-                    <div class="flex gap-1">
-                        <span onclick="selectClothingSize('XS')" id="sz-XS" class="px-3 py-1 border rounded text-xs cursor-pointer bg-gray-100">XS</span>
-                        <span onclick="selectClothingSize('S')" id="sz-S" class="px-3 py-1 border rounded text-xs cursor-pointer bg-gray-100">S</span>
-                        <span onclick="selectClothingSize('M')" id="sz-M" class="px-3 py-1 border rounded text-xs cursor-pointer bg-indigo-600 text-white">M</span>
-                        <span onclick="selectClothingSize('L')" id="sz-L" class="px-3 py-1 border rounded text-xs cursor-pointer bg-gray-100">L</span>
-                        <span onclick="selectClothingSize('XL')" id="sz-XL" class="px-3 py-1 border rounded text-xs cursor-pointer bg-gray-100">XL</span>
-                    </div>
-                `;
-                selectedProductSize = 'M';
-            } else if (category === 'Footwear') {
-                let shoeSizes = [5, 6, 7, 8, 9, 10, 11];
-                container.innerHTML = `
-                    <label class="block text-xs text-gray-600 mb-1">ಚಪ್ಪಲಿ / ಶೂಸ್ ನಂಬರ್ (Footwear Size):</label>
-                    <div class="flex flex-wrap gap-1">
-                        ${shoeSizes.map((sz, idx) => `
-                            <span onclick="selectFootwearSize(${sz})" id="sz-${sz}" class="px-3 py-1 border rounded text-xs cursor-pointer ${idx === 2 ? 'bg-indigo-600 text-white' : 'bg-gray-100'}">${sz} No</span>
-                        `).join('')}
-                    </div>
-                `;
-                selectedProductSize = '7 No';
-            } else if (category === 'Gifts') {
-                container.innerHTML = `
-                    <label class="block text-xs text-gray-600 mb-1">ಗಿಫ್ಟ್ ಅಳತೆ (ಉದ್ದ ಹಾಗೂ ಅಗಲ ಅಡಿಗಳಲ್ಲಿ):</label>
-                    <div class="grid grid-cols-2 gap-2">
-                        <input type="text" id="gift-length" placeholder="ಉದ್ದ (Length - e.g. 2 ft)" class="p-2 border rounded-lg text-xs">
-                        <input type="text" id="gift-width" placeholder="ಅಗಲ (Width - e.g. 1.5 ft)" class="p-2 border rounded-lg text-xs">
-                    </div>
-                `;
-                selectedProductSize = 'Standard Gift';
-            } else {
-                container.innerHTML = `
-                    <label class="block text-xs text-gray-600 mb-1">ಅಳತೆ / ವಿವರಣೆ:</label>
-                    <input type="text" id="general-size" placeholder="ಅಳತೆ ಅಥವಾ ವಿವರಣೆ ನಮೂದಿಸಿ" class="w-full p-2 border rounded-lg text-xs" value="Standard">
-                `;
-                selectedProductSize = 'Standard';
-            }
-        }
-
-        function selectClothingSize(size) {
-            selectedProductSize = size;
-            ['XS', 'S', 'M', 'L', 'XL'].forEach(s => {
-                let el = document.getElementById(`sz-${s}`);
-                if (el) {
-                    el.className = s === size ? "px-3 py-1 border rounded text-xs cursor-pointer bg-indigo-600 text-white" : "px-3 py-1 border rounded text-xs cursor-pointer bg-gray-100";
-                }
-            });
-        }
-
-        function selectFootwearSize(sz) {
-            selectedProductSize = sz + ' No';
-            [5, 6, 7, 8, 9, 10, 11].forEach(s => {
-                let el = document.getElementById(`sz-${s}`);
-                if (el) {
-                    el.className = s === sz ? "px-3 py-1 border rounded text-xs cursor-pointer bg-indigo-600 text-white" : "px-3 py-1 border rounded text-xs cursor-pointer bg-gray-100";
-                }
-            });
-        }
-
-        function switchVendorTab(tab) {
-            if (tab === 'upload') {
-                document.getElementById('vendor-upload-section').classList.remove('hidden');
-                document.getElementById('vendor-orders-section').classList.add('hidden');
-                document.getElementById('tab-upload').className = "flex-1 bg-indigo-600 text-white py-2 rounded-xl text-xs font-bold";
+        function switchCustomerTab(tab) {
+            if (tab === 'browse') {
+                document.getElementById('cust-browse-section').classList.remove('hidden');
+                document.getElementById('cust-orders-section').classList.add('hidden');
+                document.getElementById('tab-browse').className = "flex-1 bg-indigo-600 text-white py-2 rounded-xl text-xs font-bold";
                 document.getElementById('tab-orders').className = "flex-1 bg-gray-200 text-gray-700 py-2 rounded-xl text-xs font-bold";
             } else {
-                document.getElementById('vendor-upload-section').classList.add('hidden');
-                document.getElementById('vendor-orders-section').classList.remove('hidden');
+                // ಆರ್ಡರ್ ಟ್ಯಾಬ್ ನೋಡುವಾಗ ಲಾಗಿನ್ ಆಗಿಲ್ಲದಿದ್ದರೆ ಮೊದಲು ಅಡ್ರೆಸ್/ಲಾಗಿನ್ ಕೇಳುವುದು
+                if (!currentCustomer) {
+                    pendingProductId = null;
+                    document.getElementById('auth-screen').classList.remove('hidden');
+                    document.getElementById('dashboard-customer').classList.add('hidden');
+                    return;
+                }
+                document.getElementById('cust-browse-section').classList.add('hidden');
+                document.getElementById('cust-orders-section').classList.remove('hidden');
                 document.getElementById('tab-orders').className = "flex-1 bg-indigo-600 text-white py-2 rounded-xl text-xs font-bold";
-                document.getElementById('tab-upload').className = "flex-1 bg-gray-200 text-gray-700 py-2 rounded-xl text-xs font-bold";
-                renderVendorOrders();
+                document.getElementById('tab-browse').className = "flex-1 bg-gray-200 text-gray-700 py-2 rounded-xl text-xs font-bold";
+                renderCustomerOrders();
             }
         }
 
-        function checkLogin() {
-            if (!currentVendor) {
-                document.getElementById('auth-screen').classList.remove('hidden');
-                document.getElementById('dashboard-vendor').classList.add('hidden');
-                document.getElementById('user-info').classList.add('hidden');
-            } else {
-                document.getElementById('auth-screen').classList.add('hidden');
-                document.getElementById('dashboard-vendor').classList.remove('hidden');
+        function initApp() {
+            // ಮೊದಲಿಗೆ ಎಲ್ಲರಿಗೂ ಮುಖಪುಟ (ವಸ್ತುಗಳು) ನೇರವಾಗಿ ಕಾಣಿಸುತ್ತದೆ
+            document.getElementById('auth-screen').classList.add('hidden');
+            document.getElementById('dashboard-customer').classList.remove('hidden');
+            
+            if (currentCustomer) {
                 document.getElementById('user-info').classList.remove('hidden');
-                document.getElementById('logged-user-name').innerText = `${currentVendor.name} (${currentVendor.shopName})`;
-                renderSizeOptionsForCategory(currentVendor.category);
-                renderVendorProducts();
+                document.getElementById('logged-user-name').innerText = `${currentCustomer.name} (ಗ್ರಾಹಕರು)`;
+            } else {
+                document.getElementById('user-info').classList.add('hidden');
             }
+            renderCustomerProducts(products);
         }
 
-        function compressImage(file, callback) {
-            let reader = new FileReader();
-            reader.onload = function (e) {
-                let img = new Image();
-                img.onload = function () {
-                    let canvas = document.createElement('canvas');
-                    let ctx = canvas.getContext('2d');
-                    let MAX_WIDTH = 500;
-                    let MAX_HEIGHT = 500;
-                    let width = img.width;
-                    let height = img.height;
-
-                    if (width > height) {
-                        if (width > MAX_WIDTH) {
-                            height *= MAX_WIDTH / width;
-                            width = MAX_WIDTH;
-                        }
-                    } else {
-                        if (height > MAX_HEIGHT) {
-                            width *= MAX_HEIGHT / height;
-                            height = MAX_HEIGHT;
-                        }
-                    }
-
-                    canvas.width = width;
-                    canvas.height = height;
-                    ctx.drawImage(img, 0, 0, width, height);
-                    callback(canvas.toDataURL('image/jpeg', 0.7));
-                };
-                img.src = e.target.result;
-            };
-            reader.readAsDataURL(file);
+        function goBackToBrowse() {
+            document.getElementById('auth-screen').classList.add('hidden');
+            document.getElementById('dashboard-customer').classList.remove('hidden');
         }
 
-        function registerVendor() {
+        function registerAndContinueOrder() {
             let name = document.getElementById('reg-name').value;
             let phone = document.getElementById('reg-phone').value;
-            let shopName = document.getElementById('reg-shopname').value;
-            let category = document.getElementById('reg-category').value;
             let district = document.getElementById('reg-district').value;
             let taluk = document.getElementById('reg-taluk').value;
             let city = document.getElementById('reg-city').value;
             let pincode = document.getElementById('reg-pincode').value;
-            let shopPhotoFile = document.getElementById('reg-shopphoto').files[0];
+            let address = document.getElementById('reg-address').value;
 
-            if (!name || !phone || !shopName || phone.length < 10) {
-                alert('ದಯವಿಟ್ಟು ಎಲ್ಲಾ ಸರಿಯಾದ ವಿವರಗಳನ್ನು ಭರ್ತಿ ಮಾಡಿ!');
+            if (!name || !phone || phone.length < 10) {
+                alert('ದಯವಿಟ್ಟು ಸರಿಯಾದ ಹೆಸರು ಮತ್ತು ಮೊಬೈಲ್ ನಂಬರ್ ಹಾಕಿ!');
                 return;
             }
 
-            if (!shopPhotoFile) {
-                showModal("ಎಚ್ಚರಿಕೆ!", "ದಯವಿಟ್ಟು ನಿಮ್ಮ ಅಂಗಡಿಯ ಫೋಟೋ ಅಪ್ಲೋಡ್ ಮಾಡಿ!", "⚠️");
-                return;
-            }
+            currentCustomer = { name, phone, district, taluk, city, pincode, address };
+            localStorage.setItem('currentCustomer', JSON.stringify(currentCustomer));
+            
+            document.getElementById('auth-screen').classList.add('hidden');
+            document.getElementById('dashboard-customer').classList.remove('hidden');
+            document.getElementById('user-info').classList.remove('hidden');
+            document.getElementById('logged-user-name').innerText = `${currentCustomer.name} (ಗ್ರಾಹಕರು)`;
 
-            compressImage(shopPhotoFile, function(compressedShopPhoto) {
-                currentVendor = { 
-                    name, phone, shopName, category, district, taluk, city, pincode, 
-                    shopPhoto: compressedShopPhoto, gps: gpsLocation 
-                };
-                localStorage.setItem('currentVendor', JSON.stringify(currentVendor));
-                showModal("ಯಶಸ್ವಿ!", "ನಿಮ್ಮ ಅಂಗಡಿ ಖಾತೆ ಯಶಸ್ವಿಯಾಗಿ ಸೃಷ್ಟಿಯಾಗಿದೆ!", "🏪");
-            });
+            // ಒಂದು ವೇಳೆ ವಸ್ತುವನ್ನು ಖರೀದಿಸಲು ಕ್ಲಿಕ್ ಮಾಡಿ ಅಡ್ರೆಸ್ ಕೇಳಿದ್ದರೆ, ಈಗ ನೇರವಾಗಿ ಖರೀದಿ ಪಾಪ್‌ಅಪ್ ಓಪನ್ ಆಗುತ್ತದೆ
+            if (pendingProductId) {
+                let pid = pendingProductId;
+                pendingProductId = null;
+                openBuyModal(pid);
+            } else {
+                renderCustomerProducts(products);
+            }
         }
 
         function logout() {
-            localStorage.removeItem('currentVendor');
-            currentVendor = null;
-            checkLogin();
+            localStorage.removeItem('currentCustomer');
+            currentCustomer = null;
+            initApp();
         }
 
-        function addVendorProduct() {
-            let name = document.getElementById('v-p-name').value;
-            let origPrice = document.getElementById('v-p-orig').value;
-            let discPrice = document.getElementById('v-p-disc').value;
-            let colors = document.getElementById('v-p-colors').value;
-            let stock = document.getElementById('v-p-stock').value;
-            let frontFile = document.getElementById('v-p-front').files[0];
-            let backFile = document.getElementById('v-p-back').files[0];
-
-            if (currentVendor.category === 'Gifts') {
-                let len = document.getElementById('gift-length').value;
-                let wid = document.getElementById('gift-width').value;
-                if (len && wid) {
-                    selectedProductSize = `ಉದ್ದ: ${len}, ಅಗಲ: ${wid}`;
-                }
-            } else if (currentVendor.category === 'General') {
-                let genSz = document.getElementById('general-size').value;
-                if (genSz) {
-                    selectedProductSize = genSz;
-                }
-            }
-
-            if (!name || !origPrice || !discPrice) {
-                alert('ದಯವಿಟ್ಟು ವಸ್ತುವಿನ ಹೆಸರು ಮತ್ತು ಬೆಲೆಗಳನ್ನು ಭರ್ತಿ ಮಾಡಿ!');
+        function renderCustomerProducts(list) {
+            let listDiv = document.getElementById('customer-product-list');
+            if (list.length === 0) {
+                listDiv.innerHTML = "<p class='text-gray-500 text-xs'>ಯಾವುದೇ ವಸ್ತುಗಳು ಲಭ್ಯವಿಲ್ಲ.</p>";
                 return;
             }
-
-            if (!frontFile || !backFile) {
-                showModal("ಎಚ್ಚರಿಕೆ!", "ದಯವಿಟ್ಟು ಮುಂಭಾಗ ಮತ್ತು ಹಿಂಭಾಗದ ಎರಡೂ ಫೋಟೋಗಳನ್ನು ಅಪ್‌ಲೋಡ್ ಮಾಡಿ!", "⚠️");
-                return;
-            }
-
-            compressImage(frontFile, function(frontCompressed) {
-                compressImage(backFile, function(backCompressed) {
-                    let newProd = {
-                        id: Date.now(),
-                        name: name,
-                        category: currentVendor.category,
-                        origPrice: Number(origPrice),
-                        discPrice: Number(discPrice),
-                        colors: colors || 'Standard',
-                        size: selectedProductSize,
-                        stock: Number(stock) || 1,
-                        vendorShop: currentVendor.shopName,
-                        vendorPhone: currentVendor.phone,
-                        frontPhoto: frontCompressed,
-                        backPhoto: backCompressed
-                    };
-
-                    products.push(newProd);
-                    localStorage.setItem('market_products', JSON.stringify(products));
-                    
-                    document.getElementById('v-p-name').value = '';
-                    document.getElementById('v-p-orig').value = '';
-                    document.getElementById('v-p-disc').value = '';
-                    document.getElementById('v-p-colors').value = '';
-                    document.getElementById('v-p-stock').value = '';
-                    document.getElementById('v-p-front').value = '';
-                    document.getElementById('v-p-back').value = '';
-
-                    renderVendorProducts();
-                    showModal("ಯಶಸ್ವಿ!", "ನಿಮ್ಮ ಫೋಟೋ ಯಶಸ್ವಿಯಾಗಿ ಅಪ್‌ಲೋಡ್ ಆಗಿದೆ! ವಸ್ತು ಗ್ರಾಹಕರಿಗೆ ಲಭ್ಯವಿದೆ.", "📸");
-                });
-            });
-        }
-
-        function renderVendorProducts() {
-            let listDiv = document.getElementById('vendor-my-products');
-            let myProducts = products.filter(p => p.vendorPhone === currentVendor.phone);
-
-            if (myProducts.length === 0) {
-                listDiv.innerHTML = "ನೀವು ಯಾವುದೇ ವಸ್ತುಗಳನ್ನು ಅಪ್‌ಲೋಡ್ ಮಾಡಿಲ್ಲ.";
-                return;
-            }
-
-            listDiv.innerHTML = myProducts.map(p => `
-                <div class="border p-2 rounded-lg bg-gray-50 flex items-center justify-between gap-2">
-                    <div class="flex gap-1">
-                        <img src="${p.frontPhoto}" onclick="zoomImage('${p.frontPhoto}')" class="w-10 h-10 object-cover rounded border cursor-pointer">
-                        <img src="${p.backPhoto}" onclick="zoomImage('${p.backPhoto}')" class="w-10 h-10 object-cover rounded border cursor-pointer">
+            listDiv.innerHTML = list.map(p => `
+                <div class="border p-3 rounded-2xl bg-white shadow-sm space-y-2">
+                    <div class="flex gap-2 justify-center">
+                        <img src="${p.frontPhoto}" onclick="zoomImage('${p.frontPhoto}')" class="w-32 h-36 object-cover rounded-xl border shadow cursor-pointer">
+                        <img src="${p.backPhoto}" onclick="zoomImage('${p.backPhoto}')" class="w-32 h-36 object-cover rounded-xl border shadow cursor-pointer">
                     </div>
-                    <div class="flex-1">
-                        <p class="font-bold text-xs">${p.name} (${p.size})</p>
-                        <p class="text-[10px] text-green-600">₹${p.discPrice} | ಸ್ಟಾಕ್: ${p.stock}</p>
+                    <div>
+                        <h4 class="font-bold text-gray-800 text-sm">${p.name} (<span class="text-red-600">ಸೈಜ್: ${p.size || 'M'}</span>)</h4>
+                        <p class="text-[11px] text-gray-500">ಅಂಗಡಿ: ${p.vendorShop}</p>
+                        <p class="text-[11px] text-indigo-600">ಬಣ್ಣ: ${p.colors} | ಸ್ಟಾಕ್: ${p.stock}</p>
+                        <div class="flex items-center gap-2 mt-1">
+                            <span class="text-red-500 line-through text-xs">₹${p.origPrice}</span>
+                            <span class="text-green-600 font-bold text-sm">₹${p.discPrice}</span>
+                        </div>
                     </div>
-                    <button onclick="deleteProduct(${p.id})" class="bg-red-500 text-white px-2 py-1 rounded text-[10px] font-bold">ಡಿಲೀಟ್</button>
+                    <button onclick="handleBuyClick(${p.id})" class="w-full bg-yellow-400 text-black py-2.5 rounded-xl font-bold text-xs shadow hover:bg-yellow-500">₹${p.discPrice} ಗೆ ಖರೀದಿಸಿ</button>
                 </div>
             `).join('');
         }
 
-        function deleteProduct(id) {
-            if (confirm('ಈ ವಸ್ತುವನ್ನು ಡಿಲೀಟ್ ಮಾಡಲು ಬಯಸುತ್ತೀರಾ?')) {
-                products = products.filter(p => p.id !== id);
-                localStorage.setItem('market_products', JSON.stringify(products));
-                renderVendorProducts();
-                showModal("ಯಶಸ್ವಿ!", "ವಸ್ತು ಯಶಸ್ವಿಯಾಗಿ ಡಿಲೀಟ್ ಆಗಿದೆ.", "🗑️");
-            }
+        function searchProducts() {
+            let query = document.getElementById('search-box').value.toLowerCase();
+            let filtered = products.filter(p => p.name.toLowerCase().includes(query) || p.vendorShop.toLowerCase().includes(query));
+            renderCustomerProducts(filtered);
         }
 
-        function renderVendorOrders() {
-            let ordDiv = document.getElementById('vendor-orders-list');
-            let savedOrders = JSON.parse(localStorage.getItem('market_orders')) || [];
-            let myOrders = savedOrders.filter(o => !o.acceptedByVendor || o.acceptedByVendor === currentVendor.shopName);
+        function handleBuyClick(id) {
+            // ಮೊದಲಿಗೆ ಗ್ರಾಹಕರ ಅಡ್ರೆಸ್ ಸೇವ್ ಆಗಿದೆಯಾ ಪರಿಶೀಲಿಸುವುದು. ಇಲ್ಲದಿದ್ದರೆ ಅಡ್ರೆಸ್/ಲಾಗಿನ್ ಪೇಜ್ ತೋರಿಸುವುದು.
+            if (!currentCustomer) {
+                pendingProductId = id;
+                document.getElementById('dashboard-customer').classList.add('hidden');
+                document.getElementById('auth-screen').classList.remove('hidden');
+                return;
+            }
+            openBuyModal(id);
+        }
 
-            myOrders.reverse();
+        function openBuyModal(id) {
+            let p = products.find(x => x.id === id);
+            if (!p) return;
+
+            let html = `
+                <div class="text-left space-y-3 text-xs">
+                    <div class="bg-gray-50 p-2 rounded border space-y-1">
+                        <div class="flex justify-between items-center">
+                            <p class="font-bold text-gray-800"><b>ವಿಳಾಸ:</b> ${currentCustomer.name}</p>
+                            <button onclick="openAddressEdit()" class="text-blue-600 underline font-bold text-[11px]">ಅಡ್ರೆಸ್ ಬದಲಾಯಿಸಿ (Change)</button>
+                        </div>
+                        <p id="display-customer-address" class="text-gray-600">${currentCustomer.address}, ${currentCustomer.city}, ${currentCustomer.taluk} ತಾಲೂಕು, ${currentCustomer.district} ಜಿಲ್ಲೆ - ${currentCustomer.pincode}</p>
+                        <p class="text-gray-600"><b>ಫೋನ್:</b> ${currentCustomer.phone}</p>
+                    </div>
+
+                    <!-- ಅಡ್ರೆಸ್ ಎಡಿಟ್ ಮಾಡುವ ಬಾಕ್ಸ್ (Default Hidden) -->
+                    <div id="address-edit-box" class="hidden bg-indigo-50 p-2 rounded border space-y-2">
+                        <p class="font-bold text-indigo-700">ವಿಳಾಸ ಬದಲಾಯಿಸಿ:</p>
+                        <input type="text" id="edit-address" value="${currentCustomer.address}" class="w-full p-1.5 border rounded text-xs" placeholder="ವಿಳಾಸ">
+                        <div class="grid grid-cols-2 gap-1">
+                            <input type="text" id="edit-city" value="${currentCustomer.city}" class="p-1 border rounded text-xs" placeholder="ಊರು">
+                            <input type="text" id="edit-pincode" value="${currentCustomer.pincode}" class="p-1 border rounded text-xs" placeholder="ಪಿನ್ ಕೋಡ್">
+                        </div>
+                        <button onclick="saveNewAddress()" class="bg-green-600 text-white px-3 py-1 rounded font-bold text-xs w-full">ಅಡ್ರೆಸ್ ಸೇವ್ ಮಾಡಿ</button>
+                    </div>
+
+                    <div class="flex gap-3 items-center border-b pb-2">
+                        <img src="${p.frontPhoto}" class="w-16 h-16 object-cover rounded-lg border">
+                        <div>
+                            <p class="font-bold text-gray-800">${p.name} (<span class="text-red-600">ಸೈಜ್: ${p.size || 'M'}</span>)</p>
+                            <p class="text-green-600 font-bold">₹${p.discPrice}</p>
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="font-semibold text-gray-700">ಎಷ್ಟು ಪೀಸ್ ಬೇಕು? (Quantity):</label>
+                        <div class="flex items-center gap-3 mt-1">
+                            <button onclick="changeQty(-1)" class="w-8 h-8 bg-gray-200 rounded font-bold text-sm">-</button>
+                            <span id="order-qty" class="font-bold text-base">1</span>
+                            <button onclick="changeQty(1)" class="w-8 h-8 bg-gray-200 rounded font-bold text-sm">+</button>
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="font-semibold text-gray-700">ಪಾವತಿ ವಿಧಾನ (Payment Mode):</label>
+                        <select id="modal-payment-mode" class="w-full p-2 border rounded-lg text-xs mt-1">
+                            <option value="UPI">UPI (Google Pay / PhonePe / Paytm)</option>
+                            <option value="Credit Card">ಕ್ರೆಡಿಟ್ / ಡೆಬಿಟ್ ಕಾರ್ಡ್</option>
+                            <option value="COD">ಕ್ಯಾಶ್ ಆನ್ ಡೆಲಿವರಿ (Cash on Delivery + ₹10)</option>
+                        </select>
+                    </div>
+
+                    <button onclick="confirmOrderPopup(${p.id})" class="w-full bg-yellow-400 text-black py-2.5 rounded-xl font-bold text-xs shadow hover:bg-yellow-500">ಮುಂದುವರಿಸಿ (Continue)</button>
+                </div>
+            `;
+            showModal("ಆರ್ಡರ್ ವಿವರಗಳು", html, "🛒", "");
+        }
+
+        function openAddressEdit() {
+            let box = document.getElementById('address-edit-box');
+            box.classList.toggle('hidden');
+        }
+
+        function saveNewAddress() {
+            let newAddr = document.getElementById('edit-address').value;
+            let newCity = document.getElementById('edit-city').value;
+            let newPin = document.getElementById('edit-pincode').value;
+
+            currentCustomer.address = newAddr;
+            currentCustomer.city = newCity;
+            currentCustomer.pincode = newPin;
+            localStorage.setItem('currentCustomer', JSON.stringify(currentCustomer));
+
+            document.getElementById('display-customer-address').innerText = `${newAddr}, ${newCity} ತಾಲೂಕು, ${currentCustomer.taluk} ಜಿಲ್ಲೆ - ${newPin}`;
+            document.getElementById('address-edit-box').classList.add('hidden');
+            alert('ವಿಳಾಸ ಯಶಸ್ವಿಯಾಗಿ ಬದಲಾಯಿಸಲಾಗಿದೆ!');
+        }
+
+        function changeQty(val) {
+            let qtyEl = document.getElementById('order-qty');
+            let q = Number(qtyEl.innerText) + val;
+            if (q < 1) q = 1;
+            qtyEl.innerText = q;
+        }
+
+        function confirmOrderPopup(id) {
+            let p = products.find(x => x.id === id);
+            let qty = Number(document.getElementById('order-qty').innerText);
+            let paymentMode = document.getElementById('modal-payment-mode').value;
+            let totalAmount = (p.discPrice * qty) + (paymentMode === 'COD' ? 10 : 0);
+
+            document.getElementById('custom-modal').classList.add('hidden');
+
+            let confirmHtml = `
+                <div class="text-left space-y-3 text-xs">
+                    <p class="font-bold text-gray-800 text-sm">ಆರ್ಡರ್ ದೃಢೀಕರಿಸಿ</p>
+                    <p class="text-gray-600">ನೀವು ಆರ್ಡರ್ ಡೆಲಿವರಿ ಪಡೆಯುವಾಗ ನಗದು ಅಥವಾ UPI ಮೂಲಕ ಪಾವತಿಸಿ.</p>
+                    <div class="bg-gray-50 p-2 rounded border space-y-1">
+                        <p><b>ಒಟ್ಟು ಮೊತ್ತ:</b> ₹${totalAmount} (${paymentMode})</p>
+                        <p><b>ವಸ್ತು:</b> ${p.name} (ಸೈಜ್: ${p.size || 'M'}) x${qty}</p>
+                    </div>
+                    <div class="flex gap-2 pt-2">
+                        <button onclick="closeModal()" class="flex-1 bg-gray-200 text-gray-800 py-2.5 rounded-xl font-bold">ರದ್ದುಗೊಳಿಸಿ</button>
+                        <button onclick="executeOrder(${p.id}, ${qty}, '${paymentMode}', ${totalAmount})" class="flex-1 bg-yellow-400 text-black py-2.5 rounded-xl font-bold shadow">ಆರ್ಡರ್ ದೃಢೀಕರಿಸಿ</button>
+                    </div>
+                </div>
+            `;
+            showModal("ಆರ್ಡರ್ ದೃಢೀಕರಣ", confirmHtml, "📦", "");
+        }
+
+        function executeOrder(id, qty, paymentMode, totalAmount) {
+            let p = products.find(x => x.id === id);
+            let savedOrders = JSON.parse(localStorage.getItem('market_orders')) || [];
+            
+            let newOrder = {
+                id: Date.now(),
+                customerName: currentCustomer.name,
+                phone: currentCustomer.phone,
+                district: currentCustomer.district,
+                taluk: currentCustomer.taluk,
+                city: currentCustomer.city,
+                pincode: currentCustomer.pincode,
+                address: `${currentCustomer.address}, ${currentCustomer.city}, ${currentCustomer.taluk} ತಾಲೂಕು, ${currentCustomer.district} ಜಿಲ್ಲೆ - ${currentCustomer.pincode}`,
+                items: [{ ...p, quantity: qty, size: p.size || 'M' }],
+                totalAmount: totalAmount,
+                paymentMethod: paymentMode,
+                status: 'ಆರ್ಡರ್ ಸ್ವೀಕರಿಸಲಾಗಿದೆ - ಪ್ಯಾಕಿಂಗ್ ನಡೆಯುತ್ತಿದೆ',
+                acceptedByVendor: null,
+                packingReady: false,
+                delivered: false,
+                isCancelled: false,
+                cancelTime: '',
+                isReturned: false,
+                returnReason: '',
+                timestamp: Date.now()
+            };
+
+            savedOrders.push(newOrder);
+            localStorage.setItem('market_orders', JSON.stringify(savedOrders));
+
+            // ಆರ್ಡರ್ ಯಶಸ್ವಿಯಾದ ನಂತರ ಮುಖಪುಟಕ್ಕೆ (ವಸ್ತುಗಳ ಪುಟಕ್ಕೆ) ಮರಳಿ ಕಳುಹಿಸುವುದು
+            showModal("ಯಶಸ್ವಿ!", `
+                <div class="text-center space-y-2">
+                    <div class="text-green-600 text-5xl font-bold">✅</div>
+                    <p class="font-bold text-sm text-gray-800">ಆರ್ಡರ್ ಯಶಸ್ವಿಯಾಗಿ ಸಲ್ಲಿಸಲಾಗಿದೆ!</p>
+                    <p class="text-xs text-green-700 font-semibold">ನೀವು ಉಳಿಸಿದ ಮೊತ್ತ: ₹${(p.origPrice - p.discPrice) * qty}</p>
+                    <p class="text-xs text-gray-600">ಒಟ್ಟು ಮೊತ್ತ: ₹${totalAmount} (${paymentMode})</p>
+                    <button onclick="closeModal(); switchCustomerTab('orders');" class="w-full bg-indigo-600 text-white py-2.5 rounded-xl font-bold text-xs mt-2">ನನ್ನ ಆರ್ಡರ್‌ಗಳು ನೋಡಿ</button>
+                </div>
+            `, "", "");
+        }
+
+        function renderCustomerOrders() {
+            let cOrdDiv = document.getElementById('customer-orders-list');
+            let savedOrders = JSON.parse(localStorage.getItem('market_orders')) || [];
+            let myOrders = savedOrders.filter(o => o.phone === currentCustomer.phone);
+
+            myOrders.sort((a, b) => {
+                if (a.isCancelled !== b.isCancelled) return a.isCancelled ? 1 : -1;
+                if (a.delivered !== b.delivered) return a.delivered ? 1 : -1;
+                return b.timestamp - a.timestamp;
+            });
 
             if (myOrders.length === 0) {
-                ordDiv.innerHTML = "ಯಾವುದೇ ಹೊಸ ಆರ್ಡರ್‌ಗಳಿಲ್ಲ.";
-            } else {
-                ordDiv.innerHTML = myOrders.map(o => `
-                    <div class="border p-3 rounded-xl bg-amber-50 space-y-2 mb-2">
-                        <div class="flex justify-between items-center border-b pb-1">
-                            <span class="font-bold text-xs text-indigo-700">ಆರ್ಡರ್ ID: ${o.id}</span>
-                            <span class="text-[10px] bg-indigo-100 text-indigo-800 px-2 py-0.5 rounded font-bold">ಪಾವತಿ: ${o.paymentMethod}</span>
-                        </div>
+                cOrdDiv.innerHTML = "ಯಾವುದೇ ಆರ್ಡರ್‌ಗಳಿಲ್ಲ.";
+                return;
+            }
 
+            cOrdDiv.innerHTML = myOrders.map(o => `
+                <div onclick="showOrderDetails(${o.id})" class="border p-3 rounded-xl ${o.isCancelled ? 'bg-red-50 opacity-75' : (o.delivered ? 'bg-gray-100' : 'bg-gray-50')} mb-3 space-y-2 cursor-pointer hover:bg-indigo-50 transition">
+                    <div class="flex justify-between items-center border-b pb-1">
+                        <span class="font-bold text-xs text-indigo-700">ಆರ್ಡರ್ ID: ${o.id}</span>
+                        <span class="text-[10px] bg-green-100 text-green-800 px-2 py-0.5 rounded font-bold">${o.paymentMethod}</span>
+                    </div>
+                    ${o.items.map(i => `
+                        <div class="flex gap-2 items-center">
+                            <img src="${i.frontPhoto}" class="w-12 h-12 object-cover rounded border">
+                            <div>
+                                <p class="font-bold text-xs">${i.name} (<span class="text-red-600">ಸೈಜ್: ${i.size \vert{}\vert{} 'M'}</span>) x${i.quantity}</p>
+                                <p class="text-[11px] text-green-600 font-bold">₹${i.discPrice * i.quantity}</p>
+                            </div>
+                        </div>
+                    `).join('')}
+                    <div class="pt-1 flex justify-between items-center">
+                        <span class="text-[11px] font-semibold ${o.isCancelled ? 'text-red-600' : (o.delivered ? 'text-green-600' : 'text-indigo-600')}">
+                            ${o.isCancelled ? '🔒 ಲಾಕ್ ಆಗಿದೆ: ಗ್ರಾಹಕರಿಂದ ಕ್ಯಾನ್ಸಲ್ ಮಾಡಲಾಗಿದೆ (' + o.cancelTime + ')' : 'ಸ್ಥಿತಿ: ' + o.status}
+                        </span>
+                        <span class="text-[10px] text-gray-400 underline">ವಿವರ ನೋಡಿ ▶</span>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function showOrderDetails(id) {
+            let savedOrders = JSON.parse(localStorage.getItem('market_orders')) || [];
+            let o = savedOrders.find(x => x.id === id);
+            if (!o) return;
+
+            let step1Active = !o.isCancelled;
+            let step2Active = (!o.isCancelled && (o.packingReady || o.delivered));
+            let step3Active = (!o.isCancelled && o.packingReady && !o.delivered);
+            let step4Active = (!o.isCancelled && o.delivered);
+
+            let dot1Class = "w-5 h-5 rounded-full flex items-center justify-center text-white text-[10px] font-bold " + (o.isCancelled ? "bg-red-500" : (step1Active ? "bg-green-600" : "bg-gray-300"));
+            let dot2Class = "w-5 h-5 rounded-full flex items-center justify-center text-white text-[10px] font-bold " + (step2Active ? "bg-green-600" : "bg-gray-300");
+            let dot3Class = "w-5 h-5 rounded-full flex items-center justify-center text-white text-[10px] font-bold " + (step3Active ? "bg-green-600" : "bg-gray-300");
+            let dot4Class = "w-5 h-5 rounded-full flex items-center justify-center text-white text-[10px] font-bold " + (step4Active ? "bg-green-600" : "bg-gray-300");
+
+            let statusMsg = "";
+            if (o.isCancelled) {
+                statusMsg = `🔒 ಈ ಆರ್ಡರ್ ಕ್ಯಾನ್ಸಲ್ ಮಾಡಲಾಗಿದೆ (${o.cancelTime}). ಲಾಕ್ ಮಾಡಲಾಗಿದೆ.`;
+            } else if (o.delivered) {
+                statusMsg = "✨ ಡೆಲಿವರಿ ಯಶಸ್ವಿಯಾಗಿದೆ (Success)!";
+            } else if (o.packingReady) {
+                statusMsg = "📦 ಪ್ಯಾಕಿಂಗ್ ಆಗಿ ಡೆಲಿವರಿಗೆ ಕಳುಹಿಸಲಾಗಿದೆ.";
+            } else {
+                statusMsg = "⏳ ಆರ್ಡರ್ ದೃಢೀಕರಿಸಲಾಗಿದೆ.";
+            }
+
+            let html = `
+                <div class="text-left space-y-3 text-xs">
+                    <div class="bg-indigo-50 p-2 rounded border space-y-1">
+                        <p class="font-bold text-indigo-700">ಆರ್ಡರ್ ID: ${o.id}</p>
+                        <p class="font-semibold text-gray-800 pt-1">${statusMsg}</p>
+                    </div>
+
+                    ${!o.isCancelled && !o.delivered && !o.packingReady ? `
+                        <div class="bg-red-50 p-2 rounded border text-center space-y-2">
+                            <p class="font-bold text-red-700">ಲೈವ್ ಆರ್ಡರ್ ಕ್ಯಾನ್ಸಲ್ ಮಾಡಲು ಬಟನ್:</p>
+                            <button onclick="cancelCustomerOrder(${o.id})" class="bg-red-600 text-white px-4 py-2 rounded-xl font-bold shadow">❌ ಆರ್ಡರ್ ಕ್ಯಾನ್ಸಲ್ ಮಾಡಿ (Cancel Order)</button>
+                        </div>
+                    ` : ''}
+
+                    <div class="p-3 bg-white rounded border space-y-2">
+                        <p class="font-bold text-gray-700 mb-2">ಆರ್ಡರ್ ಸ್ಟೇಟಸ್ ಹಂತಗಳು:</p>
+                        
+                        <div class="flex items-center gap-3">
+                            <div class="${dot1Class}">${o.isCancelled ? '✕' : '✓'}</div>
+                            <div><p class="font-bold text-gray-800">1. ಆರ್ಡರ್ ದೃಢೀಕರಿಸಲಾಗಿದೆ</p></div>
+                        </div>
+                        <div class="ml-2.5 w-0.5 h-3 bg-gray-300"></div>
+
+                        <div class="flex items-center gap-3">
+                            <div class="${dot2Class}">${step2Active ? '✓' : '2'}</div>
+                            <div><p class="font-bold text-gray-800">2. ಪ್ಯಾಕಿಂಗ್ ಆಗಿ ಡೆಲಿವರಿಗೆ ಕಳುಹಿಸಲಾಗಿದೆ</p></div>
+                        </div>
+                        <div class="ml-2.5 w-0.5 h-3 bg-gray-300"></div>
+
+                        <div class="flex items-center gap-3">
+                            <div class="${dot3Class}">${step3Active ? '✓' : '3'}</div>
+                            <div><p class="font-bold text-gray-800">3. ಡೆಲಿವರಿ ಬಾಯ್ ಹೊರಟಿದ್ದಾರೆ</p></div>
+                        </div>
+                        <div class="ml-2.5 w-0.5 h-3 bg-gray-300"></div>
+
+                        <div class="flex items-center gap-3">
+                            <div class="${dot4Class}">${step4Active ? '✓' : '4'}</div>
+                            <div><p class="font-bold text-gray-800">4. ಡೆಲಿವರಿ ಯಶಸ್ವಿ (Success)</p></div>
+                        </div>
+                    </div>
+
+                    <div class="border-t pt-2">
+                        <p class="font-bold text-gray-700 mb-1">ವಸ್ತುವಿನ ವಿವರ:</p>
                         ${o.items.map(i => `
-                            <div class="flex gap-2 items-center">
-                                <img src="${i.frontPhoto}" onclick="zoomImage('${i.frontPhoto}')" class="w-12 h-12 object-cover rounded border cursor-pointer">
-                                <div>
-                                    <p class="font-bold text-xs">${i.name} (<span class="text-red-600 font-bold">ಸೈಜ್: ${i.size}</span>) x${i.quantity}</p>
-                                    <p class="text-[11px] text-green-600 font-bold">₹${i.discPrice * i.quantity}</p>
+                            <div class="flex gap-2 items-center border-b pb-1">
+                                <img src="${i.frontPhoto}" class="w-12 h-12 object-cover rounded border">
+                                <div class="flex-1">
+                                    <p class="font-bold">${i.name} (<span class="text-red-600">ಸೈಜ್: ${i.size \vert{}\vert{} 'M'}</span>) x${i.quantity}</p>
+                                    <p class="text-green-600 font-bold">₹${i.discPrice * i.quantity}</p>
                                 </div>
                             </div>
                         `).join('')}
-
-                        <div class="text-[11px] text-gray-700 space-y-0.5 pt-1 border-t">
-                            <p><b>ಗ್ರಾಹಕರ ಹೆಸರು:</b> ${o.customerName} (<a href="tel:${o.phone}" class="text-blue-600 underline font-bold">📞 ${o.phone}</a>)</p>
-                            <p><b>ಪೂರ್ಣ ವಿಳಾಸ:</b> ${o.city}, ${o.taluk} ತಾಲೂಕು, ${o.district} ಜಿಲ್ಲೆ (Pin: ${o.pincode})</p>
-                        </div>
-
-                        <p><b>ಪಾವತಿ ಸ್ಥಿತಿ:</b> <span class="${o.paymentSuccess ? 'text-green-600 font-bold' : 'text-orange-600 font-bold'}">${o.paymentSuccess ? 'ಪಾವತಿ ಯಶಸ್ವಿ (Success)' : 'ಪೇಮೆಂಟ್ ಪೆಂಡಿಂಗ್ (Pending)'}</span></p>
-                        <p><b>ಸ್ಥಿತಿ (Status):</b> <span class="text-orange-600 font-bold">${o.status}</span></p>
-                        
-                        ${o.isReturned ? `<div class="bg-red-100 p-2 rounded text-red-700 font-bold text-xs">🔄 ರಿಟರ್ನ್ ಬಂದಿದೆ: ${o.returnReason}</div>` : ''}
-
-                        <div class="flex flex-wrap gap-2 pt-1">
-                            <a href="https://maps.google.com/?q=${encodeURIComponent(o.address)}" target="_blank" class="bg-indigo-600 text-white px-3 py-1.5 rounded text-xs font-bold">🗺️ ಮ್ಯಾಪ್ ಲೊಕೇಶನ್</a>
-                            
-                            ${!o.acceptedByVendor ? `<button onclick="acceptOrder(${o.id})" class="bg-green-600 text-white px-3 py-1.5 rounded text-xs font-bold">✅ ಆರ್ಡರ್ ಸ್ವೀಕರಿಸಿ</button>` : ''}
-                            
-                            ${o.acceptedByVendor && !o.packingReady ? `<button onclick="markPackingReady(${o.id})" class="bg-blue-600 text-white px-3 py-1.5 rounded text-xs font-bold">📦 ಪ್ಯಾಕಿಂಗ್ ಆಗಿದೆ (OK)</button>` : ''}
-                            
-                            ${o.packingReady && !o.delivered ? `<button onclick="markDispatched(${o.id})" class="bg-purple-600 text-white px-3 py-1.5 rounded text-xs font-bold">🚀 ಡೆಲಿವರಿಗೆ ಕಳುಹಿಸಲಾಗಿದೆ (OK)</button>` : ''}
-
-                            ${o.delivered && !o.paymentSuccess ? `<button onclick="markPaymentSuccess(${o.id})" class="bg-green-700 text-white px-3 py-1.5 rounded text-xs font-bold">💰 ಪೇಮೆಂಟ್ ಸಕ್ಸಸ್ (OK)</button>` : ''}
-                            
-                            ${o.paymentSuccess ? `<span class="text-green-700 font-bold text-xs">✨ ಪಾವತಿ & ಡೆಲಿವರಿ ಯಶಸ್ವಿ (Success)</span>` : ''}
-                        </div>
                     </div>
-                `).join('');
-            }
+
+                    <div class="border-t pt-2 text-[11px] text-gray-600 space-y-1">
+                        <p><b>ಗ್ರಾಹಕರ ಹೆಸರು:</b> ${o.customerName} (📞 ${o.phone})</p>
+                        <p><b>ಪೂರ್ಣ ವಿಳಾಸ:</b> ${o.address}</p>
+                    </div>
+                </div>
+            `;
+            
+            let buttonsHtml = `
+                <button onclick="document.getElementById('custom-modal').classList.add('hidden')" class="w-full bg-indigo-600 text-white py-2 rounded-xl font-bold text-xs">ಸರಿ (OK)</button>
+            `;
+            showModal("ಆರ್ಡರ್ ಟ್ರ್ಯಾಕಿಂಗ್ ವಿವರ", html, "📦", buttonsHtml);
         }
 
-        function acceptOrder(id) {
-            playSiren();
+        function cancelCustomerOrder(id) {
             let savedOrders = JSON.parse(localStorage.getItem('market_orders')) || [];
             let o = savedOrders.find(x => x.id === id);
             if (o) {
-                o.acceptedByVendor = currentVendor.shopName;
-                o.status = 'ಸ್ವೀಕರಿಸಲಾಗಿದೆ - ಪ್ಯಾಕಿಂಗ್ ನಡೆಯುತ್ತಿದೆ';
+                let timeStr = new Date().toLocaleTimeString();
+                o.isCancelled = true;
+                o.cancelTime = timeStr;
+                o.status = `ಕ್ಯಾನ್ಸಲ್ ಮಾಡಲಾಗಿದೆ (${timeStr}) - ಅಂಗಡಿ ಮತ್ತು ಡೆಲಿವರಿ ಬಾಯ್‌ಗೆ ತಿಳಿಸಲಾಗಿದೆ`;
                 localStorage.setItem('market_orders', JSON.stringify(savedOrders));
-                renderVendorOrders();
-                showModal("ಯಶಸ್ವಿ!", "ಬುಕಿಂಗ್ ಸ್ವೀಕರಿಸಲಾಗಿದೆ!", "👍");
+                document.getElementById('custom-modal').classList.add('hidden');
+                showModal("ಯಶಸ್ವಿ!", "ನಿಮ್ಮ ಆರ್ಡರ್ ಕ್ಯಾನ್ಸಲ್ ಮಾಡಲಾಗಿದೆ! ಅಂಗಡಿ ಮಾಲೀಕರಿಗೆ ಮತ್ತು ಡೆಲಿವರಿ ಬಾಯ್‌ಗೆ ಸಂದೇಶ ಕಳುಹಿಸಲಾಗಿದೆ.", "❌");
+                renderCustomerOrders();
             }
         }
 
-        function markPackingReady(id) {
-            let savedOrders = JSON.parse(localStorage.getItem('market_orders')) || [];
-            let o = savedOrders.find(x => x.id === id);
-            if (o) {
-                o.packingReady = true;
-                o.status = 'ಪ್ಯಾಕಿಂಗ್ ಆಗಿದೆ - ಡೆಲಿವರಿ ಬಾಯ್‌ಗೆ ತಿಳಿಸಲಾಗಿದೆ';
-                localStorage.setItem('market_orders', JSON.stringify(savedOrders));
-                renderVendorOrders();
-                showModal("ಸಿದ್ಧವಾಗಿದೆ!", "ಪ್ಯಾಕಿಂಗ್ ಆಗಿದೆ ಎಂದು ಡೆಲಿವರಿ ಬಾಯ್‌ಗೆ ಸಂದೇಶ ಕಳುಹಿಸಲಾಗಿದೆ!", "📦");
+        // ಮೊಬೈಲ್ ಬ್ಯಾಕ್ ಬಟನ್ ಒತ್ತಿದಾಗ ಪೇಜ್ ಸಂಪೂರ್ಣವಾಗಿ ಮಾಯವಾಗದೆ, ಹಿಂದಿನ ಸೆಕ್ಷನ್‌ಗೆ ಅಥವಾ ಮುಖಪುಟಕ್ಕೆ ಮರಳುವಂತೆ ನಿರ್ವಹಿಸುವುದು
+        window.addEventListener('popstate', function(event) {
+            let authScreen = document.getElementById('auth-screen');
+            let modal = document.getElementById('custom-modal');
+            
+            if (!modal.classList.contains('hidden')) {
+                modal.classList.add('hidden');
+            } else if (!authScreen.classList.contains('hidden')) {
+                goBackToBrowse();
             }
-        }
+        });
 
-        function markDispatched(id) {
-            let savedOrders = JSON.parse(localStorage.getItem('market_orders')) || [];
-            let o = savedOrders.find(x => x.id === id);
-            if (o) {
-                o.status = 'ಡೆಲಿವರಿಗೆ ಕಳುಹಿಸಲಾಗಿದೆ (Out for Delivery)';
-                localStorage.setItem('market_orders', JSON.stringify(savedOrders));
-                renderVendorOrders();
-                showModal("ಯಶಸ್ವಿ!", "ಡೆಲಿವರಿಗೆ ಕಳುಹಿಸಲಾಗಿದೆ ಎಂದು ಅಪ್‌ಡೇಟ್ ಮಾಡಲಾಗಿದೆ!", "🚀");
-            }
-        }
-
-        function markPaymentSuccess(id) {
-            let savedOrders = JSON.parse(localStorage.getItem('market_orders')) || [];
-            let o = savedOrders.find(x => x.id === id);
-            if (o) {
-                o.paymentSuccess = true;
-                o.status = 'ಪಾವತಿ & ಡೆಲಿವರಿ ಯಶಸ್ವಿಯಾಗಿದೆ (Success)';
-                localStorage.setItem('market_orders', JSON.stringify(savedOrders));
-                renderVendorOrders();
-                showModal("ಯಶಸ್ವಿ!", "ಪೇಮೆಂಟ್ ಸಕ್ಸಸ್ ಮಾಡಲಾಗಿದೆ!", "💰");
-            }
-        }
-
-        checkLogin();
+        initApp();
     </script>
 </body>
 </html>
