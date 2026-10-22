@@ -3,80 +3,257 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ಲೋಕಲ್ ಶಾಪಿಂಗ್ - Customer App</title>
-    <!-- Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
+    <title>ನಮ್ಮ ಶಾಪುರ್ - ಗ್ರಾಹಕರ ಆಪ್ (Customer App)</title>
+    
+    <!-- Firebase SDKs (Firestore) -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getFirestore, collection, addDoc, onSnapshot, updateDoc, doc, deleteDoc, getDocs, setDoc, getDoc, serverTimestamp, query, where, orderBy } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyBvt2oBFM9EJEOwyJrfwUxS3TDfYi10WYE",
+            authDomain: "nammalocal-market.firebaseapp.com",
+            projectId: "nammalocal-market",
+            storageBucket: "nammalocal-market.appspot.com",
+            messagingSenderId: "1958228974",
+            appId: "1:1958228974:web:d87708410a0f0fb4f914ff"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+        
+        window.db = db;
+        window.collection = collection;
+        window.addDoc = addDoc;
+        window.setDoc = setDoc;
+        window.getDoc = getDoc;
+        window.onSnapshot = onSnapshot;
+        window.updateDoc = updateDoc;
+        window.doc = doc;
+        window.deleteDoc = deleteDoc;
+        window.getDocs = getDocs;
+        window.query = query;
+        window.where = where;
+        window.orderBy = orderBy;
+        window.serverTimestamp = serverTimestamp;
+    </script>
+
     <style>
-        .map-route {
-            background-image: radial-gradient(#cbd5e1 1px, transparent 1px);
-            background-size: 16px 16px;
+        :root {
+            --primary: #1e88e5;
+            --success: #4caf50;
+            --danger: #e53935;
+            --dark: #333;
+            --light: #f4f6f8;
         }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        body { background-color: var(--light); color: var(--dark); padding-bottom: 40px; }
+
+        header { background-color: var(--primary); color: white; padding: 15px; text-align: center; box-shadow: 0 2px 5px rgba(0,0,0,0.2); }
+        .container { max-width: 600px; margin: 20px auto; padding: 0 15px; }
+
+        h2 { border-bottom: 2px solid var(--primary); padding-bottom: 8px; margin-bottom: 15px; color: var(--primary); font-size: 18px; }
+
+        .grid-cust {
+            display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 15px; margin-top: 15px;
+        }
+        .card-cust { border: 1px solid #e0e0e0; border-radius: 8px; padding: 10px; background: #fff; text-align: center; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+        .card-cust img { width: 100%; height: 110px; object-fit: cover; border-radius: 6px; }
+        
+        .btn { background: var(--primary); color: white; border: none; padding: 10px 18px; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 14px; }
+        .btn-success { background: var(--success); }
+        .btn-danger { background: var(--danger); }
+
+        .price-tag { color: #2e7d32; font-weight: bold; }
+        .old-price { text-decoration: line-through; color: #888; font-size: 12px; margin-right: 5px; }
+
+        .order-item { border-left: 5px solid var(--primary); background: #fff; padding: 12px; margin-bottom: 12px; border-radius: 6px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+
+        .route-tracker {
+            display: flex; justify-content: space-between; margin: 10px 0; padding: 8px;
+            background: #e3f2fd; border-radius: 6px; font-size: 10px; font-weight: bold; color: #0d47a1;
+        }
+        .route-step.active { color: #2e7d32; }
+
+        /* Modal */
+        .modal {
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.6); justify-content: center; align-items: center; z-index: 1000;
+        }
+        .modal-content { background: white; padding: 20px; border-radius: 10px; width: 90%; max-width: 400px; text-align: left; }
+        .form-group { margin-bottom: 12px; }
+        label { display: block; margin-bottom: 4px; font-weight: 600; font-size: 13px; }
+        input { width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 6px; font-size: 14px; }
     </style>
 </head>
-<body class="bg-slate-100 font-sans min-h-screen pb-20">
+<body>
 
-    <!-- Header Navigation -->
-    <header class="bg-indigo-600 text-white p-4 shadow-md sticky top-0 z-40">
-        <div class="max-w-md mx-auto flex justify-between items-center">
-            <div>
-                <h1 class="text-lg font-black tracking-wide">🛍️ ಲೋಕಲ್ ಮಾರ್ಕೆಟ್ ಶಾಪಿಂಗ್</h1>
-                <p class="text-[11px] text-indigo-200">ನಿಮ್ಮ ಹತ್ತಿರದ ಅಂಗಡಿಗಳಿಂದ 30 ನಿಮಿಷದಲ್ಲಿ ಡೆಲಿವರಿ</p>
-            </div>
-            
-            <!-- Cart Button -->
-            <button onclick="openCartModal()" class="relative bg-indigo-700 hover:bg-indigo-800 p-2.5 rounded-2xl shadow">
-                🛒 <span id="cartBadge" class="absolute -top-1 -right-1 bg-amber-400 text-indigo-950 text-[10px] font-black px-1.5 py-0.5 rounded-full">0</span>
-            </button>
-        </div>
+    <header>
+        <h1>🛍️ ನಮ್ಮ ಶಾಪುರ್ - ಗ್ರಾಹಕರ ಮಾರುಕಟ್ಟೆ</h1>
+        <p>ಸ್ಥಳೀಯ ಅಂಗಡಿಗಳ ಆನ್‌ಲೈನ್ ಶಾಪಿಂಗ್</p>
     </header>
 
-    <main class="max-w-md mx-auto p-4 space-y-4">
+    <div class="container">
+        <h2>🛒 ಅಂಗಡಿಯಲ್ಲಿ ಲಭ್ಯವಿರುವ ವಸ್ತುಗಳು</h2>
+        <div id="customer-products-grid" class="grid-cust"></div>
 
-        <!-- Banner -->
-        <div class="bg-gradient-to-r from-indigo-500 to-purple-600 rounded-3xl p-4 text-white shadow-md">
-            <span class="text-[10px] bg-white/20 px-2 py-0.5 rounded-full font-bold">⚡ ಫ್ಲ್ಯಾಶ್ ಡೆಲಿವರಿ</span>
-            <h2 class="text-base font-bold mt-1">ಸ್ಥಳೀಯ ಅಂಗಡಿಗಳಿಂದ ನೇರ ಖರೀದಿ!</h2>
-            <p class="text-xs text-indigo-100 mt-0.5">ಅಂಗಡಿಯವರು ಹಾಕಿದ ಇತ್ತೀಚಿನ ಆಫರ್ ಫೋಟೋಗಳು ಇಲ್ಲಿವೆ.</p>
+        <h2 style="margin-top:30px;">📜 ನನ್ನ ಆರ್ಡರ್‌ಗಳು ಹಾಗೂ ಲೈವ್ ರೂಟ್</h2>
+        <div id="customer-orders-list"></div>
+    </div>
+
+    <!-- BUY MODAL -->
+    <div id="buy-modal" class="modal">
+        <div class="modal-content" style="text-align:center;">
+            <h3 id="modal-prod-name">ಖರೀದಿಸಿ</h3>
+            <img id="modal-prod-img" src="" style="width:100%; height:130px; object-fit:cover; margin:10px 0; border-radius:6px;">
+            <p>ಪ್ರೆಸೆಂಟ್ ರೇಟು: <b>₹<span id="modal-prod-price"></span></b></p>
+            <button class="btn btn-success" style="width:100%; margin-top:10px;" onclick="showAddressScreen()">ಮುಂದೆ ಹೋಗಿ (ವಿಳಾಸ ಹಾಕಿ)</button>
+            <button class="btn btn-danger" style="width:100%; margin-top:5px;" onclick="closeModal('buy-modal')">ರದ್ದುಗೊಳಿಸಿ</button>
         </div>
+    </div>
 
-        <!-- Search Bar -->
-        <div class="relative">
-            <input type="text" id="searchInput" onkeyup="filterProducts()" placeholder="🔍 ಬಟ್ಟೆ, ಚಪ್ಪಲಿ, ದಿನಸಿ ಹುಡುಕಿ..." class="w-full p-3 pl-4 rounded-2xl border bg-white text-xs outline-none shadow-sm focus:ring-2 focus:ring-indigo-500">
+    <!-- ADDRESS FORM MODAL -->
+    <div id="address-modal" class="modal">
+        <div class="modal-content">
+            <h3>📍 ನಿಮ್ಮ ವಿಳಾಸ ವಿವರ ನಮೂದಿಸಿ</h3>
+            <form onsubmit="confirmFinalOrder(event)">
+                <div class="form-group"><label>ನಿಮ್ಮ ಹೆಸರು:</label><input type="text" id="cust-name" required placeholder="ಪೂರ್ಣ ಹೆಸರು"></div>
+                <div class="form-group"><label>ಮೊಬೈಲ್ ನಂಬರ್:</label><input type="tel" id="cust-phone" required placeholder="10 ಅಂಕಿಗಳ ನಂಬರ್"></div>
+                <div class="form-group"><label>ಊರು / ಬಡಾವಣೆ:</label><input type="text" id="cust-village" required placeholder="ಶಹಾಪುರ / ಊರು"></div>
+                <button type="submit" class="btn btn-success" style="width:100%;">ಆರ್ಡರ್ ಕನ್ಫರ್ಮ್ ಮಾಡಿ</button>
+                <button type="button" class="btn btn-danger" style="width:100%; margin-top:5px;" onclick="closeModal('address-modal')">ಹಿಂದಕ್ಕೆ</button>
+            </form>
         </div>
+    </div>
 
-        <!-- Dynamic Product Grid (Flipkart Style Cards) -->
-        <div>
-            <h3 class="text-xs font-bold text-slate-700 mb-2 flex justify-between items-center">
-                <span>🔥 ಲೈವ್ ಲಭ್ಯವಿರುವ ಸಾಮಗ್ರಿಗಳು</span>
-                <span id="liveItemsCount" class="text-[10px] bg-slate-200 px-2 py-0.5 rounded-full">0 Item</span>
-            </h3>
+    <script>
+        let currentBuyProduct = null;
 
-            <div id="customerProductGrid" class="grid grid-cols-2 gap-3">
-                <!-- Syncs with Shop Owner uploaded products -->
-            </div>
-        </div>
+        window.addEventListener('DOMContentLoaded', () => {
+            // ಫೈರ್‌ಬೇಸ್ ಡೇಟಾ ಸಿಂಕ್ ಆರಂಭಿಸಲು ಸ್ವಲ್ಪ ವಿಳಂಬ ನೀಡಲಾಗಿದೆ
+            setTimeout(() => {
+                startCustomerSync();
+            }, 1000);
+        });
 
-    </main>
+        function startCustomerSync() {
+            // ಪ್ರಾಡಕ್ಟ್ಸ್ ರಿಯಲ್-ಟೈಮ್ ಸಿಂಕ್
+            window.onSnapshot(window.collection(window.db, "products"), (snapshot) => {
+                let products = [];
+                snapshot.forEach(docSnap => {
+                    products.push({ id: docSnap.id, ...docSnap.data() });
+                });
+                renderCustomerProducts(products);
+                window.cachedProducts = products;
+            });
 
-    <!-- ========================================== -->
-    <!-- MODAL 1: CART & CHECKOUT                   -->
-    <!-- ========================================== -->
-    <div id="cartModal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 hidden flex items-end sm:items-center justify-center">
-        <div class="bg-white w-full max-w-md rounded-t-3xl sm:rounded-3xl shadow-2xl p-5 max-h-[85vh] flex flex-col">
-            <div class="flex justify-between items-center border-b pb-3">
-                <h2 class="font-bold text-sm text-slate-800">🛒 ನಿಮ್ಮ ಕಾರ್ಟ್ (Your Cart)</h2>
-                <button onclick="closeCartModal()" class="text-slate-400 font-bold">✕</button>
-            </div>
+            // ಆರ್ಡರ್ಸ್ ರಿಯಲ್-ಟೈಮ್ ಸಿಂಕ್
+            window.onSnapshot(window.collection(window.db, "orders"), (snapshot) => {
+                let orders = [];
+                snapshot.forEach(docSnap => {
+                    orders.push({ id: docSnap.id, ...docSnap.data() });
+                });
+                orders.sort((a, b) => (b.timestamp?.toMillis?.() || 0) - (a.timestamp?.toMillis?.() || 0));
+                renderCustomerOrders(orders);
+            });
+        }
 
-            <div id="cartItemsList" class="my-3 overflow-y-auto flex-1 space-y-2">
-                <!-- Cart Items -->
-            </div>
+        function closeModal(id) { document.getElementById(id).style.display = 'none'; }
 
-            <div class="border-t pt-3 space-y-3">
-                <div class="flex justify-between text-xs font-bold">
-                    <span>ಒಟ್ಟು ಮೊತ್ತ (Total Amount):</span>
-                    <span id="cartTotal" class="text-indigo-600 text-sm">₹0</span>
+        function openBuyModal(prodId) {
+            currentBuyProduct = window.cachedProducts.find(p => p.id == prodId);
+            if (currentBuyProduct) {
+                document.getElementById('modal-prod-name').innerText = currentBuyProduct.name;
+                document.getElementById('modal-prod-img').src = currentBuyProduct.photo;
+                document.getElementById('modal-prod-price').innerText = currentBuyProduct.price;
+                document.getElementById('buy-modal').style.display = 'flex';
+            }
+        }
+
+        function showAddressScreen() {
+            closeModal('buy-modal');
+            document.getElementById('address-modal').style.display = 'flex';
+        }
+
+        async function confirmFinalOrder(event) {
+            event.preventDefault();
+            const orderId = 'ORD_' + Math.floor(1000 + Math.random() * 9000);
+            const newOrder = {
+                orderId: orderId,
+                timestamp: window.serverTimestamp(),
+                productName: currentBuyProduct.name,
+                productPhoto: currentBuyProduct.photo,
+                totalPrice: currentBuyProduct.price,
+                shopId: currentBuyProduct.shopId,
+                customer: {
+                    name: document.getElementById('cust-name').value.trim(),
+                    phone: document.getElementById('cust-phone').value.trim(),
+                    village: document.getElementById('cust-village').value.trim()
+                },
+                status: 'NEW'
+            };
+
+            try {
+                await window.addDoc(window.collection(window.db, "orders"), newOrder);
+                closeModal('address-modal');
+                alert("🔔 ನಿಮ್ಮ ಆರ್ಡರ್ ಕನ್ಫರ್ಮ್ ಆಗಿದೆ! ಅಂಗಡಿ ಮಾಲೀಕರಿಗೆ ತಲುಪಿಸಲಾಗಿದೆ.");
+            } catch (err) {
+                alert("Error: " + err.message);
+            }
+        }
+
+        function renderCustomerProducts(products) {
+            const grid = document.getElementById('customer-products-grid');
+            if (products.length === 0) {
+                grid.innerHTML = '<p style="font-size:12px; color:#777;">ಪ್ರಸ್ತುತ ಯಾವುದೇ ವಸ್ತುಗಳು ಲಭ್ಯವಿಲ್ಲ.</p>';
+                return;
+            }
+            grid.innerHTML = products.map(p => `
+                <div class="card-cust">
+                    <img src="${p.photo}">
+                    <div style="font-weight:bold; margin:6px 0; font-size:13px;">${p.name}</div>
+                    <div><span class="old-price">₹${p.oldPrice}</span> <span class="price-tag">₹${p.price}</span></div>
+                    <button class="btn btn-success" style="width:100%; margin-top:8px; padding:6px; font-size:12px;" onclick="openBuyModal('${p.id}')">ಖರೀದಿಸಿ</button>
                 </div>
+            `).join('');
+        }
 
-                <form onsubmit="placeOrder(event)" class="space-y-2">
-                    <input type="text" id="custName" required placeholder="ನಿಮ್ಮ ಹೆಸರು" class="w-full p-2 border rounded-xl
+        function renderCustomerOrders(orders) {
+            const listDiv = document.getElementById('customer-orders-list');
+            if (orders.length === 0) {
+                listDiv.innerHTML = '<p style="font-size:12px; color:#777;">ನೀವು ಇನ್ನು ಯಾವುದೇ ಆರ್ಡರ್ ಮಾಡಿಲ್ಲ.</p>';
+                return;
+            }
+            listDiv.innerHTML = orders.map(o => {
+                let s1 = 'active';
+                let s2 = ['CONFIRMED', 'PACKING', 'DELIVERED'].includes(o.status) ? 'active' : '';
+                let s3 = ['PACKING', 'DELIVERED'].includes(o.status) ? 'active' : '';
+                let s4 = o.status === 'DELIVERED' ? 'active' : '';
+
+                return `
+                    <div class="order-item">
+                        <h4 style="font-size:14px;">ಆರ್ಡರ್: ${o.productName} - ₹${o.totalPrice}</h4>
+                        <p style="font-size:11px; color:#666;">ಆರ್ಡರ್ ಐಡಿ: ${o.orderId}</p>
+                        
+                        <div class="route-tracker">
+                            <span class="route-step ${s1}">1. ಕನ್ಫರ್ಮ್</span> > 
+                            <span class="route-step ${s2}">2. ಪ್ಯಾಕಿಂಗ್</span> > 
+                            <span class="route-step ${s3}">3. ಡೆಲಿವರಿ</span> > 
+                            <span class="route-step ${s4}">4. ತಲುಪಿದೆ</span>
+                        </div>
+                        
+                        <p style="font-size:12px; color:#2e7d32; font-weight:bold;">
+                            ${o.status === 'NEW' ? '⏳ ಅಂಗಡಿ ಮಾಲೀಕರ ಒಪ್ಪಿಗೆಗಾಗಿ ಕಾಯುತ್ತಿದೆ...' : ''}
+                            ${o.status === 'CONFIRMED' ? '✅ ಅಂಗಡಿಯವರು ಆರ್ಡರ್ ಕನ್ಫರ್ಮ್ ಮಾಡಿದ್ದಾರೆ.' : ''}
+                            ${o.status === 'PACKING' ? '📦 ನಿಮ್ಮ ಆರ್ಡರ್ ಪ್ಯಾಕಿಂಗ್ ಆಗಿ ಡೆಲಿವರಿಗೆ ಸಿದ್ಧವಾಗಿದೆ.' : ''}
+                            ${o.status === 'DELIVERED' ? '🎉 ನಿಮ್ಮ ಆರ್ಡರ್ ಯಶಸ್ವಿಯಾಗಿ ತಲುಪಿದೆ!' : ''}
+                        </p>
+                    </div>
+                `;
+            }).join('');
+        }
+    </script>
+</body>
+</html>
